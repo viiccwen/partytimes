@@ -51,3 +51,15 @@ export const Login = async (formdata: login_schema_type) => {
         return { correct: false, error: error.message};
     }
 }
+
+export const CheckAuth = async (token: string) => {
+    const response = await fetch(`${API_URL}/check`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "authorization": `Bearer ${token}`,
+        }
+    });
+
+    return response.ok ? true : false;
+}
