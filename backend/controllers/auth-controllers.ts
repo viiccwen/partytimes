@@ -9,7 +9,7 @@ export const Login = async (req: any, res: any) => {
     const { username, password } = await req.body;
 
     if (!username || !password) {
-      throw new Error("Please provide email, username and password");
+      throw new Error("Please provide username and password");
     }
 
     const user = await prisma.user.findFirst({
