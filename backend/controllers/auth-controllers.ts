@@ -84,7 +84,7 @@ export const Register = async (req: any, res: any) => {
   }
 };
 
-export const isLogin = async (req: any, res: any) => {
+export const CheckAuth = async (req: any, res: any) => {
   if (req.user) {
     res.status(200).json({ message: "You are logged in" });
   } else {
