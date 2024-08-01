@@ -1,4 +1,4 @@
-import auth_router from "./routers/auth-routers";
+import user_router from "./routers/user-routers";
 import { PrismaClient } from "@prisma/client";
 
 const express = require('express');
@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use("/api", auth_router);
+app.use("/api", user_router);
 
 app.listen(API_PORT, () => {
     console.log(`Server is running on port ${API_PORT}`);

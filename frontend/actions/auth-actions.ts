@@ -68,3 +68,51 @@ export const Logout = () => {
     Cookie.remove("token");
     window.location.href = "/";
 }
+
+export const DeleteAccount = async () => {
+    try {
+        const response = await fetch(`${API_URL}/delete/account`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "authorization": `Bearer ${Cookie.get("token")}`,
+            }
+        });
+        
+        if(response.ok) {
+            Cookie.remove("token");
+            return { correct: true };
+        } else {
+            const data = await response.json();
+            throw new Error(data.error);
+        }
+    } catch(error: any) {
+        return { correct: false, error: error.message};
+    }
+}
+
+export const GetUserInfo = async () => {
+    try {
+        const response = await fetch(`${API_URL}/get/user`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "authorization": `Bearer ${Cookie.get("token")}`,
+            }
+        });
+        
+        if(response.ok) {
+            const data = await response.json();
+            Cookie.set("id", data.id);
+            Cookie.set("name", data.nickname);
+            Cookie.set("email", data.email);
+            
+            return { correct: true };
+        } else {
+            const data = await response.json();
+            throw new Error(data.error);
+        }
+    } catch(error: any) {
+        return { correct: false, error: error.message};
+    }
+}
