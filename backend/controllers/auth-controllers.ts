@@ -91,3 +91,45 @@ export const CheckAuth = async (req: any, res: any) => {
     res.status(401).json({ message: "You are not logged in" });
   }
 };
+
+export const DeleteAccount = async (req: any, res: any) => {
+  try {
+    if (!req.user) throw new Error("You are not logged in");
+
+    const user = await prisma.user.delete({
+      where: {
+        id: req.user.id,
+      },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    res.status(200).json({ message: "Account deleted" });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const GetUserInfo = async (req: any, res: any) => {
+  try {
+    if (!req.user) throw new Error("You are not logged in");
+
+    let user = await prisma.user.findFirst({
+      where: {
+        id: req.user.id,
+      },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    const FilterUser = {
+      id: user.id,
+      nickname: user.nickname,
+      email: user.email
+    };
+
+    res.status(200).json({...FilterUser});
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+}
