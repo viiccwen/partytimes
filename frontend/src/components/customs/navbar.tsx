@@ -51,7 +51,7 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <div className="fixed w-full bg-slate-900">
+    <div className="w-full bg-slate-900">
       <div className="flex justify-end p-5 gap-5">
         {links.map(
           (ele, index) =>

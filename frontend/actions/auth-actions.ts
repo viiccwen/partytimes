@@ -63,3 +63,8 @@ export const CheckAuth = async (token: string) => {
 
     return response.ok ? true : false;
 }
+
+export const Logout = () => {
+    Cookie.remove("token");
+    window.location.href = "/";
+}
