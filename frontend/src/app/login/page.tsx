@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/customs/navbar";
-import { LoginForm } from "@/components/customs/login-form";
+import { LoginForm } from "@/components/customs/user/login-form";
 import { Toaster } from "sonner";
 
 export default function LoginPage() {
