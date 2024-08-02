@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import {
   Card,
   CardContent,
@@ -9,30 +11,29 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "../ui/button";
-import Link from "next/link";
 
 import { useForm } from "react-hook-form";
-import { Register } from "../../actions/auth-actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { register_schema_type } from "@/lib/type";
-import { register_schema } from "@/lib/schema";
+import { login_schema_type } from "@/lib/type";
+import { login_schema } from "@/lib/schema";
+import { Button } from "@/components/ui/button";
+import { Login } from "@/actions/auth-actions";
 
-export const RegisterForm = () => {
+export const LoginForm = () => {
   const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<register_schema_type>({
-    resolver: zodResolver(register_schema)
+  } = useForm<login_schema_type>({
+    resolver: zodResolver(login_schema)
   });
 
-  const onSubmit = async (formdata: register_schema_type) => {
-    const response = await Register(formdata);
+  const onSubmit = async (formdata: login_schema_type) => {
+    const response = await Login(formdata);
 
     if (response.correct) {
         router.push("/");
@@ -46,8 +47,8 @@ export const RegisterForm = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card className="w-[350px]">
           <CardHeader>
-            <CardTitle>註冊</CardTitle>
-            <CardDescription>註冊都不揪？</CardDescription>
+            <CardTitle>登入</CardTitle>
+            <CardDescription>登入都不揪？</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid w-full items-center gap-4">
@@ -64,18 +65,14 @@ export const RegisterForm = () => {
                 {errors.password && (
                     <span className="text-red-500 text-sm">{errors.password.message}</span>
                 )}
-                <Input placeholder="email" {...register("email")} />
-                {errors.email && (
-                    <span className="text-red-500 text-sm">{errors.email.message}</span>
-                )}
               </div>
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button variant="link" asChild>
-              <Link href="/login">有帳號了？</Link>
+              <Link href="/login">還沒有帳號？</Link>
             </Button>
-            <Button type="submit">註冊</Button>
+            <Button type="submit">登入</Button>
           </CardFooter>
         </Card>
       </form>
