@@ -6,7 +6,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { LogOut } from "lucide-react";
-import { Logout } from "../../../../actions/auth-actions";
+import { Logout } from "../../../actions/auth-actions";
 
 export const LogOutButton = () => {
   return (

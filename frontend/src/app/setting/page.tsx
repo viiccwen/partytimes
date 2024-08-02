@@ -1,5 +1,4 @@
 import { Navbar } from "@/components/customs/navbar";
-import { RegisterForm } from "@/components/customs/register-form";
 import { SettingCard } from "@/components/customs/setting/setting-card";
 import { Toaster } from "sonner";
 

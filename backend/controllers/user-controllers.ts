@@ -125,10 +125,54 @@ export const GetUserInfo = async (req: any, res: any) => {
     const FilterUser = {
       id: user.id,
       nickname: user.nickname,
-      email: user.email
+      email: user.email,
     };
 
-    res.status(200).json({...FilterUser});
+    res.status(200).json({ ...FilterUser });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const UpdateUserName = async (req: any, res: any) => {
+  try {
+    if (!req.user) throw new Error("You are not logged in");
+    if(!req.body.nickname) throw new Error("Please provide a nickname");
+
+    let user = await prisma.user.update({
+      where: {
+        id: req.user.id,
+      },
+      data: {
+        nickname: req.body.nickname,
+      },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    res.status(200).json({ nickname: user.nickname });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const UpdateUserEmail = async (req: any, res: any) => {
+  try {
+    if (!req.user) throw new Error("You are not logged in");
+    if(!req.body.email) throw new Error("Please provide a email");
+
+    let user = await prisma.user.update({
+      where: {
+        id: req.user.id,
+      },
+      data: {
+        email: req.body.email,
+      },
+    });
+
+    if (!user) throw new Error("User not found");
+
+    res.status(200).json({ email: user.email });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

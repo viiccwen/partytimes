@@ -9,10 +9,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Edit2, Trash2 } from "lucide-react";
+import { Edit2, Trash2, Undo2 } from "lucide-react";
 import { DeleteAccountButton } from "./delete-account-button";
 
 import { Suspense, useEffect, useState } from "react";
+import { HydrateProvider } from "../hydrate-provider";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EditNameButton } from "./edit-name-button";
+import { EditEmailButton } from "./edit-email-button";
+import { BackButton } from "../back-button";
 
 const Cookie = require("js-cookie");
 
@@ -29,7 +34,12 @@ export const SettingCard = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>設定</CardTitle>
+        <CardTitle>
+          <div className="flex justify-between items-center">
+            <p>設定</p>
+            <BackButton url="/profile" />
+          </div>
+        </CardTitle>
         <CardDescription>設定你的個人資訊！</CardDescription>
       </CardHeader>
       <CardContent>
@@ -40,35 +50,19 @@ export const SettingCard = () => {
             <div className="flex gap-[100px] items-center">
               <p className="font-bold">名稱</p>
               <div className="flex items-center gap-4">
-
-              {hydrated ? (
-                  <>
-                    <p>{name}</p>
-                    <Button variant="outline" size="icon">
-                      <Edit2 className="w-4 h-4" />
-                    </Button>
-                  </>
-                ) : (
-                  <p>loading...</p>
-                )}
-
+                <HydrateProvider hydrated={hydrated} width={120} height={20}>
+                  <p>{name}</p>
+                  <EditNameButton value={name} />
+                </HydrateProvider>
               </div>
             </div>
             <div className="flex gap-[90px] items-center">
               <p className="font-bold">Email</p>
               <div className="flex items-center gap-4">
-
-                {hydrated ? (
-                  <>
-                    <p>{email}</p>
-                    <Button variant="outline" size="icon">
-                      <Edit2 className="w-4 h-4" />
-                    </Button>
-                  </>
-                ) : (
-                  <p>loading...</p>
-                )}
-
+                <HydrateProvider hydrated={hydrated} width={120} height={20}>
+                  <p>{email}</p>
+                  <EditEmailButton value={email} />
+                </HydrateProvider>
               </div>
             </div>
           </div>

@@ -116,3 +116,53 @@ export const GetUserInfo = async () => {
         return { correct: false, error: error.message};
     }
 }
+
+export const EditName = async (name: string) => {
+    try {
+        const response = await fetch(`${API_URL}/update/user/name`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "authorization": `Bearer ${Cookie.get("token")}`,
+            },
+            body: JSON.stringify({ nickname: name }),
+        });
+        
+        if(response.ok) {
+            const data = await response.json();
+            Cookie.set("name", data.nickname);
+            
+            return { correct: true };
+        } else {
+            const data = await response.json();
+            throw new Error(data.error);
+        }
+    } catch(error: any) {
+        return { correct: false, error: error.message};
+    }
+}
+
+export const EditEmail = async (email: string) => {
+    try {
+        const response = await fetch(`${API_URL}/update/user/email`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "authorization": `Bearer ${Cookie.get("token")}`,
+            },
+            body: JSON.stringify({ email: email }),
+        });
+        
+        if(response.ok) {
+            const data = await response.json();
+            Cookie.set("email", data.email);
+            
+            return { correct: true };
+        } else {
+            const data = await response.json();
+            throw new Error(data.error);
+        }
+    } catch(error: any) {
+        return { correct: false, error: error.message};
+    }
+}
