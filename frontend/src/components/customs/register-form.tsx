@@ -13,7 +13,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 
 import { useForm } from "react-hook-form";
-import { Register } from "../../../actions/auth-actions";
+import { Register } from "../../actions/auth-actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";

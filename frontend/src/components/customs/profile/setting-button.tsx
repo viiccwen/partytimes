@@ -9,7 +9,7 @@ import {
 import { Settings } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { GetUserInfo } from "../../../../actions/auth-actions";
+import { GetUserInfo } from "../../../actions/auth-actions";
 import { toast } from "sonner";
 
 const Cookie = require("js-cookie");
