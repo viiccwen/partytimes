@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { login_schema_type } from "@/lib/type";
 import { login_schema } from "@/lib/schema";
 import { Button } from "@/components/ui/button";
-import { Login } from "@/actions/auth-actions";
+import { Login } from "@/actions/user-actions";
 
 export const LoginForm = () => {
   const router = useRouter();

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { DeleteAccount } from "../../../actions/auth-actions";
+import { DeleteAccount } from "../../../actions/user-actions";
 import { toast } from "sonner";
 
 export const DeleteAccountButton = () => {

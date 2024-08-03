@@ -6,7 +6,7 @@ const Cookie = require("js-cookie");
 
 export const Register = async (formdata: register_schema_type) => {
     try {
-        const response = await fetch(`${API_URL}/register`, {
+        const response = await fetch(`${API_URL}/user/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export const Register = async (formdata: register_schema_type) => {
 
 export const Login = async (formdata: login_schema_type) => {
     try {
-        const response = await fetch(`${API_URL}/login`, {
+        const response = await fetch(`${API_URL}/user/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -53,7 +53,7 @@ export const Login = async (formdata: login_schema_type) => {
 }
 
 export const CheckAuth = async (token: string) => {
-    const response = await fetch(`${API_URL}/check`, {
+    const response = await fetch(`${API_URL}/user/check`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export const Logout = () => {
 
 export const DeleteAccount = async () => {
     try {
-        const response = await fetch(`${API_URL}/delete/account`, {
+        const response = await fetch(`${API_URL}/user/delete`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export const DeleteAccount = async () => {
 
 export const GetUserInfo = async () => {
     try {
-        const response = await fetch(`${API_URL}/get/user`, {
+        const response = await fetch(`${API_URL}/user/get`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -119,7 +119,7 @@ export const GetUserInfo = async () => {
 
 export const EditName = async (name: string) => {
     try {
-        const response = await fetch(`${API_URL}/update/user/name`, {
+        const response = await fetch(`${API_URL}/user/update/name`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -144,7 +144,7 @@ export const EditName = async (name: string) => {
 
 export const EditEmail = async (email: string) => {
     try {
-        const response = await fetch(`${API_URL}/update/user/email`, {
+        const response = await fetch(`${API_URL}/user/update/email`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

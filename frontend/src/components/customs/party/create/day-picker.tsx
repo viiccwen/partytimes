@@ -6,6 +6,8 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { Dispatch, SetStateAction } from "react";
+
 const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 const today = new Date().getDate();
 console.log(today);
@@ -38,11 +40,17 @@ const CheckValidDate = ({
   );
 };
 
+interface DayPickerProps {
+  selectedDate: string[];
+  setSelectedDate: Dispatch<SetStateAction<string[]>>;
+}
 
-export const DayPicker = () => {
+export const DayPicker = ({
+  selectedDate,
+  setSelectedDate,
+}: DayPickerProps) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [daysArray, setDaysArray] = useState<number[]>([]);
-  const [selectedDate, setSelectedDate] = useState<string[] | null>(null);
 
   useEffect(() => {
     const year = currentDate.getFullYear();
@@ -121,7 +129,7 @@ export const DayPicker = () => {
 
       <div className="grid grid-cols-7 text-center my-3">
         {days.map((day, index) => (
-          <div key={index} className="text-sm">
+          <div key={`day-${index}`} className="text-sm">
             {day}
           </div>
         ))}
@@ -134,8 +142,8 @@ export const DayPicker = () => {
           day ? (
             <div className="flex justify-center">
               <Button
-            //   bug: warning
-                key={`${index}`}
+            //   bug: warning key prop
+                key={`day-${index}-button`}
                 variant="outline"
                 className={`bg-inherit border-none text-slate-700 text-sm rounded-full w-[40px] h-[40px] m-3 place-content-center ${
                   selectedDate?.includes(
@@ -144,7 +152,7 @@ export const DayPicker = () => {
                     }-${day}`
                   )
                     ? "bg-orange-400 text-white hover:bg-orange-500 hover:text-white "
-                    : "hover:bg-orange-300 hover:text-white"
+                    : "hover:bg-orange-300 hover:text-white dark:text-white"
                 }`}
                 disabled={CheckValidDate({
                   day,
