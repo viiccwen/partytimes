@@ -1,6 +1,6 @@
 "use client";
 
-import { EditName } from "@/actions/auth-actions";
+import { EditName } from "@/actions/user-actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

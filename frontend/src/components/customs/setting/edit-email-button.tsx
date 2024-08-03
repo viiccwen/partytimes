@@ -1,6 +1,6 @@
 "use client";
 
-import { EditEmail } from "@/actions/auth-actions";
+import { EditEmail } from "@/actions/user-actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

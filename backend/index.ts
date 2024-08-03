@@ -1,3 +1,4 @@
+import party_router from "./routers/party-router";
 import user_router from "./routers/user-routers";
 import { PrismaClient } from "@prisma/client";
 
@@ -11,6 +12,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use("/api", user_router);
+app.use("/api", party_router);
 
 app.listen(API_PORT, () => {
     console.log(`Server is running on port ${API_PORT}`);

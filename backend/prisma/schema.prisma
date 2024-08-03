@@ -27,7 +27,15 @@ model User {
 
 model Party {
   id          Int      @id @default(autoincrement())
-  datetime    Json
+  partyid     String   @unique
+  title       String
+  description String
+
+  date        String[]
+  start_time  Int
+  start_ampm  String
+  end_time    Int
+  end_ampm    String
 
   votetimes   Votetime[]
   
@@ -39,6 +47,10 @@ model Party {
 model Votetime {
   id         Int      @id @default(autoincrement())
   creatorName String
+
+  vote_json   Json[] // one votetime to many time slots
+  // json format: { date: "2021-10-10", start_time: "10:00", start_ampm: "am", end_time: "6:00", end_ampm: "pm" }
+
   creator     User?   @relation(fields: [userId], references: [id])
   userId      Int?
 

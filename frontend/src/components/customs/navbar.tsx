@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 
 import { Button } from "../ui/button";
 
-import { CheckAuth } from "../../actions/auth-actions";
+import { CheckAuth } from "../../actions/user-actions";
+import { ModeToggle } from "./mode-toggle";
 
 const Cookies = require("js-cookie");
 
@@ -61,6 +62,7 @@ export const Navbar = () => {
               </Button>
             )
         )}
+        <ModeToggle />
       </div>
     </div>
   );

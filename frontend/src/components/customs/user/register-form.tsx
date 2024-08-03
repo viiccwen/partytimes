@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { register_schema_type } from "@/lib/type";
 import { register_schema } from "@/lib/schema";
-import { Register } from "@/actions/auth-actions";
+import { Register } from "@/actions/user-actions";
 import { Button } from "@/components/ui/button";
 
 export const RegisterForm = () => {

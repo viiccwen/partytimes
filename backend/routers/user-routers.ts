@@ -5,15 +5,15 @@ import { AuthMiddleware } from "../middlewares/auth";
 const express = require('express');
 
 const user_router = express.Router();
-user_router.post('/login', Login);
-user_router.post('/register', Register);
-user_router.get('/check', AuthMiddleware, CheckAuth);
+user_router.post('/user/login', Login);
+user_router.post('/user/register', Register);
+user_router.get('/user/check', AuthMiddleware, CheckAuth);
 
-user_router.get('/get/user', AuthMiddleware, GetUserInfo);
+user_router.get('/user/get', AuthMiddleware, GetUserInfo);
 
-user_router.post('/delete/account', AuthMiddleware, DeleteAccount);
+user_router.post('/user/delete', AuthMiddleware, DeleteAccount);
 
-user_router.post('/update/user/name', AuthMiddleware, UpdateUserName);
-user_router.post('/update/user/email', AuthMiddleware, UpdateUserEmail);
+user_router.post('user/update/name', AuthMiddleware, UpdateUserName);
+user_router.post('/user/update/email', AuthMiddleware, UpdateUserEmail);
 
 export default user_router;
