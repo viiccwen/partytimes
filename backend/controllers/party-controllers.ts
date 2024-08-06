@@ -1,10 +1,6 @@
 import { prisma } from "..";
 import { GeneratePartyId } from "../utils/utils";
 
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET;
-
 /**
  * @param date: string[]
  * @param description: string

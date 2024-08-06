@@ -1,4 +1,5 @@
 import { prisma } from "..";
+import { Verify } from "../utils/utils";
 
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -15,11 +16,8 @@ export const AuthMiddleware = async (req: any, res: any, next: any) => {
     }
 
     try {
-        const decoded: any = await new Promise((resolve, reject) => {
-            jwt.verify(token, JWT_SECRET, (err: any, payload: any) => {
-                err ? reject(err) : resolve(payload)
-            })
-        });
+        const decoded: any = await Verify(token);
+
         const currentUser = await prisma.user.findFirst({
             where: {
                 id: decoded.id

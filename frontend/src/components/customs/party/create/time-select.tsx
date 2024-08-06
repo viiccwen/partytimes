@@ -79,8 +79,8 @@ export const AmPmSelect = ({
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="am">am</SelectItem>
-              <SelectItem value="pm">pm</SelectItem>
+              <SelectItem value="AM">am</SelectItem>
+              <SelectItem value="PM">pm</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

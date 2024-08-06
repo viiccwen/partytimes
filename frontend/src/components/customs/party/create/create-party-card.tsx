@@ -39,7 +39,7 @@ export const CreatePartyCard = ({register, control} : CreatePartyCardProps) => {
               control={control}
             />
             <AmPmSelect
-              defaultValue="am"
+              defaultValue="AM"
               registerName="start_ampm"
               control={control}
               />
@@ -50,7 +50,7 @@ export const CreatePartyCard = ({register, control} : CreatePartyCardProps) => {
               control={control}
             />
             <AmPmSelect
-              defaultValue="pm"
+              defaultValue="PM"
               registerName="end_ampm"
               control={control}
             />

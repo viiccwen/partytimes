@@ -14,53 +14,82 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  email       String   @unique
-  username    String   @unique
-  nickname    String?
-  password    String
-  role        Plan     @default(FREE)
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  username String  @unique
+  nickname String?
+  password String
+  role     Plan    @default(FREE)
 
-  parties     Party[]
-  votetimes   Votetime[]
+  parties   Party[]
+  votetimes Votetime[]
 }
 
 model Party {
-  id          Int      @id @default(autoincrement())
-  partyid     String   @unique
+  id          Int    @id @default(autoincrement())
+  partyid     String @unique
   title       String
   description String
 
-  status      Boolean @default(false)
+  // range of time of the party
+  date       String[]
+  start_time Int
+  start_ampm Time     @default(AM)
+  end_time   Int
+  end_ampm   Time     @default(PM)
 
-  date        String[]
-  start_time  Int
-  start_ampm  String
-  end_time    Int
-  end_ampm    String
+  votetimes Votetime[]
 
-  votetimes   Votetime[]
-  
-  creator     User     @relation(fields: [userId], references: [id])
-  userId      Int
+  creator User @relation(fields: [userId], references: [id])
+  userId  Int
 
+  status   Boolean   @default(false)
+  decision Decision?
 }
 
 model Votetime {
-  id         Int      @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   creatorName String
 
-  vote_json   Json[] // one votetime to many time slots
-  // json format: { date: "2021-10-10", start_time: "10:00", start_ampm: "am", end_time: "6:00", end_ampm: "pm" }
+  timeslots TimeSlot[]
 
-  creator     User?   @relation(fields: [userId], references: [id])
-  userId      Int?
+  creator User? @relation(fields: [userId], references: [id])
+  userId  Int?
 
-  partyAt     Party   @relation(fields: [partyid], references: [id])
-  partyid     Int
+  partyAt Party  @relation(fields: [partyid], references: [partyid])
+  partyid String
+}
+
+model TimeSlot {
+  id         Int    @id @default(autoincrement())
+  date       String
+  start_time Int
+  start_ampm Time   @default(AM)
+  end_time   Int
+  end_ampm   Time   @default(PM)
+
+  votetime   Votetime @relation(fields: [votetimeId], references: [id])
+  votetimeId Int
+}
+
+model Decision {
+  id         Int    @id @default(autoincrement())
+  date       String
+  start_time Int
+  start_ampm Time   @default(AM)
+  end_time   Int
+  end_ampm   Time   @default(PM)
+
+  party   Party  @relation(fields: [partyid], references: [partyid])
+  partyid String @unique
 }
 
 enum Plan {
   FREE
   MEMBER
+}
+
+enum Time {
+  AM
+  PM
 }

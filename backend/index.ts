@@ -1,6 +1,7 @@
 import party_router from "./routers/party-router";
 import user_router from "./routers/user-routers";
 import { PrismaClient } from "@prisma/client";
+import vote_router from "./routers/vote-router";
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -13,6 +14,7 @@ app.use(bodyParser.json());
 
 app.use("/api", user_router);
 app.use("/api", party_router);
+app.use("/api", vote_router);
 
 app.listen(API_PORT, () => {
     console.log(`Server is running on port ${API_PORT}`);

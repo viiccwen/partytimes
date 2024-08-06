@@ -23,6 +23,7 @@ export const login_schema = z.object({
     .max(20, "使用者密碼最多20位數"),
 })
 
+export const ampm = ["AM", "PM"] as const;
 export const party_return_schema = z.object({
   title: z.string(),
   partyid: z.string(),
@@ -30,9 +31,9 @@ export const party_return_schema = z.object({
   status: z.boolean(),
   date: z.array(z.string()),
   start_time: z.number(),
-  start_ampm: z.string(),
+  start_ampm: z.enum(ampm),
   end_time: z.number(),
-  end_ampm: z.string(),
+  end_ampm: z.enum(ampm),
 });
 
 export const party_edit_schema = z.object({

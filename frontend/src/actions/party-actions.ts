@@ -1,4 +1,5 @@
 import { party_edit_schema_type } from "@/lib/type";
+import { revalidatePath } from "next/cache";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const Cookie = require("js-cookie");
@@ -39,6 +40,8 @@ export const GetParty = async (partyid: string) => {
 
     if (response.ok) {
       const data = await response.json();
+      revalidatePath(`/party/${partyid}`);
+      
       return { correct: true, data };
     } else {
       const data = await response.json();

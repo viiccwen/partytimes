@@ -30,20 +30,12 @@ import { toast } from "sonner";
 
 interface EditButtonProps {
   partyid: string;
+  text?: string;
 }
 
-const edit_element = [
-  {
-    title: "派對名稱",
-    input: <Input />,
-  },
-  {
-    title: "派對簡介",
-    input: <Textarea />,
-  },
-];
+// todo: delete fetch the data, change to pass the data from parent
 
-export const EditButton = ({ partyid }: EditButtonProps) => {
+export const EditButton = ({ partyid, text }: EditButtonProps) => {
   const {
     register,
     handleSubmit,
@@ -83,9 +75,16 @@ export const EditButton = ({ partyid }: EditButtonProps) => {
         <TooltipTrigger>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Edit2 className="h-4 w-4" />
-              </Button>
+              {text ? (
+                <Button variant="outline" className="gap-2">
+                  <Edit2 className="h-4 w-4" />
+                  {text}
+                </Button>
+              ) : (
+                <Button variant="outline" size="icon">
+                  <Edit2 className="h-4 w-4" />
+                </Button>
+              )}
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -100,7 +99,11 @@ export const EditButton = ({ partyid }: EditButtonProps) => {
                       defaultValue={party?.title ? party?.title : ""}
                       {...register("title")}
                     />
-                    { errors.title && <p className=" text-red-500 text-sm">{errors.title.message}</p> }
+                    {errors.title && (
+                      <p className=" text-red-500 text-sm">
+                        {errors.title.message}
+                      </p>
+                    )}
                   </div>
                   <div className="flex flex-col gap-5">
                     <p className="font-bold text-xl">派對簡介</p>
@@ -108,7 +111,11 @@ export const EditButton = ({ partyid }: EditButtonProps) => {
                       defaultValue={party?.description ? party.description : ""}
                       {...register("description")}
                     />
-                    { errors.description && <p className=" text-red-500 text-sm">{errors.description.message}</p> }
+                    {errors.description && (
+                      <p className=" text-red-500 text-sm">
+                        {errors.description.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -118,10 +125,7 @@ export const EditButton = ({ partyid }: EditButtonProps) => {
                     classname="w-full"
                     label="刪除派對"
                   />
-                  <EditPartyButton
-                    classname="w-full"
-                    label="確認"
-                  />
+                  <EditPartyButton classname="w-full" label="確認" />
                 </div>
               </form>
             </DialogContent>
