@@ -1,3 +1,5 @@
+import { party_edit_schema_type } from "@/lib/type";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const Cookie = require("js-cookie");
 
@@ -92,3 +94,26 @@ export const DeleteParty = async (partyid: string) => {
     return { correct: false, error: error.message };
   }
 };
+
+export const UpdateParty = async (formdata: party_edit_schema_type, partyid: string) => {
+  const token = Cookie.get("token");
+  try {
+    const response = await fetch(`${API_URL}/party/update`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({...formdata, partyid}),
+    });
+
+    if (response.ok) {
+      return { correct: true };
+    } else {
+      const data = await response.json();
+      throw new Error(data.error);
+    }
+  } catch (error: any) {
+    return { correct: false, error: error.message };
+  }
+}

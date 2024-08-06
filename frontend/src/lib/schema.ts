@@ -34,3 +34,8 @@ export const party_return_schema = z.object({
   end_time: z.number(),
   end_ampm: z.string(),
 });
+
+export const party_edit_schema = z.object({
+  title: z.string().min(1, "派對名稱不可為空").max(30, "派對名稱最多30字"),
+  description: z.string().max(50, "派對簡介最多50字"),
+});
