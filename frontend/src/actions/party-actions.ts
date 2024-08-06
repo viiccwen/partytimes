@@ -46,3 +46,26 @@ export const GetParty = async (partyid: string) => {
     return { correct: false, error: error.message };
   }
 };
+
+export const GetPartyList = async () => {
+  try {
+    const token = Cookie.get("token");
+    const response = await fetch(`${API_URL}/party/list`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "authorization": `Bearer ${token}`,
+      },
+    });
+
+    if(response.ok) {
+        const data = await response.json();
+        return { correct: true, data };
+    } else {
+        const data = await response.json();
+        throw new Error(data.error);
+    }
+  } catch (error: any) {
+    return { correct: false, error: error.message };
+  }
+};
