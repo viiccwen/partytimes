@@ -13,6 +13,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
  * @param start_ampm: string
  * @param end_time: string
  * @param end_ampm: string
+ * @param status: boolean
  */
 
 export const CheckExistParty = async (partyid: string) => {
@@ -74,7 +75,19 @@ export const GetParty = async (req: any, res: any) => {
 
     if (!party) throw new Error("Party is not found");
 
-    res.status(200).json(party);
+    const filteredParty = {
+      title: party.title,
+      partyid: party.partyid,
+      description: party.description,
+      status: party.status,
+      date: party.date,
+      start_time: party.start_time,
+      start_ampm: party.start_ampm,
+      end_time: party.end_time,
+      end_ampm: party.end_ampm,
+    };
+
+    res.status(200).json({ party: filteredParty });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
@@ -100,7 +113,26 @@ export const GetPartyList = async (req: any, res: any) => {
       };
     });
 
-    res.status(200).json({party: filteredParty});
+    res.status(200).json({ party: filteredParty });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const DeleteParty = async (req: any, res: any) => {
+  try {
+    const { partyid } = await req.body;
+
+    if (!partyid) throw new Error("Please provide correct party information");
+
+    const party = await prisma.party.delete({
+      where: { partyid, userId: req.user.id },
+    });
+
+    if(!party) throw new Error("Failed to delete party");
+
+    res.sendStatus(200);
+
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
