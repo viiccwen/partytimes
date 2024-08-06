@@ -137,3 +137,26 @@ export const DeleteParty = async (req: any, res: any) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const UpdateParty = async (req: any, res: any) => {
+  try {
+    const { partyid, title, description } = await req.body;
+
+    if (!partyid || !title) throw new Error("Please provide correct party information");
+
+    const party = await prisma.party.update({
+      where: { partyid },
+      data: {
+        title,
+        description,
+      }
+    });
+
+    if(!party) throw new Error("Failed to update party");
+
+    res.sendStatus(200);
+
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
