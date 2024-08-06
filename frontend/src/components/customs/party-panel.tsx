@@ -1,11 +1,35 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PartyTable } from "./profile/party-table";
 import { SettingButton } from "./profile/setting-button";
 import { LogOutButton } from "./profile/logout-button";
 
+import { GetPartyList } from "@/actions/party-actions";
+import { party_return_schema_type } from "@/lib/type";
+
 export const PartyPanel = () => {
+  // get party info from localstorage and set it to state
+  const [party, setParty] = useState<party_return_schema_type[]>([]);  
+
+  useEffect(() => {
+    const GetAllParty = async () => {
+      const response = await GetPartyList();
+
+      if (response.correct) {
+        setParty(response.data.party);
+      }
+    };
+
+    GetAllParty();
+  }, []);
+
+  useEffect(() => {
+    console.log(party);
+  }, [party]);
+
   return (
     <Tabs defaultValue="all" className="w-full">
       <div className="flex justify-between">
@@ -20,10 +44,19 @@ export const PartyPanel = () => {
           <LogOutButton />
         </div>
       </div>
-      <TabsContent value="all"><PartyTable /></TabsContent>
-      <TabsContent value="planned"></TabsContent>
-      <TabsContent value="unplanned"></TabsContent>
-      <TabsContent value="responed"></TabsContent>
+
+        <TabsContent value="all">
+          <PartyTable party={party} />
+        </TabsContent>
+      <TabsContent value="planned">
+        <PartyTable party={party.filter((content: party_return_schema_type) => content.status === true)} />
+      </TabsContent>
+      <TabsContent value="unplanned">
+        <PartyTable party={party.filter((content: party_return_schema_type) => content.status === false)} />
+      </TabsContent>
+      <TabsContent value="responed">
+        {/* Todo: response party */}
+      </TabsContent>
     </Tabs>
   );
 };

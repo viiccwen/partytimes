@@ -66,8 +66,7 @@ export const GetParty = async (req: any, res: any) => {
   try {
     const { partyid } = await req.query;
 
-    if (!partyid)
-      throw new Error("Please provide correct party information");
+    if (!partyid) throw new Error("Please provide correct party information");
 
     const party = await prisma.party.findFirst({
       where: { partyid },
@@ -76,6 +75,32 @@ export const GetParty = async (req: any, res: any) => {
     if (!party) throw new Error("Party is not found");
 
     res.status(200).json(party);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const GetPartyList = async (req: any, res: any) => {
+  try {
+    const party = await prisma.party.findMany({
+      where: { userId: req.user.id },
+    });
+
+    const filteredParty = party?.map((party) => {
+      return {
+        title: party.title,
+        partyid: party.partyid,
+        description: party.description,
+        status: party.status,
+        date: party.date,
+        start_time: party.start_time,
+        start_ampm: party.start_ampm,
+        end_time: party.end_time,
+        end_ampm: party.end_ampm,
+      };
+    });
+
+    res.status(200).json({party: filteredParty});
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

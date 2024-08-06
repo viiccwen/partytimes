@@ -31,6 +31,8 @@ model Party {
   title       String
   description String
 
+  status      Boolean @default(false)
+
   date        String[]
   start_time  Int
   start_ampm  String
