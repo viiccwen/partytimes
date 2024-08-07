@@ -56,3 +56,26 @@ export const CreateVote = async (req: any, res: any) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const GetVoteTimes = async (req: any, res: any) => {
+  try {
+    const { partyid } = await req.query;
+
+    if (!partyid) {
+      throw new Error("Please provide all required fields");
+    }
+
+    const votes = await prisma.votetime.findMany({
+      where: {
+        partyid: partyid,
+      },
+      include: {
+        timeslots: true,
+      }
+    });
+
+    res.status(200).json(votes);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+}

@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { party_return_schema_type } from "@/lib/type";
+import { party_return_schema_type, timeslots_create_schema_type, votes_schema_type } from "@/lib/type";
 import {
   ReactElement,
   ReactNode,
@@ -13,10 +13,12 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { PartyHeader } from "./party-header";
 import { ampm } from "@/lib/schema";
+import { CreateVote } from "@/actions/vote-actions";
 
 interface PartyTimelineCardProps {
   className?: string;
   party: party_return_schema_type;
+  votes: votes_schema_type;
 }
 
 const CalculateTotalHours = (party: party_return_schema_type): number => {
@@ -36,6 +38,8 @@ const formatTime = (hour: number, ampm: string): string => {
   }`;
 };
 
+// bug: sometimes the grid is not working properly
+
 const generateGridCells = (
   party: party_return_schema_type,
   total_half_hours: number,
@@ -44,10 +48,11 @@ const generateGridCells = (
   isEditing: boolean
 ): ReactNode[] => {
   let components: ReactNode[] = [];
+  const date_length = party.date.length;
 
   for (let row = 0; row < total_half_hours; row++) {
     let rowCells: ReactNode[] = [];
-    for (let col = 0; col < party.date.length; col++) {
+    for (let col = 0; col < date_length; col++) {
       const block_key = `${col}-${row}`;
       const isSelected = selectBlock.has(block_key);
 
@@ -57,9 +62,9 @@ const generateGridCells = (
           className={`${
             row % 2 == 0
               ? "border-t-2"
-              : row == total_half_hours - 1
+              : (row == total_half_hours - 1
               ? "border-b-2"
-              : ""
+              : "")
           } border-x border-slate-500 h-[24px] col-auto hover:border-2 hover:border-dashed hover:cursor-row-resize select-none
           ${isSelected ? "bg-blue-400" : isEditing ? "bg-blue-300" : ""}
           `}
@@ -83,7 +88,7 @@ const generateGridCells = (
         <div className="flex justify-end items-center w-[60px] text-slate-600 select-none">
           {time}
         </div>
-        <div className={`w-full ml-2 grid grid-cols-${party.date.length}`}>
+        <div className={`grid grid-cols-${date_length} w-full ml-2`}>
           {rowCells}
         </div>
       </div>
@@ -132,20 +137,14 @@ const GenerateTimeSlots = (
 
   // merge continuous blocks into one
 
-  type TimeSlotsType = {
-    date: string;
-    start_time: number;
-    start_ampm: string;
-    end_time: number;
-    end_ampm: string;
-  };
+  
 
   let prev = { row: -1, col: -1 };
   let start_time: number = -1;
   let start_ampm: string = "";
   let end_time: number = -1;
   let end_ampm: string = "";
-  let timeSlots: TimeSlotsType[] = [];
+  let timeSlots: timeslots_create_schema_type = [];
 
   for (let i = 0; i < raw_timeSlots.length; i++) {
     const cur = raw_timeSlots[i];
@@ -163,9 +162,9 @@ const GenerateTimeSlots = (
       timeSlots.push({
         date: party.date[prev.row],
         start_time: start_time,
-        start_ampm: start_ampm,
+        start_ampm: start_ampm === "AM" ? "AM" : "PM",
         end_time: end_time,
-        end_ampm: end_ampm,
+        end_ampm: end_ampm === "AM" ? "AM" : "PM",
       });
 
       start_time = party.start_time + cur.col / 2;
@@ -181,18 +180,19 @@ const GenerateTimeSlots = (
     timeSlots.push({
       date: party.date[raw_timeSlots[raw_timeSlots.length - 1].row],
       start_time: start_time,
-      start_ampm: start_ampm,
+      start_ampm: start_ampm === "AM" ? "AM" : "PM",
       end_time: end_time,
-      end_ampm: end_ampm,
+      end_ampm: end_ampm === "AM" ? "AM" : "PM",
     });
   }
 
-  console.log(timeSlots);
+  return timeSlots;
 };
 
 export const PartyTimelineCard = ({
   className,
   party,
+  votes,
 }: PartyTimelineCardProps) => {
   const [timeLineComponent, setTimeLineComponent] = useState<ReactElement>();
   const [selectBlock, setSelectBlock] = useState<Set<string>>(new Set());
@@ -240,14 +240,23 @@ export const PartyTimelineCard = ({
     setTimeLineComponent(container);
   }, [party, HandleTimeBlock, selectBlock]);
 
-  const HandleCheckButton = () => {
+  const HandleCheckButton = async () => {
     if (!isEditing) {
       setIsEditing(true);
       toast.success("已進入編輯模式");
     } else if (selectBlock.size === 0) {
       toast.error("請選擇時間區塊！");
     } else {
-      GenerateTimeSlots(selectBlock, party);
+      const timeslots = GenerateTimeSlots(selectBlock, party);
+      const response = await CreateVote(timeslots, party.partyid);
+
+      if(response.correct) {
+        setIsEditing(false);
+        setSelectBlock(new Set());
+        toast.success("已成功送出投票");
+      } else {
+        toast.error(response.error);
+      }
     }
   };
 
@@ -288,6 +297,7 @@ export const PartyTimelineCard = ({
             setSelectBlock={setSelectBlock}
           />
           {timeLineComponent}
+          {JSON.stringify(votes)}
         </CardContent>
       </Card>
     );
