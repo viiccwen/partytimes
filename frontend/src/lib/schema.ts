@@ -24,6 +24,7 @@ export const login_schema = z.object({
 })
 
 export const ampm = ["AM", "PM"] as const;
+
 export const party_return_schema = z.object({
   title: z.string(),
   partyid: z.string(),
@@ -39,4 +40,26 @@ export const party_return_schema = z.object({
 export const party_edit_schema = z.object({
   title: z.string().min(1, "派對名稱不可為空").max(30, "派對名稱最多30字"),
   description: z.string().max(50, "派對簡介最多50字"),
+});
+
+
+export const timeslots_create_schema = z.array(z.object({
+  date: z.string(),
+  start_time: z.number(),
+  start_ampm: z.enum(ampm),
+  end_time: z.number(),
+  end_ampm: z.enum(ampm),
+}));
+
+export const timeslots_return_schema = timeslots_create_schema.element.merge(z.object({
+  id: z.number(),
+  votetimeId: z.number(),
+}));
+
+export const votes_schema = z.object({
+  id: z.number(),
+  creatorName: z.string(),
+  userId: z.string(),
+  partyid: z.string(),
+  timeslots: z.array(timeslots_return_schema),
 });
