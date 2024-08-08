@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -18,9 +16,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { party_edit_schema_type, party_return_schema_type } from "@/lib/type";
+import { party_edit_schema_type } from "@/lib/type";
 import { Edit2 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { DeletePartyButton } from "../party/delete-party-button";
 import { EditPartyButton } from "./edit-party-button";
 import { useForm } from "react-hook-form";
@@ -30,12 +27,12 @@ import { toast } from "sonner";
 
 interface EditButtonProps {
   partyid: string;
+  partyTitle: string;
+  partyDescription: string;
   text?: string;
 }
 
-// todo: delete fetch the data, change to pass the data from parent
-
-export const EditButton = ({ partyid, text }: EditButtonProps) => {
+export const EditButton = ({ partyid, partyTitle, partyDescription, text }: EditButtonProps) => {
   const {
     register,
     handleSubmit,
@@ -43,21 +40,6 @@ export const EditButton = ({ partyid, text }: EditButtonProps) => {
   } = useForm<party_edit_schema_type>({
     resolver: zodResolver(party_edit_schema),
   });
-  const [party, setParty] = useState<party_return_schema_type | undefined>(
-    undefined
-  );
-
-  useEffect(() => {
-    const GetPartyInfo = async () => {
-      const response = await GetParty(partyid);
-
-      if (response.correct) {
-        setParty(response.data.party);
-      }
-    };
-
-    GetPartyInfo();
-  }, [partyid]);
 
   const onSubmit = async (formdata: party_edit_schema_type) => {
     const response = await UpdateParty(formdata, partyid);
@@ -96,7 +78,7 @@ export const EditButton = ({ partyid, text }: EditButtonProps) => {
                   <div className="flex flex-col gap-5">
                     <p className="font-bold text-xl">派對名稱</p>
                     <Input
-                      defaultValue={party?.title ? party?.title : ""}
+                      defaultValue={partyTitle}
                       {...register("title")}
                     />
                     {errors.title && (
@@ -108,7 +90,7 @@ export const EditButton = ({ partyid, text }: EditButtonProps) => {
                   <div className="flex flex-col gap-5">
                     <p className="font-bold text-xl">派對簡介</p>
                     <Textarea
-                      defaultValue={party?.description ? party.description : ""}
+                      defaultValue={partyDescription}
                       {...register("description")}
                     />
                     {errors.description && (
