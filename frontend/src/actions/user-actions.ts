@@ -1,4 +1,5 @@
 import { login_schema_type, register_schema_type } from "@/lib/type";
+import { cookies } from "next/headers";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const Cookie = require("js-cookie");
@@ -52,8 +53,24 @@ export const Login = async (formdata: login_schema_type) => {
     }
 }
 
-export const CheckAuth = async (token: string) => {
+export const CheckAuth = async (token: string | undefined) => {
+    if(token == undefined) return false;
+
     const response = await fetch(`${API_URL}/user/check`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "authorization": `Bearer ${token}`,
+        }
+    });
+
+    return response.ok ? true : false;
+}
+
+export const CheckNickname = async (token: string | undefined) => {
+    if(token == undefined) return false;
+
+    const response = await fetch(`${API_URL}/user/check/nickname`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -117,7 +134,7 @@ export const GetUserInfo = async () => {
     }
 }
 
-export const EditName = async (name: string) => {
+export const EditName = async (nickname: string) => {
     try {
         const response = await fetch(`${API_URL}/user/update/name`, {
             method: "POST",
@@ -125,7 +142,7 @@ export const EditName = async (name: string) => {
                 "Content-Type": "application/json",
                 "authorization": `Bearer ${Cookie.get("token")}`,
             },
-            body: JSON.stringify({ nickname: name }),
+            body: JSON.stringify({ nickname }),
         });
         
         if(response.ok) {
