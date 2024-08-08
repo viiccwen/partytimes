@@ -118,17 +118,23 @@ export const GetPartyList = async (req: any, res: any) => {
 export const DeleteParty = async (req: any, res: any) => {
   try {
     const { partyid } = await req.body;
+    const userId = req.user.id;
 
     if (!partyid) throw new Error("Please provide correct party information");
 
-    const party = await prisma.party.delete({
-      where: { partyid, userId: req.user.id },
+    await prisma.$transaction(async (prisma) => {
+      await prisma.votetime.deleteMany({
+        where: { partyid },
+      });
+
+      const party = await prisma.party.delete({
+        where: { partyid, userId },
+      });
+
+      if (!party) throw new Error("Failed to delete party");
     });
 
-    if(!party) throw new Error("Failed to delete party");
-
     res.sendStatus(200);
-
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
@@ -138,20 +144,20 @@ export const UpdateParty = async (req: any, res: any) => {
   try {
     const { partyid, title, description } = await req.body;
 
-    if (!partyid || !title) throw new Error("Please provide correct party information");
+    if (!partyid || !title)
+      throw new Error("Please provide correct party information");
 
     const party = await prisma.party.update({
       where: { partyid },
       data: {
         title,
         description,
-      }
+      },
     });
 
-    if(!party) throw new Error("Failed to update party");
+    if (!party) throw new Error("Failed to update party");
 
     res.sendStatus(200);
-
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
