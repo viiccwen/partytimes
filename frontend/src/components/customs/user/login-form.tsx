@@ -36,7 +36,7 @@ export const LoginForm = () => {
     const response = await Login(formdata);
 
     if (response.correct) {
-        router.push("/");
+        router.push("/profile");
     } else {
       toast.error(response.error);
     }
