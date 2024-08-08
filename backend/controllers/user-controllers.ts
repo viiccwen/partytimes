@@ -92,6 +92,21 @@ export const CheckAuth = async (req: any, res: any) => {
   }
 };
 
+export const CheckNickname = async (req: any, res: any) => {
+  try {
+    let user = await prisma.user.findUnique({
+      where: {
+        id: req.user.id,
+      },
+    });
+
+    if (!user?.nickname) res.sendStatus(401);
+    else res.sendStatus(200);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const DeleteAccount = async (req: any, res: any) => {
   try {
     if (!req.user) throw new Error("You are not logged in");
@@ -136,15 +151,15 @@ export const GetUserInfo = async (req: any, res: any) => {
 
 export const UpdateUserName = async (req: any, res: any) => {
   try {
-    if (!req.user) throw new Error("You are not logged in");
-    if(!req.body.nickname) throw new Error("Please provide a nickname");
+    const { nickname } = await req.body;
+    if (!nickname) throw new Error("Please provide a nickname");
 
     let user = await prisma.user.update({
       where: {
         id: req.user.id,
       },
       data: {
-        nickname: req.body.nickname,
+        nickname,
       },
     });
 
@@ -159,7 +174,7 @@ export const UpdateUserName = async (req: any, res: any) => {
 export const UpdateUserEmail = async (req: any, res: any) => {
   try {
     if (!req.user) throw new Error("You are not logged in");
-    if(!req.body.email) throw new Error("Please provide a email");
+    if (!req.body.email) throw new Error("Please provide a email");
 
     let user = await prisma.user.update({
       where: {
@@ -176,4 +191,4 @@ export const UpdateUserEmail = async (req: any, res: any) => {
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
-}
+};
