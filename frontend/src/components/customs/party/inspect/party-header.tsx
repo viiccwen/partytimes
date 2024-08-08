@@ -16,7 +16,12 @@ export const PartyHeader = ({ party, className }: PartyHeaderProps) => {
         <p className="text-2xl font-bold">{party.title}</p>
         <div className="flex gap-2">
           <ShareURLButton />
-          <EditButton partyid={party.partyid} text="編輯" />
+          <EditButton
+            partyid={party.partyid}
+            partyTitle={party.title}
+            partyDescription={party.description}
+            text="編輯"
+          />
         </div>
       </div>
       <div>{party.description}</div>

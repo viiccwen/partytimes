@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -29,7 +28,6 @@ interface PartyTableProps {
 }
 
 export const PartyTable = ({ party }: PartyTableProps) => {
-
   return (
     <Card>
       <CardHeader>
@@ -48,21 +46,23 @@ export const PartyTable = ({ party }: PartyTableProps) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {
-              party.map((content: party_return_schema_type, index: number) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">{content.title}</TableCell>
-                  <TableCell>
-                    <StatusLabel status={content.status} />
-                  </TableCell>
-                  <TableCell></TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <EditButton partyid={content.partyid} />
-                    <InspectButton partyid={content.partyid} />
-                  </TableCell>
-                </TableRow>
-              ))
-            }
+            {party.map((content: party_return_schema_type, index: number) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{content.title}</TableCell>
+                <TableCell>
+                  <StatusLabel status={content.status} />
+                </TableCell>
+                <TableCell></TableCell>
+                <TableCell className="text-right space-x-2">
+                  <EditButton
+                    partyid={content.partyid}
+                    partyTitle={content.title}
+                    partyDescription={content.description}
+                  />
+                  <InspectButton partyid={content.partyid} />
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </CardContent>

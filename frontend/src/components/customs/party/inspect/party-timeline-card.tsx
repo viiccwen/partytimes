@@ -94,10 +94,7 @@ export const PartyTimelineCard = ({
       const timeslots = GenerateTimeSlots(selectBlock, party);
 
       const func = async () => {
-        const res = await CreateVote(
-          timeslots,
-          party.partyid,
-        );
+        const res = await CreateVote(timeslots, party.partyid);
 
         if (!res.correct) toast.error(res.error);
         else {
@@ -188,20 +185,26 @@ const generateGridCells = (
       rowCells.push(
         <div
           key={block_key}
-          className={`${
-            row % 2 == 0
-              ? "border-t-2"
-              : row == total_half_hours - 1
-              ? "border-b-2"
-              : ""
-          } border-x border-slate-500 h-[24px] col-auto hover:border-2 hover:border-dashed hover:cursor-row-resize select-none
-          ${
+          className={`
+            
+            ${
+              row % 2 == 0
+                ? "border-t-2"
+                : row == total_half_hours - 1
+                ? "border-b-2"
+                : ""
+            } ${
             isSelected
               ? "bg-blue-400"
               : Blocks[col]?.[row]?.length > 0
               ? "bg-green-400"
               : ""
+          } ${
+            isEditing
+              ? "hover:cursor-row-resize select-none"
+              : "hover:cursor-pointer"
           }
+          border-x border-slate-500 h-[24px] col-auto hover:border-2 hover:border-dashed 
           `}
           onMouseDown={() => HandleTimeBlock(row, col, false)}
           onMouseEnter={(e) => {
