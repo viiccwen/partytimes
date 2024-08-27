@@ -27,6 +27,20 @@ export type general_fetch_return_type = {
   error?: string;
 };
 
+export type party_data_type = {
+  party: {
+    title: string;
+    partyid: string;
+    description: string;
+    status: boolean;
+    date: string[];
+    start_time: number;
+    start_ampm: string;
+    end_time: number;
+    end_ampm: string;
+  }
+}
+
 export type userinfo_fetch_return_type = general_fetch_return_type & {
   data?: {
     id: number;
@@ -34,3 +48,22 @@ export type userinfo_fetch_return_type = general_fetch_return_type & {
     email: string;
   };
 };
+
+export type create_party_fetch_return_type = general_fetch_return_type & {
+  data?: {
+    partyid: string;
+  }
+}
+
+export type get_party_fetch_return_type = general_fetch_return_type & {
+  data?: {
+    party: party_data_type;
+  }
+};
+
+export type get_partylist_fetch_return_type = general_fetch_return_type & {
+  data?: {
+    parties: party_data_type[];
+  }
+};
+

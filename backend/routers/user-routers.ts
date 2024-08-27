@@ -1,4 +1,4 @@
-import { CheckAuth, CheckNickname, DeleteAccount, GetUserInfo, Login, Register, UpdateUserEmail, UpdateUserName } from "../controllers/user-controllers";
+import { CheckAuth, DeleteAccount, GetUserInfo, Login, Register, UpdateUserEmail, UpdateUserName } from "../controllers/user-controllers";
 import { AuthMiddleware } from "../middlewares/auth";
 
 
@@ -8,7 +8,6 @@ const user_router = express.Router();
 user_router.post('/user/login', Login);
 user_router.post('/user/register', Register);
 user_router.get('/user/check', AuthMiddleware, CheckAuth);
-user_router.get('/user/check/nickname', AuthMiddleware, CheckNickname);
 
 user_router.get('/user/get', AuthMiddleware, GetUserInfo);
 
