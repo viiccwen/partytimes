@@ -1,4 +1,4 @@
-import { login_schema_type, register_schema_type } from "@/lib/type";
+import { login_schema_type, register_schema_type, userinfo_fetch_return_type } from "@/lib/type";
 import { cookies } from "next/headers";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -108,7 +108,9 @@ export const DeleteAccount = async () => {
     }
 }
 
-export const GetUserInfo = async (token: string | undefined) => {
+
+
+export const GetUserInfo = async (token: string | undefined): Promise<userinfo_fetch_return_type> => {
     try {
         if(token == undefined) throw new Error("Token is not found");
 
