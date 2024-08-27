@@ -23,8 +23,8 @@ import { useVoteBlockStore } from "./inspect-party-container";
 interface PartyTimelineCardProps {
   className?: string;
   party: party_return_schema_type;
-  Allvotes: Array<block_type[]>[];
-  userVotes: Set<string>;
+  AllvoteBlocks: block_type[][][];
+  userVoteBlocks: Set<string>;
   VoteNumber: number;
 }
 
@@ -39,21 +39,17 @@ let allVoteNumber: number;
 export const PartyTimelineCard = ({
   className,
   party,
-  Allvotes,
-  userVotes,
+  AllvoteBlocks,
+  userVoteBlocks,
   VoteNumber,
 }: PartyTimelineCardProps) => {
   const [timeLineComponent, setTimeLineComponent] = useState<ReactElement>();
   const [userSelectBlock, setUserSelectBlock] =
-    useState<Set<string>>(userVotes);
+    useState<Set<string>>(userVoteBlocks);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [hydrated, setHydrated] = useState<boolean>(false);
-  const [voteBlocks, SetVoteBlocks] = useState<Array<block_type[]>[]>(Allvotes);
 
-  const cur_points_position = useVoteBlockStore(
-    (state) => state.cur_points_position
-  );
   const updateCurPointsPosition = useVoteBlockStore(
     (state) => state.updateCurPointsPosition
   );
@@ -88,7 +84,7 @@ export const PartyTimelineCard = ({
       HandleClickTimeBlock,
       userSelectBlock,
       isEditing,
-      voteBlocks,
+      AllvoteBlocks,
       updateCurPointsPosition
     );
 
@@ -126,7 +122,7 @@ export const PartyTimelineCard = ({
   };
 
   const HandleCancelButton = () => {
-    setUserSelectBlock(userVotes);
+    setUserSelectBlock(userVoteBlocks);
     setIsEditing(false);
   };
 
@@ -161,7 +157,6 @@ export const PartyTimelineCard = ({
             HandleCancelButton={HandleCancelButton}
           />
           {timeLineComponent}
-          {/* {JSON.stringify(Allvotes, null, 2)} */}
         </CardContent>
       </Card>
     );
@@ -193,7 +188,7 @@ const generateGridCells = (
   HandleTimeBlock: (row: number, col: number, isDragging: boolean) => void,
   userSelectBlock: Set<string>,
   isEditing: boolean,
-  voteBlocks: block_type[][][],
+  AllvoteBlocks: block_type[][][],
   updateCurPointsPosition: (row: number, col: number) => void
 ): ReactNode[] => {
   let components: ReactNode[] = [];
@@ -204,7 +199,7 @@ const generateGridCells = (
     for (let col = 0; col < date_length; col++) {
       const block_key: string = `${col}-${row}`;
       const isSelected: boolean = userSelectBlock.has(block_key);
-      const isVoted: number = voteBlocks[col][row].length;
+      const isVoted: number = AllvoteBlocks[col][row].length;
 
       rowCells.push(
         <div

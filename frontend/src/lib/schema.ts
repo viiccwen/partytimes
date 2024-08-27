@@ -23,6 +23,12 @@ export const login_schema = z.object({
     .max(20, "使用者密碼最多20位數"),
 })
 
+export const user_info_schema = z.object({
+  id: z.number(),
+  nickname: z.string(),
+  email: z.string(),
+})
+
 export const ampm = ["AM", "PM"] as const;
 
 export const party_return_schema = z.object({

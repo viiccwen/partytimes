@@ -55,7 +55,7 @@ export const PartyJoinCard = ({
             className={`${
               point_joinList.has(join) ||
               initialCheck(cur_points_position.row, cur_points_position.col)
-                ? "text-black"
+                ? "dark:text-white text-black"
                 : "text-gray-400"
             } text-lg my-4`}
           >

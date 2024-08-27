@@ -22,7 +22,6 @@ type position_type = {
 };
 
 type party_inspect_type = {
-  all_voteblocks: block_type[][][];
   cur_points_position: position_type;
   updateCurPointsPosition: (row: number, col: number) => void;
   getTimeSlotBlocks: (
@@ -30,12 +29,11 @@ type party_inspect_type = {
     total_hours: number,
     party: party_return_schema_type
   ) => block_type[][][];
-  getUserVoteblocks: (nickname: string) => Set<string>;
+  getUserVoteblocks: (vote_blocks: block_type[][][], nickname: string) => Set<string>;
   getJoinList: (votes: votes_schema_type[]) => Set<string>;
 };
 
 export const useVoteBlockStore = create<party_inspect_type>((state) => ({
-  all_voteblocks: [],
   cur_points_position: { row: -1, col: -1 },
   updateCurPointsPosition: (row, col) =>
     state({ cur_points_position: { row, col } }),
@@ -74,11 +72,11 @@ export const useVoteBlockStore = create<party_inspect_type>((state) => ({
 
     return blocks;
   },
-  getUserVoteblocks(nickname) {
+  getUserVoteblocks(vote_blocks, nickname) {
     if (!nickname) return new Set<string>();
     let userVoteBlocks: Set<string> = new Set();
 
-    this.all_voteblocks.forEach((blocks, row) => {
+    vote_blocks.forEach((blocks, row) => {
       blocks.forEach((block, col) => {
         block.forEach((vote) => {
           if (vote.creatorName === nickname) {
@@ -105,7 +103,7 @@ export const InspectPartyContainer = ({
     store.getTimeSlotBlocks(votes, total_hours, party)
   );
   const user_votes = useVoteBlockStore((store) =>
-    store.getUserVoteblocks(nickname)
+    store.getUserVoteblocks(vote_blocks, nickname)
   );
   const join_list = useVoteBlockStore((store) => store.getJoinList(votes));
 
@@ -114,8 +112,8 @@ export const InspectPartyContainer = ({
       <PartyTimelineCard
         className="col-span-4"
         party={party}
-        Allvotes={vote_blocks}
-        userVotes={user_votes}
+        AllvoteBlocks={vote_blocks}
+        userVoteBlocks={user_votes}
         VoteNumber={join_list.size}
       />
       <PartyJoinCard className="col-span-2" Allvotes={vote_blocks} joinList={join_list} />
