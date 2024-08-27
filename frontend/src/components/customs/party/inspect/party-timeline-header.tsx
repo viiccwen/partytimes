@@ -7,8 +7,7 @@ interface PartyTimelineHeaderProps {
   party: party_return_schema_type;
   className?: string;
   isEditing: boolean;
-  setIsEditing: Dispatch<SetStateAction<boolean>>;
-  setSelectBlock: Dispatch<SetStateAction<Set<string>>>;
+  HandleCancelButton: () => void;
   HandleCheckButton: () => void;
   HandleScheduleButton: () => void;
 }
@@ -19,8 +18,7 @@ export const PartyTimelineHeader = ({
   isEditing,
   HandleCheckButton,
   HandleScheduleButton,
-  setIsEditing,
-  setSelectBlock
+  HandleCancelButton
 }: PartyTimelineHeaderProps) => {
   return (
     <div className={className}>
@@ -39,10 +37,7 @@ export const PartyTimelineHeader = ({
             <Button
               variant="outline"
               className="gap-2"
-              onClick={() => {
-                setSelectBlock(new Set());
-                setIsEditing(false);
-              }}
+              onClick={HandleCancelButton}
             >
               <CircleX className="w-4 h-4" />
               取消

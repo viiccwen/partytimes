@@ -2,20 +2,32 @@
 import { Button } from "@/components/ui/button";
 import { CircleArrowLeft, CircleArrowRight, CirclePlus } from "lucide-react";
 import { SelectPartyTimeTable } from "./select-partytime-table";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { CreatePartyCard } from "./create-party-card";
 
+import { create } from "zustand";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 import { CreateParty } from "@/actions/party-actions";
+
+type PageState = {
+  page: number;
+  FirstPage: () => void;
+  SecondPage: () => void;
+};
+
+const usePageStore = create<PageState>((set) => ({
+  page: 1,
+  FirstPage: () => set({ page: 1 }),
+  SecondPage: () => set({ page: 2 }),
+}));
 
 export const SelectPartyTimePanel = () => {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<string[]>([]);
-  const [page, setPage] = useState<number>(1);
+  const { page, FirstPage, SecondPage } = usePageStore();
 
   // todo: add types and zodresolver
   const {
@@ -30,17 +42,17 @@ export const SelectPartyTimePanel = () => {
       toast.error("請選擇日期!");
       return;
     }
-    setPage(2);
+    SecondPage();
   };
 
   const HandlePrevClick = () => {
-    setPage(1);
+    FirstPage();
   };
 
   const onSubmit = async (formdata: any) => {
     formdata.date = selectedDate;
-    formdata.start_time = Number(formdata.start_time); 
-    formdata.end_time = Number(formdata.end_time); 
+    formdata.start_time = Number(formdata.start_time);
+    formdata.end_time = Number(formdata.end_time);
 
     const resposne = await CreateParty(formdata);
 
@@ -49,7 +61,6 @@ export const SelectPartyTimePanel = () => {
     } else {
       toast.error(resposne.error);
     }
-
   };
 
   if (page === 1) {

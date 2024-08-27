@@ -18,11 +18,14 @@ import {
   timeslots_create_schema_type,
 } from "@/lib/type";
 import { CreateVote } from "@/actions/vote-actions";
+import { useVoteBlockStore } from "./inspect-party-container";
 
 interface PartyTimelineCardProps {
   className?: string;
   party: party_return_schema_type;
-  votes: Array<block_type[]>[];
+  Allvotes: Array<block_type[]>[];
+  userVotes: Set<string>;
+  VoteNumber: number;
 }
 
 type block_type = {
@@ -31,19 +34,33 @@ type block_type = {
 
 const Cookie = require("js-cookie");
 
+let allVoteNumber: number;
+
 export const PartyTimelineCard = ({
   className,
   party,
-  votes,
+  Allvotes,
+  userVotes,
+  VoteNumber,
 }: PartyTimelineCardProps) => {
   const [timeLineComponent, setTimeLineComponent] = useState<ReactElement>();
-  const [selectBlock, setSelectBlock] = useState<Set<string>>(new Set());
+  const [userSelectBlock, setUserSelectBlock] =
+    useState<Set<string>>(userVotes);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [hydrated, setHydrated] = useState<boolean>(false);
-  const [Blocks, setBlocks] = useState<Array<block_type[]>[]>(votes);
+  const [voteBlocks, SetVoteBlocks] = useState<Array<block_type[]>[]>(Allvotes);
 
-  const HandleTimeBlock = useCallback(
+  const cur_points_position = useVoteBlockStore(
+    (state) => state.cur_points_position
+  );
+  const updateCurPointsPosition = useVoteBlockStore(
+    (state) => state.updateCurPointsPosition
+  );
+
+  allVoteNumber = VoteNumber;
+
+  const HandleClickTimeBlock = useCallback(
     (row: number, col: number, isDragging: boolean) => {
       if (!isEditing) {
         toast.error("請先進入編輯模式");
@@ -51,7 +68,7 @@ export const PartyTimelineCard = ({
       }
 
       const block_key = `${col}-${row}`;
-      setSelectBlock((prev) => {
+      setUserSelectBlock((prev) => {
         if (prev.has(block_key)) prev.delete(block_key);
         else prev.add(block_key);
 
@@ -68,10 +85,11 @@ export const PartyTimelineCard = ({
     const gridCells = generateGridCells(
       party,
       total_half_hours,
-      HandleTimeBlock,
-      selectBlock,
+      HandleClickTimeBlock,
+      userSelectBlock,
       isEditing,
-      Blocks
+      voteBlocks,
+      updateCurPointsPosition
     );
 
     const container = (
@@ -82,16 +100,16 @@ export const PartyTimelineCard = ({
     );
 
     setTimeLineComponent(container);
-  }, [party, HandleTimeBlock, selectBlock]);
+  }, [party, HandleClickTimeBlock, userSelectBlock]);
 
-  const HandleCheckButton = async () => {
+  const HandleCheckButton = () => {
     if (!isEditing) {
       setIsEditing(true);
       toast.success("已進入編輯模式");
-    } else if (selectBlock.size === 0) {
+    } else if (userSelectBlock.size === 0) {
       toast.error("請選擇時間區塊！");
     } else {
-      const timeslots = GenerateTimeSlots(selectBlock, party);
+      const timeslots = GenerateTimeSlots(userSelectBlock, party);
 
       const func = async () => {
         const res = await CreateVote(timeslots, party.partyid);
@@ -105,6 +123,11 @@ export const PartyTimelineCard = ({
 
       func();
     }
+  };
+
+  const HandleCancelButton = () => {
+    setUserSelectBlock(userVotes);
+    setIsEditing(false);
   };
 
   // todo: implement
@@ -135,11 +158,10 @@ export const PartyTimelineCard = ({
             HandleCheckButton={HandleCheckButton}
             HandleScheduleButton={HandleScheduleButton}
             isEditing={isEditing}
-            setIsEditing={setIsEditing}
-            setSelectBlock={setSelectBlock}
+            HandleCancelButton={HandleCancelButton}
           />
           {timeLineComponent}
-          {JSON.stringify(votes, null, 2)}
+          {/* {JSON.stringify(Allvotes, null, 2)} */}
         </CardContent>
       </Card>
     );
@@ -169,9 +191,10 @@ const generateGridCells = (
   party: party_return_schema_type,
   total_half_hours: number,
   HandleTimeBlock: (row: number, col: number, isDragging: boolean) => void,
-  selectBlock: Set<string>,
+  userSelectBlock: Set<string>,
   isEditing: boolean,
-  Blocks: block_type[][][]
+  voteBlocks: block_type[][][],
+  updateCurPointsPosition: (row: number, col: number) => void
 ): ReactNode[] => {
   let components: ReactNode[] = [];
   const date_length = party.date.length;
@@ -179,14 +202,14 @@ const generateGridCells = (
   for (let row = 0; row < total_half_hours; row++) {
     let rowCells: ReactNode[] = [];
     for (let col = 0; col < date_length; col++) {
-      const block_key = `${col}-${row}`;
-      const isSelected = selectBlock.has(block_key);
+      const block_key: string = `${col}-${row}`;
+      const isSelected: boolean = userSelectBlock.has(block_key);
+      const isVoted: number = voteBlocks[col][row].length;
 
       rowCells.push(
         <div
           key={block_key}
           className={`
-            
             ${
               row % 2 == 0
                 ? "border-t-2"
@@ -194,20 +217,19 @@ const generateGridCells = (
                 ? "border-b-2"
                 : ""
             } ${
-            isSelected
-              ? "bg-blue-400"
-              : Blocks[col]?.[row]?.length > 0
-              ? "bg-green-400"
-              : ""
-          } ${
             isEditing
-              ? "hover:cursor-row-resize select-none"
-              : "hover:cursor-pointer"
+              ? `hover:cursor-row-resize select-none ${
+                  isSelected ? "bg-blue-400" : ""
+                }`
+              : `hover:cursor-pointer ${
+                  isVoted ? DecideBlockColor(allVoteNumber, isVoted) : ""
+                }`
           }
           border-x border-slate-500 h-[24px] col-auto hover:border-2 hover:border-dashed 
           `}
           onMouseDown={() => HandleTimeBlock(row, col, false)}
           onMouseEnter={(e) => {
+            updateCurPointsPosition(col, row);
             if (e.buttons === 1) HandleTimeBlock(row, col, true);
           }}
           onDragStart={(e) => e.preventDefault()}
@@ -222,7 +244,7 @@ const generateGridCells = (
         : "";
 
     // bug: sometimes the grid is not working properly
-    const grid_cols = `grid-cols-${date_length.toString()}`;
+    const grid_cols = `grid-cols-5`;
 
     components.push(
       <div key={row} className="flex">
@@ -260,10 +282,10 @@ const GetTimeWithAMPM = (time: number, ampm: string) => {
 };
 
 const GenerateTimeSlots = (
-  selectBlock: Set<string>,
+  userSelectBlock: Set<string>,
   party: party_return_schema_type
 ) => {
-  const blocks = Array.from(selectBlock);
+  const blocks = Array.from(userSelectBlock);
 
   const raw_timeSlots = blocks.map((block) => {
     const [row, col] = block.split("-").map((v) => parseInt(v));
@@ -332,4 +354,13 @@ const GenerateTimeSlots = (
   }
 
   return timeSlots;
+};
+
+const DecideBlockColor = (all: number, selected: number) => {
+  const percentage = (selected / all) * 100;
+  if (percentage <= 25) return "bg-blue-300";
+  if (percentage <= 50) return "bg-blue-400";
+  if (percentage <= 75) return "bg-blue-500";
+  if (percentage < 100) return "bg-blue-600";
+  if (percentage == 100) return "bg-blue-700";
 };

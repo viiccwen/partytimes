@@ -29,26 +29,70 @@ export const CreateVote = async (req: any, res: any) => {
     }
 
     if (user && user.nickname) {
-      newVote = await prisma.votetime.create({
-        data: {
-          creatorName: user.nickname,
-          timeslots: {
-            create: timeslots.map((ts: any) => ({
-              date: ts.date,
-              start_time: ts.start_time,
-              start_ampm: ts.start_ampm,
-              end_time: ts.end_time,
-              end_ampm: ts.end_ampm,
-            })),
-          },
+      const voteData = {
+        creatorName: user.nickname,
+        partyid: partyid,
+        userId: user.id,
+      };
+
+      // find if user has already voted
+      const oldVote = await prisma.votetime.findFirst({
+        where: {
           partyid: partyid,
           userId: user.id,
         },
       });
+
+      let newVote;
+
+      if (oldVote) {
+        await prisma.timeSlot.deleteMany({
+          where: { votetimeId: oldVote.id },
+        });
+
+        // update vote
+        newVote = await prisma.votetime.update({
+          where: {
+            id: oldVote.id,
+          },
+          data: {
+            ...voteData,
+            timeslots: {
+              create: timeslots.map((ts: any) => ({
+                date: ts.date,
+                start_time: ts.start_time,
+                start_ampm: ts.start_ampm,
+                end_time: ts.end_time,
+                end_ampm: ts.end_ampm,
+              })),
+            },
+          },
+        });
+      } else {
+        // create vote
+        newVote = await prisma.votetime.create({
+          data: {
+            ...voteData,
+            timeslots: {
+              create: timeslots.map((ts: any) => ({
+                date: ts.date,
+                start_time: ts.start_time,
+                start_ampm: ts.start_ampm,
+                end_time: ts.end_time,
+                end_ampm: ts.end_ampm,
+              })),
+            },
+          },
+        });
+      }
+
     } else {
+      // todo: using creatorName to create vote
       throw new Error("User not found");
     }
 
+    // hotfix: return undefined, however it still works
+    console.log(newVote);
     if (!newVote) throw new Error("Vote creation failed");
 
     res.status(200).json(newVote);
@@ -71,11 +115,11 @@ export const GetVoteTimes = async (req: any, res: any) => {
       },
       include: {
         timeslots: true,
-      }
+      },
     });
 
     res.status(200).json(votes);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
-}
+};

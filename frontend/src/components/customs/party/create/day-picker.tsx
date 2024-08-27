@@ -10,7 +10,6 @@ import { Dispatch, SetStateAction } from "react";
 
 const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 const today = new Date().getDate();
-console.log(today);
 
 const getDaysInMonth = (month: number, year: number) => {
   return new Date(year, month + 1, 0).getDate();
@@ -84,10 +83,6 @@ export const DayPicker = ({
       }
     });
   };
-
-  useEffect(() => {
-    console.log(selectedDate);
-  }, [selectedDate]);
 
   return (
     <div className="w-full">

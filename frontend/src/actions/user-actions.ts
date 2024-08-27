@@ -108,23 +108,22 @@ export const DeleteAccount = async () => {
     }
 }
 
-export const GetUserInfo = async () => {
+export const GetUserInfo = async (token: string | undefined) => {
     try {
+        if(token == undefined) throw new Error("Token is not found");
+
         const response = await fetch(`${API_URL}/user/get`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "authorization": `Bearer ${Cookie.get("token")}`,
+                "authorization": `Bearer ${token}`,
             }
         });
         
         if(response.ok) {
             const data = await response.json();
-            Cookie.set("id", data.id);
-            Cookie.set("name", data.nickname);
-            Cookie.set("email", data.email);
             
-            return { correct: true };
+            return { correct: true, data };
         } else {
             const data = await response.json();
             throw new Error(data.error);
