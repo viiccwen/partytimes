@@ -1,15 +1,19 @@
 import { z } from "zod";
 import {
+  ampm,
   login_schema,
   party_edit_schema,
   party_return_schema,
   register_schema,
   timeslots_create_schema,
+  user_info_schema,
   votes_schema,
 } from "./schema";
 
 export type register_schema_type = z.infer<typeof register_schema>;
 export type login_schema_type = z.infer<typeof login_schema>;
+
+export type user_info_schema_type = z.infer<typeof user_info_schema>;
 
 export type party_return_schema_type = z.infer<typeof party_return_schema>;
 
@@ -28,25 +32,7 @@ export type general_fetch_return_type = {
 };
 
 export type userinfo_fetch_return_type = general_fetch_return_type & {
-  data?: {
-    id: number;
-    nickname: string;
-    email: string;
-  };
-};
-
-export type party_data_type = {
-  party: {
-    title: string;
-    partyid: string;
-    description: string;
-    status: boolean;
-    date: string[];
-    start_time: number;
-    start_ampm: string;
-    end_time: number;
-    end_ampm: string;
-  };
+  data?: user_info_schema_type;
 };
 
 export type create_party_fetch_return_type = general_fetch_return_type & {
@@ -57,25 +43,16 @@ export type create_party_fetch_return_type = general_fetch_return_type & {
 
 export type get_party_fetch_return_type = general_fetch_return_type & {
   data?: {
-    party: party_data_type;
+    party: party_return_schema_type;
   };
 };
 
 export type get_partylist_fetch_return_type = general_fetch_return_type & {
   data?: {
-    parties: party_data_type[];
+    parties: party_return_schema_type[];
   };
-};
-
-export type vote_data_type = {
-  creatorName: string;
-  partyid: string;
-  userId: number;
-  timeslots: timeslots_create_schema_type[];
 };
 
 export type get_votetimes_fetch_return_type = general_fetch_return_type & {
-  data?: {
-    vote: vote_data_type;
-  };
+  data?: votes_schema_type[];
 };

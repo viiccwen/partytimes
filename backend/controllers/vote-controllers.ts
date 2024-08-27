@@ -13,12 +13,14 @@ export const CreateVote = async (req: any, res: any) => {
     let user;
     let decoded: any;
     let newVote;
+
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
     )
       token = req.headers.authorization.split(" ")[1];
 
+    // get user from token
     if (token !== "") {
       decoded = await Verify(token);
       user = await prisma.user.findFirst({
@@ -43,9 +45,9 @@ export const CreateVote = async (req: any, res: any) => {
         },
       });
 
-      let newVote;
-
       if (oldVote) {
+        console.log("oldVote", oldVote);
+        
         await prisma.timeSlot.deleteMany({
           where: { votetimeId: oldVote.id },
         });
@@ -91,11 +93,9 @@ export const CreateVote = async (req: any, res: any) => {
       throw new Error("User not found");
     }
 
-    // hotfix: return undefined, however it still works
-    console.log(newVote);
     if (!newVote) throw new Error("Vote creation failed");
 
-    res.status(200).json(newVote);
+    res.status(200).json({ newVote });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
