@@ -1,4 +1,4 @@
-import { timeslots_create_schema_type } from "@/lib/type";
+import { general_fetch_return_type, get_votetimes_fetch_return_type, timeslots_create_schema_type } from "@/lib/type";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const Cookie = require("js-cookie");
@@ -6,7 +6,7 @@ const Cookie = require("js-cookie");
 export const CreateVote = async (
   timeslots: timeslots_create_schema_type,
   partyid: string,
-) => {
+): Promise<general_fetch_return_type> => {
   try {
     let token = Cookie.get("token");
     let response;
@@ -40,7 +40,7 @@ export const CreateVote = async (
   }
 };
 
-export const GetVoteTimes = async (partyid: string) => {
+export const GetVoteTimes = async (partyid: string): Promise<get_votetimes_fetch_return_type> => {
   try {
     const response = await fetch(`${API_URL}/vote/get?partyid=${partyid}`, {
         method: "GET",
