@@ -16,7 +16,10 @@ import { z } from "zod";
 import { toast } from "sonner";
 
 interface PartyPanelProps {
-  _open: boolean;
+  token: string;
+  id: number;
+  email: string;
+  nickname: string;
 }
 
 const nickname_schema = z.object({
@@ -25,10 +28,9 @@ const nickname_schema = z.object({
 
 type nickname_schema_type = z.infer<typeof nickname_schema>;
 
-export const PartyPanel = ({ _open }: PartyPanelProps) => {
-  // get party info from localstorage and set it to state
+export const PartyPanel = ({ token, id, email, nickname }: PartyPanelProps) => {
   const [party, setParty] = useState<party_return_schema_type[]>([]);
-  const [open, setOpen] = useState<boolean>(!_open);
+  const [open, setOpen] = useState<boolean>(!nickname);
 
   useEffect(() => {
     const GetAllParty = async () => {
