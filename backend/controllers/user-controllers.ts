@@ -92,21 +92,6 @@ export const CheckAuth = async (req: any, res: any) => {
   }
 };
 
-export const CheckNickname = async (req: any, res: any) => {
-  try {
-    let user = await prisma.user.findUnique({
-      where: {
-        id: req.user.id,
-      },
-    });
-
-    if (!user?.nickname) res.sendStatus(401);
-    else res.sendStatus(200);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 export const DeleteAccount = async (req: any, res: any) => {
   try {
     if (!req.user) throw new Error("You are not logged in");
