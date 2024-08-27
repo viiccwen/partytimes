@@ -5,9 +5,9 @@ import { GeneratePartyId } from "../utils/utils";
  * @param date: string[]
  * @param description: string
  * @param title: string
- * @param start_time: string
+ * @param start_time: number
  * @param start_ampm: string
- * @param end_time: string
+ * @param end_time: number
  * @param end_ampm: string
  * @param status: boolean
  */
