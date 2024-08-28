@@ -1,29 +1,36 @@
 import { party_return_schema_type, votes_schema_type } from "@/lib/type";
 import { create } from "zustand";
 
-type block_type = {
+export type block_type = {
   creatorName: string;
   userId: string;
 };
 
-type joinlist_type = {
+export type joinlist_type = {
   creatorName: string;
   userId: string;
 }
 
-type position_type = {
+export type position_type = {
   row: number;
   col: number;
 };
 
+export type clicked_user_type = {
+  userId: string;
+  creatorName: string;
+}
+
 type party_inspect_type = {
   cur_points_position: position_type;
   cur_points_userid: string;
-  clicked_user: string;
+  clicked_user: clicked_user_type;
+  isEditing: boolean;
 
   updateCurPointsPosition: (row: number, col: number) => void;
   updateCurPointsUserid: (userid: string) => void;
-  updateClickedUser: (clicked_user: string) => void;
+  updateClickedUser: (userId: string, creatorName: string) => void;
+  updateIsEditing: (isEditing: boolean) => void;
 
   getTimeSlotBlocks: (
     votes: votes_schema_type[],
@@ -37,12 +44,14 @@ type party_inspect_type = {
 export const useVoteBlockStore = create<party_inspect_type>((state) => ({
   cur_points_position: { row: -1, col: -1 },
   cur_points_userid: "",
-  clicked_user: "",
+  clicked_user: { userId: "", creatorName: "" },
+  isEditing: false,
 
   updateCurPointsPosition: (row, col) =>
     state({ cur_points_position: { row, col } }),
   updateCurPointsUserid: (userid) => state({ cur_points_userid: userid }),
-  updateClickedUser: (clicked_user) => state({ clicked_user }),
+  updateClickedUser: (userId, creatorName) => state({ clicked_user: { userId, creatorName } }),
+  updateIsEditing: (isEditing) => state({ isEditing }),
 
   getTimeSlotBlocks(votes, total_hours, party) {
     let blocks: Array<block_type[]>[] = Array.from(
