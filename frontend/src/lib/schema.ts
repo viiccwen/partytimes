@@ -1,4 +1,4 @@
-import { string, z } from "zod";
+import { z } from "zod";
 
 export const register_schema = z.object({
   username: z
@@ -22,6 +22,11 @@ export const login_schema = z.object({
     .min(6, "使用者密碼至少6位數")
     .max(20, "使用者密碼最多20位數"),
 })
+
+export const guest_schema = z.object({
+  nickname: z.string().min(1, "不可為空"),
+  email: z.string().optional(),
+});
 
 export const user_info_schema = z.object({
   id: z.number(),

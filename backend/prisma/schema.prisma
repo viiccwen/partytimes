@@ -87,6 +87,7 @@ model Decision {
 enum Plan {
   FREE
   MEMBER
+  GUEST
 }
 
 enum Time {
