@@ -1,10 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { clicked_user_type, useVoteBlockStore } from "@/stores/inspect-party-store";
-import { CircleCheckBig, CircleX, LucideCalendarCheck2, PenLine, Trash2 } from "lucide-react";
+import {
+  clicked_user_type,
+  useVoteBlockStore,
+} from "@/stores/inspect-party-store";
+import {
+  CircleCheckBig,
+  CircleX,
+  LucideCalendarCheck2,
+  PenLine,
+  Trash2,
+} from "lucide-react";
 
 interface PartyTimelineHeaderProps {
   className?: string;
   isEditing: boolean;
+  isScheduling: boolean;
+  has_scheduled: boolean;
   HandleCancelButton: () => void;
   HandleCheckButton: () => void;
   HandleScheduleButton: () => void;
@@ -14,13 +25,16 @@ interface PartyTimelineHeaderProps {
 export const PartyTimelineHeader = ({
   className,
   isEditing,
+  isScheduling,
+  has_scheduled,
   HandleCheckButton,
   HandleScheduleButton,
   HandleCancelButton,
-  HandleDeleteButton
+  HandleDeleteButton,
 }: PartyTimelineHeaderProps) => {
-
-  const clicked_user: clicked_user_type = useVoteBlockStore((state) => state.clicked_user);
+  const clicked_user: clicked_user_type = useVoteBlockStore(
+    (state) => state.clicked_user
+  );
 
   return (
     <div className={className}>
@@ -54,6 +68,28 @@ export const PartyTimelineHeader = ({
             </Button>
           </div>
         </div>
+      ) : isScheduling ? (
+        <div className="flex justify-between">
+          <p className="text-2xl font-bold">決定日期...</p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={HandleCancelButton}
+            >
+              <CircleX className="w-4 h-4" />
+              取消
+            </Button>
+            <Button
+              variant="default"
+              className="gap-2"
+              onClick={HandleScheduleButton}
+            >
+              <CircleCheckBig className="w-4 h-4" />
+              確認
+            </Button>
+          </div>
+        </div>
       ) : (
         <div className="flex justify-between">
           <p className="text-2xl font-bold">投票</p>
@@ -64,7 +100,7 @@ export const PartyTimelineHeader = ({
               onClick={HandleScheduleButton}
             >
               <LucideCalendarCheck2 className="w-4 h-4" />
-              決定
+              {has_scheduled ? "重新登記" : "登記"}
             </Button>
             <Button
               variant="outline"
@@ -72,7 +108,9 @@ export const PartyTimelineHeader = ({
               onClick={HandleCheckButton}
             >
               <PenLine className="w-4 h-4" />
-              {clicked_user.userId ? `為 ${clicked_user.creatorName} 投票` : "投票"}
+              {clicked_user.userId
+                ? `為 ${clicked_user.creatorName} 投票`
+                : "投票"}
             </Button>
           </div>
         </div>

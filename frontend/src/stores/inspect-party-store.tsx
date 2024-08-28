@@ -4,6 +4,7 @@ import { create } from "zustand";
 export type block_type = {
   creatorName: string;
   userId: string;
+  isScheduled: boolean;
 };
 
 export type joinlist_type = {
@@ -22,19 +23,19 @@ export type clicked_user_type = {
 };
 
 type party_inspect_type = {
-  allvoteblocks: block_type[][][];
-  user_votes: Set<string>;
   cur_points_position: position_type;
   cur_points_userid: string;
   clicked_user: clicked_user_type;
   isEditing: boolean;
+  isScheduling: boolean;
+  isMouseDown: boolean;
 
-  updateAllvoteblocks: (allvoteblocks: block_type[][][]) => void;
-  updateUserVotes: (user_votes: Set<string>) => void;
   updateCurPointsPosition: (row: number, col: number) => void;
   updateCurPointsUserid: (userid: string) => void;
   updateClickedUser: (userId: string, creatorName: string) => void;
   updateIsEditing: (isEditing: boolean) => void;
+  updateIsScheduling: (isScheduling: boolean) => void;
+  updateIsMouseDown: (isMouseDown: boolean) => void;
 
   getTimeSlotBlocks: (
     votes: votes_schema_type[],
@@ -49,29 +50,29 @@ type party_inspect_type = {
 };
 
 export const useVoteBlockStore = create<party_inspect_type>((set) => ({
-  allvoteblocks: [],
-  user_votes: new Set<string>(),
   cur_points_position: { row: -1, col: -1 },
   cur_points_userid: "",
   clicked_user: { userId: "", creatorName: "" },
   isEditing: false,
+  isScheduling: false,
+  isMouseDown: false,
 
-  updateAllvoteblocks: (allvoteblocks: block_type[][][]) =>
-    set({ allvoteblocks }),
-  updateUserVotes: (user_votes: Set<string>) => set({ user_votes }),
   updateCurPointsPosition: (row, col) =>
     set({ cur_points_position: { row, col } }),
   updateCurPointsUserid: (userid) => set({ cur_points_userid: userid }),
   updateClickedUser: (userId, creatorName) =>
     set({ clicked_user: { userId, creatorName } }),
   updateIsEditing: (isEditing) => set({ isEditing }),
+  updateIsScheduling: (isScheduling) => set({ isScheduling }),
+  updateIsMouseDown: (isMouseDown) => set({ isMouseDown }),
 
   getTimeSlotBlocks(votes, total_hours, party) {
-    let blocks: Array<block_type[]>[] = Array.from(
+    let blocks: block_type[][][] = Array.from(
       { length: party.date.length },
       () => Array.from({ length: total_hours * 2 }, () => [])
     );
 
+    // add votes
     votes.forEach((vote: votes_schema_type) => {
       vote.timeslots.forEach((timeslot) => {
         const date = timeslot.date;
@@ -97,10 +98,42 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
           blocks[row][col].push({
             creatorName: vote.creatorName,
             userId: vote.userId,
+            isScheduled: false,
           });
         }
       });
     });
+
+    // add decision
+    if (party.status) {
+      const timeslot = party.decision;
+      const date = timeslot.date;
+      const row = party.date.findIndex((v) => v === date);
+
+      const start_time = timeslot.start_time;
+      const end_time = timeslot.end_time;
+      const start_ampm = timeslot.start_ampm;
+      const end_ampm = timeslot.end_ampm;
+
+      const start =
+        (start_time === 12 ? 0 : start_time) +
+        (start_ampm === "PM" ? 12 : 0) -
+        party.start_time;
+      const end =
+        (end_time === 12 ? 0 : end_time) +
+        (end_ampm === "PM" ? 12 : 0) -
+        party.start_time;
+
+      for (let i = start; i < end; i += 0.5) {
+        const col = i * 2;
+        
+        blocks[row][col].push({
+          creatorName: "派對時間",
+          userId: "-1",
+          isScheduled: true,
+        });
+      }
+    }
 
     return blocks;
   },
