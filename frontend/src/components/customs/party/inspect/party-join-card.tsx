@@ -20,7 +20,7 @@ export const PartyJoinCard = ({
   allvoteblocks,
   joinList,
 }: PartyJoinCardProps) => {
-  const { user_votes, cur_points_position, clicked_user, isEditing,  updateClickedUser, updateCurPointsUserid } = useVoteBlockStore();
+  const { cur_points_position, clicked_user, isEditing,  updateClickedUser, updateCurPointsUserid } = useVoteBlockStore();
   if (!allvoteblocks || allvoteblocks.length === 0) return null;
 
   const [point_joinList, setPointJoinList] = useState(new Set<string>());

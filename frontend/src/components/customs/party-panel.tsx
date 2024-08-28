@@ -20,6 +20,7 @@ interface PartyPanelProps {
   id: number;
   email: string;
   nickname: string;
+  parties: party_return_schema_type[];
 }
 
 const nickname_schema = z.object({
@@ -28,24 +29,16 @@ const nickname_schema = z.object({
 
 type nickname_schema_type = z.infer<typeof nickname_schema>;
 
-export const PartyPanel = ({ token, id, email, nickname }: PartyPanelProps) => {
-  const [party, setParty] = useState<party_return_schema_type[]>([]);
+export const PartyPanel = ({
+  token,
+  id,
+  email,
+  nickname,
+  parties,
+}: PartyPanelProps) => {
+
   const [open, setOpen] = useState<boolean>(!nickname);
-
-  useEffect(() => {
-    const GetAllParty = async () => {
-      const response = await GetPartyList();
-
-      if (response.correct) {
-        const party_list = response.data?.parties;
-        if (party_list) {
-          setParty(party_list);
-        }
-      }
-    };
-
-    GetAllParty();
-  }, []);
+  const [hydrated, setHydrated] = useState<boolean>(false);
 
   const onSubmit = async (formdata: nickname_schema_type) => {
     const { nickname } = formdata;
@@ -58,6 +51,12 @@ export const PartyPanel = ({ token, id, email, nickname }: PartyPanelProps) => {
       console.log(response.error);
     }
   };
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  if (!hydrated) return null;
 
   return (
     <>
@@ -76,18 +75,18 @@ export const PartyPanel = ({ token, id, email, nickname }: PartyPanelProps) => {
         </div>
 
         <TabsContent value="all">
-          <PartyTable party={party} />
+          <PartyTable party={parties} />
         </TabsContent>
         <TabsContent value="planned">
           <PartyTable
-            party={party.filter(
+            party={parties.filter(
               (content: party_return_schema_type) => content.status === true
             )}
           />
         </TabsContent>
         <TabsContent value="unplanned">
           <PartyTable
-            party={party.filter(
+            party={parties.filter(
               (content: party_return_schema_type) => content.status === false
             )}
           />

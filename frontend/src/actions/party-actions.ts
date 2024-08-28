@@ -62,9 +62,8 @@ export const GetParty = async (
 };
 
 export const GetPartyList =
-  async (): Promise<get_partylist_fetch_return_type> => {
+  async (token: string): Promise<get_partylist_fetch_return_type> => {
     try {
-      const token = Cookie.get("token");
       const response = await fetch(`${API_URL}/party/list`, {
         method: "GET",
         headers: {
@@ -75,6 +74,7 @@ export const GetPartyList =
 
       if (response.ok) {
         const data = await response.json();
+        console.log(data);
         return { correct: true, data };
       } else {
         const data = await response.json();

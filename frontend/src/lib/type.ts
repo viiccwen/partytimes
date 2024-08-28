@@ -52,8 +52,8 @@ export type get_party_fetch_return_type = general_fetch_return_type & {
 
 export type get_partylist_fetch_return_type = general_fetch_return_type & {
   data?: {
-    parties: party_return_schema_type[];
-  };
+    party: party_return_schema_type[];
+  }
 };
 
 export type get_votetimes_fetch_return_type = general_fetch_return_type & {
