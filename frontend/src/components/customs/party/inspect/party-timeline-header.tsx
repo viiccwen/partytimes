@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { party_return_schema_type } from "@/lib/type";
+import { clicked_user_type, useVoteBlockStore } from "@/stores/inspect-party-store";
 import { CircleCheckBig, CircleX, LucideCalendarCheck2, PenLine, Trash2 } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
 
 interface PartyTimelineHeaderProps {
   party: party_return_schema_type;
@@ -20,6 +20,9 @@ export const PartyTimelineHeader = ({
   HandleScheduleButton,
   HandleCancelButton
 }: PartyTimelineHeaderProps) => {
+
+  const clicked_user: clicked_user_type = useVoteBlockStore((state) => state.clicked_user);
+
   return (
     <div className={className}>
       {isEditing ? (
@@ -70,7 +73,7 @@ export const PartyTimelineHeader = ({
               onClick={HandleCheckButton}
             >
               <PenLine className="w-4 h-4" />
-              選擇
+              {clicked_user.userId ? `為 ${clicked_user.creatorName} 投票` : "投票"}
             </Button>
           </div>
         </div>

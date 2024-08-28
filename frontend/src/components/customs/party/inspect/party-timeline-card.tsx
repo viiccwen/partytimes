@@ -21,7 +21,12 @@ import {
 import { ampm } from "@/lib/schema";
 import { CheckAuth } from "@/actions/user-actions";
 import { useGuestVoteStore } from "@/stores/guest-vote-store";
-import { useVoteBlockStore } from "@/stores/inspect-party-store";
+import {
+  block_type,
+  clicked_user_type,
+  useVoteBlockStore,
+} from "@/stores/inspect-party-store";
+import { cn } from "@/lib/utils";
 
 interface PartyTimelineCardProps {
   className?: string;
@@ -31,14 +36,7 @@ interface PartyTimelineCardProps {
   VoteNumber: number;
 }
 
-type block_type = {
-  creatorName: string;
-  userId: string;
-};
-
 const Cookie = require("js-cookie");
-
-let allVoteNumber: number;
 
 export const PartyTimelineCard = ({
   className,
@@ -50,25 +48,19 @@ export const PartyTimelineCard = ({
   const [timeLineComponent, setTimeLineComponent] = useState<ReactElement>();
   const [userSelectBlock, setUserSelectBlock] =
     useState<Set<string>>(userVoteBlocks);
-  const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [hydrated, setHydrated] = useState<boolean>(false);
 
-  const updateCurPointsPosition = useVoteBlockStore(
-    (state) => state.updateCurPointsPosition
-  );
-  const cur_points_userid: string = useVoteBlockStore(
-    (state) => state.cur_points_userid
-  );
-  const clicked_user: string = useVoteBlockStore((state) => state.clicked_user);
+  const {
+    clicked_user,
+    cur_points_userid,
+    isEditing,
+    updateCurPointsPosition,
+    updateIsEditing,
+    getUserVoteblocks,
+  } = useVoteBlockStore();
 
-  // if cur_points_userid changed, update
-
-  const Open = useGuestVoteStore((state) => state.open);
-  const setOpen = useGuestVoteStore((state) => state.setOpen);
-  const setTimeslots = useGuestVoteStore((state) => state.setTimeslots);
-
-  allVoteNumber = VoteNumber;
+  const { open, setOpen, setTimeslots } = useGuestVoteStore();
 
   const HandleClickTimeBlock = useCallback(
     (row: number, col: number, isDragging: boolean) => {
@@ -79,14 +71,19 @@ export const PartyTimelineCard = ({
 
       const block_key = `${col}-${row}`;
       setUserSelectBlock((prev) => {
-        if (prev.has(block_key)) prev.delete(block_key);
-        else prev.add(block_key);
-
-        return new Set(prev);
+        const newSet = new Set(prev);
+        newSet.has(block_key)
+          ? newSet.delete(block_key)
+          : newSet.add(block_key);
+        return newSet;
       });
     },
     [isEditing]
   );
+
+  useEffect(() => {
+    console.log(userSelectBlock);
+  }, [userSelectBlock]);
 
   useEffect(() => {
     const total_hours = CalculateTotalHours(party);
@@ -95,12 +92,14 @@ export const PartyTimelineCard = ({
     const gridCells = generateGridCells(
       party,
       total_half_hours,
+      VoteNumber,
       HandleClickTimeBlock,
       userSelectBlock,
       isEditing,
       AllvoteBlocks,
       updateCurPointsPosition,
-      cur_points_userid
+      cur_points_userid,
+      clicked_user
     );
 
     const container = (
@@ -111,11 +110,18 @@ export const PartyTimelineCard = ({
     );
 
     setTimeLineComponent(container);
-  }, [party, HandleClickTimeBlock, userSelectBlock, cur_points_userid]);
+  }, [party, HandleClickTimeBlock, userSelectBlock, cur_points_userid, clicked_user]);
 
   const HandleCheckButton = async () => {
     if (!isEditing) {
-      setIsEditing(true);
+      updateIsEditing(true);
+
+      // let userSelectBlock be the same as clicked user's vote blocks
+      if (clicked_user.userId !== "") {
+        setUserSelectBlock(getUserVoteblocks(AllvoteBlocks, clicked_user.creatorName));
+      }
+
+
       toast.success("已進入編輯模式");
     } else if (userSelectBlock.size === 0) {
       toast.error("請選擇時間區塊！");
@@ -136,20 +142,16 @@ export const PartyTimelineCard = ({
         return;
       }
 
-      // const func = async () => {
       //   const res = await CreateVote(timeslots, party.partyid);
 
       //   if (!res.correct) toast.error(res.error);
       //   else window.location.reload();
-      // };
-
-      // func();
     }
   };
 
   const HandleCancelButton = () => {
     setUserSelectBlock(userVoteBlocks);
-    setIsEditing(false);
+    updateIsEditing(false);
   };
 
   // todo: implement
@@ -159,41 +161,30 @@ export const PartyTimelineCard = ({
 
   useEffect(() => {
     setHydrated(true);
-
-    const handleMouseUp = () => setIsDragging(false);
-    window.addEventListener("mouseup", handleMouseUp);
-
-    return () => window.removeEventListener("mouseup", handleMouseUp);
   }, []);
 
-  useEffect(() => {
-    console.log("Open: ", Open);
-  }, [Open]);
+  if (!hydrated) return null;
 
-  if (!hydrated) {
-    return null;
-  } else {
-    return (
-      <>
-        <Card className={className}>
-          <CardContent>
-            <PartyHeader className="mt-5" party={party} />
-            <Separator className="h-1 my-3" />
-            <PartyTimelineHeader
-              className="mt-5"
-              party={party}
-              HandleCheckButton={HandleCheckButton}
-              HandleScheduleButton={HandleScheduleButton}
-              isEditing={isEditing}
-              HandleCancelButton={HandleCancelButton}
-            />
-            {timeLineComponent}
-          </CardContent>
-        </Card>
-        <GuestDialog partyid={party.partyid} />
-      </>
-    );
-  }
+  return (
+    <>
+      <Card className={className}>
+        <CardContent>
+          <PartyHeader className="mt-5" party={party} />
+          <Separator className="h-1 my-3" />
+          <PartyTimelineHeader
+            className="mt-5"
+            party={party}
+            HandleCheckButton={HandleCheckButton}
+            HandleScheduleButton={HandleScheduleButton}
+            isEditing={isEditing}
+            HandleCancelButton={HandleCancelButton}
+          />
+          {timeLineComponent}
+        </CardContent>
+      </Card>
+      <GuestDialog partyid={party.partyid} />
+    </>
+  );
 };
 
 const CalculateTotalHours = (party: party_return_schema_type): number => {
@@ -214,21 +205,23 @@ const formatTime = (hour: number, ampm: string): string => {
 };
 
 // bug: sometimes the grid is not working properly
-
 const generateGridCells = (
   party: party_return_schema_type,
   total_half_hours: number,
+  VoteNumber: number,
   HandleTimeBlock: (row: number, col: number, isDragging: boolean) => void,
   userSelectBlock: Set<string>,
   isEditing: boolean,
   AllvoteBlocks: block_type[][][],
   updateCurPointsPosition: (row: number, col: number) => void,
-  cur_points_userid: string
+  cur_points_userid: string,
+  clicked_user: clicked_user_type
 ): ReactNode[] => {
   let components: ReactNode[] = [];
   const date_length = party.date.length;
 
-  const isPointed = cur_points_userid !== "";
+  const pointed_status = cur_points_userid !== "";
+  const clicked_status = clicked_user.userId !== "";
 
   for (let row = 0; row < total_half_hours; row++) {
     let rowCells: ReactNode[] = [];
@@ -236,51 +229,46 @@ const generateGridCells = (
       const block_key: string = `${col}-${row}`;
       const isSelected: boolean = userSelectBlock.has(block_key);
       const isVoted: number = AllvoteBlocks[col][row].length;
-      const isHighlighted: boolean = AllvoteBlocks[col][row].some(
+      const isPointed: boolean = AllvoteBlocks[col][row].some(
         (block) => block.userId === cur_points_userid
       );
+      const isClicked: boolean = AllvoteBlocks[col][row].some(
+        (block) => block.userId === clicked_user.userId
+      );
 
-      /*
-      if(ispointed) {
-        if(isHighlighted) {
-          change color
+      const editingAppearance = isEditing
+        ? "hover:cursor-row-resize select-none"
+        : "hover:cursor-pointer";
+      const borderAppearance =
+        row % 2 == 0
+          ? "border-t-2"
+          : row == total_half_hours - 1
+          ? "border-b-2"
+          : "";
+
+      const BlockAppearance = () => {
+        if (!isEditing) {
+          if (clicked_status) {
+            return isClicked ? "bg-blue-400" : "";
+          } else if (pointed_status) {
+            return isPointed ? "bg-blue-400" : "";
+          }
+
+          return isVoted ? DecideBlockColor(VoteNumber, isVoted) : "";
         } else {
-          no color 
+          return isSelected ? "bg-blue-400" : "";
         }
-      } else {
-        if(voted) {
-          DecideBlockColor(allVoteNumber, isVoted)
-        } else {
-          ""
-        }
-      }
-      */
+      };
 
       rowCells.push(
         <div
           key={block_key}
-          className={`
-            ${
-              row % 2 == 0
-                ? "border-t-2"
-                : row == total_half_hours - 1
-                ? "border-b-2"
-                : ""
-            } ${
-            isEditing
-              ? `hover:cursor-row-resize select-none ${
-                  isSelected ? "bg-blue-400" : ""
-                }`
-              : isPointed
-              ? isHighlighted
-                ? `hover:cursor-pointer bg-blue-400`
-                : ""
-              : `hover:cursor-pointer ${
-                  isVoted ? DecideBlockColor(allVoteNumber, isVoted) : ""
-                }`
-          }
-          border-x border-slate-500 h-[24px] col-auto hover:border-2 hover:border-dashed 
-          `}
+          className={cn(
+            "border-x border-slate-500 h-[24px] col-auto hover:border-2 hover:border-dashed",
+            editingAppearance,
+            borderAppearance,
+            BlockAppearance(),
+          )}
           onMouseDown={() => HandleTimeBlock(row, col, false)}
           onMouseEnter={(e) => {
             updateCurPointsPosition(col, row);
@@ -410,11 +398,15 @@ const GenerateTimeSlots = (
   return timeSlots;
 };
 
-const DecideBlockColor = (all: number, selected: number) => {
+const DecideBlockColor: (all: number, selected: number) => string = (
+  all: number,
+  selected: number
+) => {
   const percentage = (selected / all) * 100;
   if (percentage <= 25) return "bg-blue-300";
   if (percentage <= 50) return "bg-blue-400";
   if (percentage <= 75) return "bg-blue-500";
   if (percentage < 100) return "bg-blue-600";
   if (percentage == 100) return "bg-blue-700";
+  return "bg-blue-400";
 };
