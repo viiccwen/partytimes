@@ -1,24 +1,23 @@
 import { Button } from "@/components/ui/button";
-import { party_return_schema_type } from "@/lib/type";
 import { clicked_user_type, useVoteBlockStore } from "@/stores/inspect-party-store";
 import { CircleCheckBig, CircleX, LucideCalendarCheck2, PenLine, Trash2 } from "lucide-react";
 
 interface PartyTimelineHeaderProps {
-  party: party_return_schema_type;
   className?: string;
   isEditing: boolean;
   HandleCancelButton: () => void;
   HandleCheckButton: () => void;
   HandleScheduleButton: () => void;
+  HandleDeleteButton: () => void;
 }
 
 export const PartyTimelineHeader = ({
-  party,
   className,
   isEditing,
   HandleCheckButton,
   HandleScheduleButton,
-  HandleCancelButton
+  HandleCancelButton,
+  HandleDeleteButton
 }: PartyTimelineHeaderProps) => {
 
   const clicked_user: clicked_user_type = useVoteBlockStore((state) => state.clicked_user);
@@ -32,7 +31,7 @@ export const PartyTimelineHeader = ({
             <Button
               variant="outline"
               className="gap-2 text-red-400 hover:text-white hover:bg-red-400"
-              onClick={HandleScheduleButton}
+              onClick={HandleDeleteButton}
             >
               <Trash2 className="w-4 h-4" />
               刪除

@@ -5,36 +5,23 @@ import {
   block_type,
   clicked_user_type,
   joinlist_type,
-  position_type,
   useVoteBlockStore,
 } from "@/stores/inspect-party-store";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 interface PartyJoinCardProps {
   className?: string;
-  Allvotes: block_type[][][];
+  allvoteblocks: block_type[][][];
   joinList: Array<joinlist_type>;
 }
 
 export const PartyJoinCard = ({
   className,
-  Allvotes,
+  allvoteblocks,
   joinList,
 }: PartyJoinCardProps) => {
-  const cur_points_position: position_type = useVoteBlockStore(
-    (state) => state.cur_points_position
-  );
-
-  const updateClickedUser: (userId: string, creatorName: string) => void =
-    useVoteBlockStore((state) => state.updateClickedUser);
-  const updateCurPointsUserid: (userid: string) => void = useVoteBlockStore(
-    (state) => state.updateCurPointsUserid
-  );
-
-  const isEditing: boolean = useVoteBlockStore((state) => state.isEditing);
-  const clicked_user: clicked_user_type = useVoteBlockStore(
-    (state) => state.clicked_user
-  );
+  const { user_votes, cur_points_position, clicked_user, isEditing,  updateClickedUser, updateCurPointsUserid } = useVoteBlockStore();
+  if (!allvoteblocks || allvoteblocks.length === 0) return null;
 
   const [point_joinList, setPointJoinList] = useState(new Set<string>());
 
@@ -62,13 +49,13 @@ export const PartyJoinCard = ({
     if (!isEditing && clicked_user.userId === "") {
       setPointJoinList(
         getBlockUsers(
-          Allvotes,
+          allvoteblocks,
           cur_points_position.row,
           cur_points_position.col
         )
       );
     }
-  }, [cur_points_position, isEditing, clicked_user, Allvotes]);
+  }, [cur_points_position, isEditing, clicked_user, allvoteblocks]);
 
   const handleClick = useCallback(
     (join: joinlist_type) => {
@@ -79,9 +66,6 @@ export const PartyJoinCard = ({
     },
     [clicked_user, updateClickedUser]
   );
-
-  // debug
-  // console.log("clicked_user", clicked_user);
 
   return (
     <Card className={className}>

@@ -9,7 +9,7 @@ export type block_type = {
 export type joinlist_type = {
   creatorName: string;
   userId: string;
-}
+};
 
 export type position_type = {
   row: number;
@@ -19,14 +19,18 @@ export type position_type = {
 export type clicked_user_type = {
   userId: string;
   creatorName: string;
-}
+};
 
 type party_inspect_type = {
+  allvoteblocks: block_type[][][];
+  user_votes: Set<string>;
   cur_points_position: position_type;
   cur_points_userid: string;
   clicked_user: clicked_user_type;
   isEditing: boolean;
 
+  updateAllvoteblocks: (allvoteblocks: block_type[][][]) => void;
+  updateUserVotes: (user_votes: Set<string>) => void;
   updateCurPointsPosition: (row: number, col: number) => void;
   updateCurPointsUserid: (userid: string) => void;
   updateClickedUser: (userId: string, creatorName: string) => void;
@@ -37,21 +41,30 @@ type party_inspect_type = {
     total_hours: number,
     party: party_return_schema_type
   ) => block_type[][][];
-  getUserVoteblocks: (vote_blocks: block_type[][][], nickname: string) => Set<string>;
+  getUserVoteblocks: (
+    vote_blocks: block_type[][][],
+    nickname: string
+  ) => Set<string>;
   getJoinList: (votes: votes_schema_type[]) => Array<joinlist_type>;
 };
 
-export const useVoteBlockStore = create<party_inspect_type>((state) => ({
+export const useVoteBlockStore = create<party_inspect_type>((set) => ({
+  allvoteblocks: [],
+  user_votes: new Set<string>(),
   cur_points_position: { row: -1, col: -1 },
   cur_points_userid: "",
   clicked_user: { userId: "", creatorName: "" },
   isEditing: false,
 
+  updateAllvoteblocks: (allvoteblocks: block_type[][][]) =>
+    set({ allvoteblocks }),
+  updateUserVotes: (user_votes: Set<string>) => set({ user_votes }),
   updateCurPointsPosition: (row, col) =>
-    state({ cur_points_position: { row, col } }),
-  updateCurPointsUserid: (userid) => state({ cur_points_userid: userid }),
-  updateClickedUser: (userId, creatorName) => state({ clicked_user: { userId, creatorName } }),
-  updateIsEditing: (isEditing) => state({ isEditing }),
+    set({ cur_points_position: { row, col } }),
+  updateCurPointsUserid: (userid) => set({ cur_points_userid: userid }),
+  updateClickedUser: (userId, creatorName) =>
+    set({ clicked_user: { userId, creatorName } }),
+  updateIsEditing: (isEditing) => set({ isEditing }),
 
   getTimeSlotBlocks(votes, total_hours, party) {
     let blocks: Array<block_type[]>[] = Array.from(
@@ -81,7 +94,10 @@ export const useVoteBlockStore = create<party_inspect_type>((state) => ({
         // push start to end blocks
         for (let i = start; i < end; i += 0.5) {
           const col = i * 2;
-          blocks[row][col].push({ creatorName: vote.creatorName, userId: vote.userId });
+          blocks[row][col].push({
+            creatorName: vote.creatorName,
+            userId: vote.userId,
+          });
         }
       });
     });
@@ -105,6 +121,9 @@ export const useVoteBlockStore = create<party_inspect_type>((state) => ({
     return userVoteBlocks;
   },
   getJoinList(votes: votes_schema_type[]) {
-    return votes.map((vote) => ({ creatorName: vote.creatorName, userId: vote.userId }));
+    return votes.map((vote) => ({
+      creatorName: vote.creatorName,
+      userId: vote.userId,
+    }));
   },
 }));

@@ -1,11 +1,6 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 
@@ -13,24 +8,28 @@ import { PartyHeader } from "./party-header";
 import { PartyTimelineHeader } from "./party-timeline-header";
 import { GuestDialog } from "../guest-dialog";
 
-import {
-  party_return_schema_type,
-} from "@/lib/type";
+import { party_return_schema_type } from "@/lib/type";
 
 import { CheckAuth } from "@/actions/user-actions";
 import { useGuestVoteStore } from "@/stores/guest-vote-store";
+import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
 import {
-  block_type,
-  useVoteBlockStore,
-} from "@/stores/inspect-party-store";
-import { CalculateTotalHours, generateGridCells, generateHeader, GenerateTimeSlots } from "@/lib/party-timeline-helper";
+  CalculateTotalHours,
+  generateGridCells,
+  generateHeader,
+  GenerateTimeSlots,
+} from "@/lib/party-timeline-helper";
+import { CreateVote, DeleteVote, GetVoteTimes } from "@/actions/vote-actions";
+import { useRouter } from "next/navigation";
 
 interface PartyTimelineCardProps {
   className?: string;
   party: party_return_schema_type;
-  AllvoteBlocks: block_type[][][];
-  userVoteBlocks: Set<string>;
+  allvoteblocks: block_type[][][];
+  user_votes: Set<string>;
   VoteNumber: number;
+  nickname: string;
+  userid: number;
 }
 
 const Cookie = require("js-cookie");
@@ -38,24 +37,33 @@ const Cookie = require("js-cookie");
 export const PartyTimelineCard = ({
   className,
   party,
-  AllvoteBlocks,
-  userVoteBlocks,
+  allvoteblocks,
   VoteNumber,
+  user_votes,
+  nickname,
+  userid,
 }: PartyTimelineCardProps) => {
-  const [userSelectBlock, setUserSelectBlock] =
-    useState<Set<string>>(userVoteBlocks);
-  const [hydrated, setHydrated] = useState<boolean>(false);
-
   const {
     clicked_user,
     cur_points_userid,
     isEditing,
+    updateAllvoteblocks,
+    updateUserVotes,
+    updateClickedUser,
     updateCurPointsPosition,
     updateIsEditing,
     getUserVoteblocks,
+    getTimeSlotBlocks,
   } = useVoteBlockStore();
-
   const { open, setOpen, setTimeslots } = useGuestVoteStore();
+
+  const [userSelectBlock, setUserSelectBlock] =
+    useState<Set<string>>(user_votes);
+  const [hydrated, setHydrated] = useState<boolean>(false);
+  const router = useRouter();
+
+
+  if (!allvoteblocks || allvoteblocks.length === 0) return null;
 
   const ToggleBlockSelection = (prev: Set<string>, block_key: string) => {
     const newSet = new Set(prev);
@@ -89,7 +97,7 @@ export const PartyTimelineCard = ({
       HandleClickTimeBlock,
       userSelectBlock,
       isEditing,
-      AllvoteBlocks,
+      allvoteblocks,
       updateCurPointsPosition,
       cur_points_userid,
       clicked_user
@@ -103,7 +111,13 @@ export const PartyTimelineCard = ({
     );
 
     return container;
-  }, [party, HandleClickTimeBlock, userSelectBlock, cur_points_userid, clicked_user]);
+  }, [
+    party,
+    HandleClickTimeBlock,
+    userSelectBlock,
+    cur_points_userid,
+    clicked_user,
+  ]);
 
   const HandleCheckButton = async () => {
     if (!isEditing) {
@@ -112,7 +126,7 @@ export const PartyTimelineCard = ({
       // let userSelectBlock be the same as clicked user's vote blocks
       if (clicked_user.userId !== "") {
         setUserSelectBlock(
-          getUserVoteblocks(AllvoteBlocks, clicked_user.creatorName)
+          getUserVoteblocks(allvoteblocks, clicked_user.creatorName)
         );
       }
 
@@ -126,28 +140,75 @@ export const PartyTimelineCard = ({
       const timeslots = GenerateTimeSlots(userSelectBlock, party);
 
       if (!isAuth) {
-        setTimeslots(timeslots);
-        setOpen(true);
-      } else {
-        // todo: implement
-        // const res = await CreateVote(timeslots, party.partyid);
+        if (clicked_user.userId === "") {
+          // show guest dialog & create vote by new guest user
+          setTimeslots(timeslots);
+          setOpen(true);
+        } else {
+          // create vote by old guest user
+          const res = await CreateVote(
+            timeslots,
+            party.partyid,
+            clicked_user.creatorName,
+            clicked_user.userId
+          );
 
-        // if (!res.correct) toast.error(res.error);
-        // else window.location.reload();
+          if (!res.correct) toast.error(res.error);
+          else {
+            await RefreshVoteData();
+            toast.success("successfully create vote!");
+          }
+        }
+      } else {
+        // create vote by login user
+        const res = await CreateVote(timeslots, party.partyid);
+
+        if (!res.correct) toast.error(res.error);
+        else {
+          await RefreshVoteData();
+          toast.success("successfully create vote!");
+        }
       }
     }
   };
 
   const HandleCancelButton = useCallback(() => {
-    setUserSelectBlock(userVoteBlocks);
+    setUserSelectBlock(user_votes);
     updateIsEditing(false);
-  }, [userVoteBlocks, updateIsEditing]);
+  }, [user_votes, updateIsEditing]);
 
   // todo: implement
   const HandleScheduleButton = useCallback(() => {
     console.log("Schedule Button Click");
     // TODO: Implement schedule logic
   }, []);
+
+  
+  const HandleDeleteButton = useCallback(async () => {
+    let delete_userid: number;
+    if (clicked_user.userId === "" && userid === -1) {
+      toast.error("請先選擇使用者!");
+      return;
+    } else if (clicked_user.userId === "" && userid !== -1) {
+      delete_userid = userid;
+    } else {
+      delete_userid = Number(clicked_user.userId);
+    }
+    const res = await DeleteVote(party.partyid, delete_userid);
+
+    if (!res.correct) toast.error(res.error);
+    else {
+      await RefreshVoteData();
+      toast.success("successfully delete vote!");
+    }
+  }, [party.partyid, clicked_user.userId]);
+
+  const RefreshVoteData = async () => {
+    updateCurPointsPosition(-1, -1);
+    updateClickedUser("", "");
+    updateIsEditing(false);
+    router.refresh();
+  };
 
   useEffect(() => {
     setHydrated(true);
@@ -163,9 +224,9 @@ export const PartyTimelineCard = ({
           <Separator className="h-1 my-3" />
           <PartyTimelineHeader
             className="mt-5"
-            party={party}
             HandleCheckButton={HandleCheckButton}
             HandleScheduleButton={HandleScheduleButton}
+            HandleDeleteButton={HandleDeleteButton}
             isEditing={isEditing}
             HandleCancelButton={HandleCancelButton}
           />
@@ -176,4 +237,3 @@ export const PartyTimelineCard = ({
     </>
   );
 };
-
