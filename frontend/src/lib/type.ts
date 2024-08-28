@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   ampm,
+  decision_schema,
   guest_schema,
   login_schema,
   party_edit_schema,
@@ -17,6 +18,8 @@ export type login_schema_type = z.infer<typeof login_schema>;
 export type guest_schema_type = z.infer<typeof guest_schema>;
 
 export type user_info_schema_type = z.infer<typeof user_info_schema>;
+
+export type decision_schema_type = z.infer<typeof decision_schema>;
 
 export type party_return_schema_type = z.infer<typeof party_return_schema>;
 

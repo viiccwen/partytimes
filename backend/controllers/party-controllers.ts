@@ -67,6 +67,7 @@ export const GetParty = async (req: any, res: any) => {
 
     const party = await prisma.party.findFirst({
       where: { partyid },
+      include: { decision: true },
     });
 
     if (!party) throw new Error("Party is not found");
@@ -81,6 +82,7 @@ export const GetParty = async (req: any, res: any) => {
       start_ampm: party.start_ampm,
       end_time: party.end_time,
       end_ampm: party.end_ampm,
+      decision: party.decision,
     };
 
     res.status(200).json({ party: filteredParty });

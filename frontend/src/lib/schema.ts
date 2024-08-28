@@ -36,6 +36,16 @@ export const user_info_schema = z.object({
 
 export const ampm = ["AM", "PM"] as const;
 
+export const decision_schema = z.object({
+  id: z.number().optional(),
+  date: z.string(),
+  start_time: z.number(),
+  start_ampm: z.enum(ampm),
+  end_time: z.number(),
+  end_ampm: z.enum(ampm),
+  partyid: z.string().optional(),
+});
+
 export const party_return_schema = z.object({
   title: z.string(),
   partyid: z.string(),
@@ -46,6 +56,7 @@ export const party_return_schema = z.object({
   start_ampm: z.enum(ampm),
   end_time: z.number(),
   end_ampm: z.enum(ampm),
+  decision: decision_schema,
 });
 
 export const party_edit_schema = z.object({

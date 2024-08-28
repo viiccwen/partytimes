@@ -8,7 +8,7 @@ import { PartyHeader } from "./party-header";
 import { PartyTimelineHeader } from "./party-timeline-header";
 import { GuestDialog } from "../guest-dialog";
 
-import { party_return_schema_type } from "@/lib/type";
+import { decision_schema_type, party_return_schema_type } from "@/lib/type";
 
 import { CheckAuth } from "@/actions/user-actions";
 import { useGuestVoteStore } from "@/stores/guest-vote-store";
@@ -19,8 +19,9 @@ import {
   generateHeader,
   GenerateTimeSlots,
 } from "@/lib/party-timeline-helper";
-import { CreateVote, DeleteVote, GetVoteTimes } from "@/actions/vote-actions";
+import { CreateVote, DeleteVote } from "@/actions/vote-actions";
 import { useRouter } from "next/navigation";
+import { CreateSchedule, DeleteSchedule } from "@/actions/schedule-action";
 
 interface PartyTimelineCardProps {
   className?: string;
@@ -28,8 +29,8 @@ interface PartyTimelineCardProps {
   allvoteblocks: block_type[][][];
   user_votes: Set<string>;
   VoteNumber: number;
-  nickname: string;
   userid: number;
+  has_scheduled: boolean;
 }
 
 const Cookie = require("js-cookie");
@@ -40,28 +41,28 @@ export const PartyTimelineCard = ({
   allvoteblocks,
   VoteNumber,
   user_votes,
-  nickname,
   userid,
+  has_scheduled
 }: PartyTimelineCardProps) => {
   const {
     clicked_user,
     cur_points_userid,
     isEditing,
-    updateAllvoteblocks,
-    updateUserVotes,
+    isScheduling,
+    isMouseDown,
     updateClickedUser,
     updateCurPointsPosition,
     updateIsEditing,
+    updateIsScheduling,
+    updateIsMouseDown,
     getUserVoteblocks,
-    getTimeSlotBlocks,
   } = useVoteBlockStore();
-  const { open, setOpen, setTimeslots } = useGuestVoteStore();
+  const { setOpen, setTimeslots } = useGuestVoteStore();
 
   const [userSelectBlock, setUserSelectBlock] =
     useState<Set<string>>(user_votes);
   const [hydrated, setHydrated] = useState<boolean>(false);
   const router = useRouter();
-
 
   if (!allvoteblocks || allvoteblocks.length === 0) return null;
 
@@ -71,19 +72,50 @@ export const PartyTimelineCard = ({
     return newSet;
   };
 
+  const ToggleBlockSchedule = (prev: Set<string>, col: number, row: number) => {
+    const block_key = `${col}-${row}`;
+    const newSet = new Set<string>();
+
+    Array.from(prev).forEach((key) => {
+      const [prevCol, prevRow] = key.split("-").map(Number);
+      if (prevCol === col) {
+        newSet.add(key);
+      }
+    });
+
+    if (newSet.has(block_key)) {
+      newSet.delete(block_key);
+    } else {
+      newSet.add(block_key);
+    }
+    return newSet;
+  };
+
   const HandleClickTimeBlock = useCallback(
     (row: number, col: number) => {
-      if (!isEditing) {
+      if (!isEditing && !isScheduling) {
+        // change a way to show error
         toast.error("請先進入編輯模式");
         return;
       }
 
       const block_key = `${col}-${row}`;
-      setUserSelectBlock((prev) => {
-        return ToggleBlockSelection(prev, block_key);
-      });
+
+      if (isEditing) {
+        setUserSelectBlock((prev) => {
+          return ToggleBlockSelection(prev, block_key);
+        });
+      } else if (isScheduling) {
+        if (!isMouseDown) {
+          setUserSelectBlock(new Set<string>());
+        }
+
+        setUserSelectBlock((prev) => {
+          return ToggleBlockSchedule(prev, col, row);
+        });
+      }
     },
-    [isEditing]
+    [isEditing, isScheduling, isMouseDown]
   );
 
   const TimeLineComponent = useMemo(() => {
@@ -97,8 +129,10 @@ export const PartyTimelineCard = ({
       HandleClickTimeBlock,
       userSelectBlock,
       isEditing,
+      isScheduling,
       allvoteblocks,
       updateCurPointsPosition,
+      updateIsMouseDown,
       cur_points_userid,
       clicked_user
     );
@@ -175,15 +209,44 @@ export const PartyTimelineCard = ({
   const HandleCancelButton = useCallback(() => {
     setUserSelectBlock(user_votes);
     updateIsEditing(false);
-  }, [user_votes, updateIsEditing]);
+    updateIsScheduling(false);
+  }, [user_votes, updateIsEditing, updateIsScheduling]);
 
   // todo: implement
-  const HandleScheduleButton = useCallback(() => {
-    console.log("Schedule Button Click");
-    // TODO: Implement schedule logic
-  }, []);
+  const HandleScheduleButton = async () => {
+    if (has_scheduled) {
+      const res = await DeleteSchedule(party.partyid);
+      if (!res.correct) toast.error(res.error);
+      else {
+        await RefreshVoteData();
+        toast.success("successfully delete schedule!");
+        return;
+      }
+    }
 
-  
+    if (!isScheduling) {
+      updateIsScheduling(true);
+
+      // schudule block
+
+      toast.success("已進入登記模式");
+    } else if (userSelectBlock.size === 0) {
+      toast.error("請選擇時間區塊！");
+    } else {
+      const timeslot = GenerateTimeSlots(userSelectBlock, party)[0];
+
+      // createSchedule
+      const res = await CreateSchedule(party.partyid, timeslot);
+      if (!res.correct) toast.error(res.error);
+      else {
+        await RefreshVoteData();
+        setUserSelectBlock(new Set<string>());
+        toast.success("successfully create schedule!");
+      }
+      updateIsScheduling(false);
+    }
+  };
+
   const HandleDeleteButton = useCallback(async () => {
     let delete_userid: number;
     if (clicked_user.userId === "" && userid === -1) {
@@ -228,6 +291,8 @@ export const PartyTimelineCard = ({
             HandleScheduleButton={HandleScheduleButton}
             HandleDeleteButton={HandleDeleteButton}
             isEditing={isEditing}
+            isScheduling={isScheduling}
+            has_scheduled={has_scheduled}
             HandleCancelButton={HandleCancelButton}
           />
           {TimeLineComponent}

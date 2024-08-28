@@ -24,8 +24,7 @@ export const InspectPartyContainer = ({
   const vote_blocks = getTimeSlotBlocks(votes, total_hours, party);
   const user_votes = getUserVoteblocks(vote_blocks, nickname);
   const join_list = getJoinList(votes);
-
-  // bug with update allvoteblocks
+  const has_scheduled = party.status;
 
   return (
     <>
@@ -35,8 +34,8 @@ export const InspectPartyContainer = ({
         allvoteblocks={vote_blocks}
         user_votes={user_votes}
         VoteNumber={join_list.length}
-        nickname={nickname}
         userid={userid}
+        has_scheduled={has_scheduled}
       />
       <PartyJoinCard className="col-span-2" allvoteblocks={vote_blocks} joinList={join_list} />
     </>

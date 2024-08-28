@@ -40,6 +40,9 @@ export default async function PartyPage({
 
   const total_hours = CalculateTotalHours(party_data);
 
+  // debug
+  console.log(party_data);
+
   return (
     <>
       <Toaster richColors />
