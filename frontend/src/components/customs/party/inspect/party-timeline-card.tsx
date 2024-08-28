@@ -11,14 +11,17 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { PartyHeader } from "./party-header";
 import { PartyTimelineHeader } from "./party-timeline-header";
+import { GuestDialog } from "../guest-dialog";
 
-import { ampm } from "@/lib/schema";
 import {
   party_return_schema_type,
   timeslots_create_schema_type,
 } from "@/lib/type";
-import { CreateVote } from "@/actions/vote-actions";
-import { useVoteBlockStore } from "./inspect-party-container";
+
+import { ampm } from "@/lib/schema";
+import { CheckAuth } from "@/actions/user-actions";
+import { useGuestVoteStore } from "@/stores/guest-vote-store";
+import { useVoteBlockStore } from "@/stores/inspect-party-store";
 
 interface PartyTimelineCardProps {
   className?: string;
@@ -30,6 +33,7 @@ interface PartyTimelineCardProps {
 
 type block_type = {
   creatorName: string;
+  userId: string;
 };
 
 const Cookie = require("js-cookie");
@@ -53,6 +57,16 @@ export const PartyTimelineCard = ({
   const updateCurPointsPosition = useVoteBlockStore(
     (state) => state.updateCurPointsPosition
   );
+  const cur_points_userid: string = useVoteBlockStore(
+    (state) => state.cur_points_userid
+  );
+  const clicked_user: string = useVoteBlockStore((state) => state.clicked_user);
+
+  // if cur_points_userid changed, update
+
+  const Open = useGuestVoteStore((state) => state.open);
+  const setOpen = useGuestVoteStore((state) => state.setOpen);
+  const setTimeslots = useGuestVoteStore((state) => state.setTimeslots);
 
   allVoteNumber = VoteNumber;
 
@@ -85,7 +99,8 @@ export const PartyTimelineCard = ({
       userSelectBlock,
       isEditing,
       AllvoteBlocks,
-      updateCurPointsPosition
+      updateCurPointsPosition,
+      cur_points_userid
     );
 
     const container = (
@@ -96,28 +111,39 @@ export const PartyTimelineCard = ({
     );
 
     setTimeLineComponent(container);
-  }, [party, HandleClickTimeBlock, userSelectBlock]);
+  }, [party, HandleClickTimeBlock, userSelectBlock, cur_points_userid]);
 
-  const HandleCheckButton = () => {
+  const HandleCheckButton = async () => {
     if (!isEditing) {
       setIsEditing(true);
       toast.success("已進入編輯模式");
     } else if (userSelectBlock.size === 0) {
       toast.error("請選擇時間區塊！");
     } else {
-      const timeslots = GenerateTimeSlots(userSelectBlock, party);
+      // check token
+      const token = Cookie.get("token");
+      const isAuth = await CheckAuth(token);
 
-      const func = async () => {
-        const res = await CreateVote(timeslots, party.partyid);
+      // if not logged in, dialog to fill nickname
+      const timeslots: timeslots_create_schema_type = GenerateTimeSlots(
+        userSelectBlock,
+        party
+      );
 
-        if (!res.correct) toast.error(res.error);
-        else {
-          toast.success("已成功送出投票");
-          window.location.reload();
-        }
-      };
+      if (!isAuth) {
+        setTimeslots(timeslots);
+        setOpen(true);
+        return;
+      }
 
-      func();
+      // const func = async () => {
+      //   const res = await CreateVote(timeslots, party.partyid);
+
+      //   if (!res.correct) toast.error(res.error);
+      //   else window.location.reload();
+      // };
+
+      // func();
     }
   };
 
@@ -140,25 +166,32 @@ export const PartyTimelineCard = ({
     return () => window.removeEventListener("mouseup", handleMouseUp);
   }, []);
 
+  useEffect(() => {
+    console.log("Open: ", Open);
+  }, [Open]);
+
   if (!hydrated) {
     return null;
   } else {
     return (
-      <Card className={className}>
-        <CardContent>
-          <PartyHeader className="mt-5" party={party} />
-          <Separator className="h-1 my-3" />
-          <PartyTimelineHeader
-            className="mt-5"
-            party={party}
-            HandleCheckButton={HandleCheckButton}
-            HandleScheduleButton={HandleScheduleButton}
-            isEditing={isEditing}
-            HandleCancelButton={HandleCancelButton}
-          />
-          {timeLineComponent}
-        </CardContent>
-      </Card>
+      <>
+        <Card className={className}>
+          <CardContent>
+            <PartyHeader className="mt-5" party={party} />
+            <Separator className="h-1 my-3" />
+            <PartyTimelineHeader
+              className="mt-5"
+              party={party}
+              HandleCheckButton={HandleCheckButton}
+              HandleScheduleButton={HandleScheduleButton}
+              isEditing={isEditing}
+              HandleCancelButton={HandleCancelButton}
+            />
+            {timeLineComponent}
+          </CardContent>
+        </Card>
+        <GuestDialog partyid={party.partyid} />
+      </>
     );
   }
 };
@@ -189,10 +222,13 @@ const generateGridCells = (
   userSelectBlock: Set<string>,
   isEditing: boolean,
   AllvoteBlocks: block_type[][][],
-  updateCurPointsPosition: (row: number, col: number) => void
+  updateCurPointsPosition: (row: number, col: number) => void,
+  cur_points_userid: string
 ): ReactNode[] => {
   let components: ReactNode[] = [];
   const date_length = party.date.length;
+
+  const isPointed = cur_points_userid !== "";
 
   for (let row = 0; row < total_half_hours; row++) {
     let rowCells: ReactNode[] = [];
@@ -200,6 +236,25 @@ const generateGridCells = (
       const block_key: string = `${col}-${row}`;
       const isSelected: boolean = userSelectBlock.has(block_key);
       const isVoted: number = AllvoteBlocks[col][row].length;
+      const isHighlighted: boolean = AllvoteBlocks[col][row].some(
+        (block) => block.userId === cur_points_userid
+      );
+
+      /*
+      if(ispointed) {
+        if(isHighlighted) {
+          change color
+        } else {
+          no color 
+        }
+      } else {
+        if(voted) {
+          DecideBlockColor(allVoteNumber, isVoted)
+        } else {
+          ""
+        }
+      }
+      */
 
       rowCells.push(
         <div
@@ -216,6 +271,10 @@ const generateGridCells = (
               ? `hover:cursor-row-resize select-none ${
                   isSelected ? "bg-blue-400" : ""
                 }`
+              : isPointed
+              ? isHighlighted
+                ? `hover:cursor-pointer bg-blue-400`
+                : ""
               : `hover:cursor-pointer ${
                   isVoted ? DecideBlockColor(allVoteNumber, isVoted) : ""
                 }`

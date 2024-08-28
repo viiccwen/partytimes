@@ -3,6 +3,7 @@ import {
   get_votetimes_fetch_return_type,
   timeslots_create_schema_type,
 } from "@/lib/type";
+import { revalidatePath } from "next/cache";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const Cookie = require("js-cookie");
@@ -10,6 +11,7 @@ const Cookie = require("js-cookie");
 export const CreateVote = async (
   timeslots: timeslots_create_schema_type,
   partyid: string,
+  nickname: string
 ): Promise<general_fetch_return_type> => {
   try {
     let token = Cookie.get("token");
@@ -30,11 +32,12 @@ export const CreateVote = async (
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ partyid, timeslots }),
+        body: JSON.stringify({ partyid, nickname, timeslots }),
       });
     }
 
     if (response.ok) {
+      revalidatePath(`/party/${partyid}`);
       return { correct: true };
     } else {
       const data = await response.json();
