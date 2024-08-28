@@ -1,4 +1,4 @@
-import { CheckAuth, CheckNickname, GetUserInfo } from "@/actions/user-actions";
+import { CheckAuth, GetUserInfo } from "@/actions/user-actions";
 import { Navbar } from "@/components/customs/navbar";
 import { PartyPanel } from "@/components/customs/party-panel";
 import { cookies } from "next/headers";
@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
 
 import { userinfo_fetch_return_type } from "@/lib/type";
+import { GetPartyList } from "@/actions/party-actions";
 
 // check for valid user
 export default async function ProfilePage() {
@@ -26,12 +27,18 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
+  const party = await GetPartyList(token);
+
+  if(!party.correct || !party.data) {
+    redirect("/error");
+  }
+
   return (
     <>
       <Toaster richColors />
       <Navbar />
       <div className="m-7">
-        <PartyPanel token={token} id={id} nickname={nickname} email={email} />
+        <PartyPanel token={token} id={id} nickname={nickname} email={email} parties={party.data.party} />
       </div>
     </>
   );
