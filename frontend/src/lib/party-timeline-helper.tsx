@@ -87,6 +87,7 @@ export const CalculateTotalHours = (party: party_return_schema_type): number => 
             if (e.buttons === 1) HandleTimeBlock(row, col, true);
           }}
           onDragStart={(e) => e.preventDefault()}
+          onMouseLeave={() => updateCurPointsPosition(-1, -1)}
         />
       );
     };
@@ -121,7 +122,8 @@ export const CalculateTotalHours = (party: party_return_schema_type): number => 
     return (
       <div className="flex mt-5">
         <div className="w-[60px]"></div>
-        <div className={`w-full ml-2 grid grid-cols-${party.date.length}`}>
+        {/* bug: grid is not working properly */}
+        <div className={`w-full ml-2 grid grid-cols-5`}>
           {party.date.map((date) => (
             <div key={date} className="text-center">
               {date}

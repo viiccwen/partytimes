@@ -4,13 +4,13 @@ import { Verify } from "../utils/utils";
 // situation
 /**
 1. user vote - done (use token to verify)
-2. guest vote (use nickname to verify, and no guestId -> create new guest)
-3. guest update vote by user (use guestId to verify)
-4. guest update vote by guest (use guestId to verify)
+2. guest vote (use nickname to verify, and no guestid -> create new guest)
+3. guest update vote by user (use guestid to verify)
+4. guest update vote by guest (use guestid to verify)
  */
 export const CreateVote = async (req: any, res: any) => {
   try {
-    const { timeslots, partyid, nickname, guestId } = await req.body;
+    const { timeslots, partyid, nickname, guestid } = await req.body;
 
     if (!timeslots || !partyid) {
       throw new Error("Please provide all required fields");
@@ -19,18 +19,16 @@ export const CreateVote = async (req: any, res: any) => {
     let user = null;
     let newVote;
 
-    // 1. Guest Update Vote by Guest or User (with guestId)
-    if (guestId) {
-      // check if guestId is valid
+    // 1. Guest Update Vote by Guest or User (with guestid)
+    if (guestid) {
+      // check if guestid is valid
       user = await prisma.user.findFirst({
-        where: { id: guestId, role: "GUEST" },
+        where: { id: guestid, role: "GUEST" },
       });
 
-      if (!user) throw new Error("Guest not found");
+      if (!user) throw new Error("Invalid guest or it's a login user!");
 
-      console.log("Guest Vote or Update Vote:", user.nickname);
-
-    // 2. Check for token (User Vote)
+      // 2. Check for token (User Vote)
     } else if (req.headers.authorization) {
       const token = req.headers.authorization.split(" ")[1];
       const decoded: any = await Verify(token);
@@ -41,12 +39,11 @@ export const CreateVote = async (req: any, res: any) => {
         });
 
         if (!user) throw new Error("User not found");
-        console.log("User Vote:", user.nickname);
       } else {
         throw new Error("Invalid token");
       }
 
-    // 3. Guest Vote (with nickname, create new guest if no guestId)
+      // 3. Guest Vote (with nickname, create new guest if no guestid)
     } else if (nickname) {
       user = await prisma.user.findFirst({
         where: { nickname },
@@ -57,17 +54,13 @@ export const CreateVote = async (req: any, res: any) => {
         user = await prisma.user.create({
           data: {
             nickname,
-            role: "GUEST",
-            email: "guest", 
-            username: nickname, 
+            email: "guest",
+            username: nickname,
             password: "guest",
+            role: "GUEST",
           },
         });
-        console.log("New Guest Created:", user.nickname);
-      } else {
-        console.log("Guest Vote:", user.nickname);
       }
-
     } else {
       throw new Error("Unauthorized or missing required fields");
     }
@@ -148,6 +141,47 @@ export const GetVoteTimes = async (req: any, res: any) => {
     });
 
     res.status(200).json(votes);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// todo: if user is a login user, then only the correct user can delete the vote
+// todo: if user is a guest, then everyone can delete the vote
+export const DeleteVote = async (req: any, res: any) => {
+  try {
+    const { partyid, userid } = await req.params;
+    const token: string | undefined = req.headers.authorization?.split(" ")[1];
+
+    if (!userid || !partyid) {
+      throw new Error("Please provide all required fields");
+    }
+
+    const vote = await prisma.votetime.findFirst({
+      where: { partyid, userId: parseInt(userid) },
+    });
+    if (!vote) throw new Error("Vote not found");
+
+    const owner = await prisma.user.findFirst({
+      where: { id: vote.userId },
+    });
+
+    if (!owner) throw new Error("Owner not found");
+
+    if (owner.role !== "GUEST") {
+      if (!token) throw new Error("You are not allowed to delete this vote");
+
+      const decoded: any = await Verify(token);
+      if (!decoded || decoded.id !== owner.id) throw new Error("You are not allowed to delete this vote");
+    }
+
+    const deletedVote = await prisma.votetime.delete({
+      where: { id: vote.id },
+    });
+
+    if (!deletedVote) throw new Error("Vote deletion failed");
+
+    res.sendStatus(200);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

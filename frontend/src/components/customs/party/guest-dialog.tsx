@@ -25,6 +25,8 @@ import { guest_schema } from "@/lib/schema";
 import { useGuestVoteStore } from "@/stores/guest-vote-store";
 import { CreateVote } from "@/actions/vote-actions";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useVoteBlockStore } from "@/stores/inspect-party-store";
 
 interface guest_dialog_props {
   partyid: string;
@@ -39,26 +41,27 @@ export const GuestDialog = ({ partyid }: guest_dialog_props) => {
     resolver: zodResolver(guest_schema),
   });
 
-  const timeslots = useGuestVoteStore((state) => state.timeslots);
-  const Open = useGuestVoteStore((state) => state.open);
-  const setOpen = useGuestVoteStore((state) => state.setOpen);
-  const guestId = useGuestVoteStore((state) => state.guestId);
+  const { timeslots, open: Open, setOpen } = useGuestVoteStore(
+    (state) => state
+  );
+  const { updateIsEditing } = useVoteBlockStore((state) => state);
+  const router = useRouter();
 
-  // todo: submit form
   const onSubmit = async (formdata: any) => {
     const { nickname, email } = formdata;
 
-    // todo: lack of guestid
     const res: general_fetch_return_type = await CreateVote(
       timeslots,
-      nickname,
-      partyid
+      partyid,
+      nickname
     );
 
-    if(res.correct) {
+    if (res.correct) {
       setOpen(false);
+      updateIsEditing(false);
+      router.refresh();
     } else {
-        toast.error(res.error);
+      toast.error(res.error);
     }
   };
 

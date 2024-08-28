@@ -10,6 +10,7 @@ interface InspectPartyContainerProps {
   votes: votes_schema_type[];
   total_hours: number;
   nickname: string;
+  userid: number;
 }
 
 export const InspectPartyContainer = ({
@@ -17,25 +18,27 @@ export const InspectPartyContainer = ({
   votes,
   total_hours,
   nickname,
+  userid,
 }: InspectPartyContainerProps) => {
-  const vote_blocks = useVoteBlockStore((store) =>
-    store.getTimeSlotBlocks(votes, total_hours, party)
-  );
-  const user_votes = useVoteBlockStore((store) =>
-    store.getUserVoteblocks(vote_blocks, nickname)
-  );
-  const join_list = useVoteBlockStore((store) => store.getJoinList(votes));
+  const { getTimeSlotBlocks, getUserVoteblocks, getJoinList } = useVoteBlockStore();
+  const vote_blocks = getTimeSlotBlocks(votes, total_hours, party);
+  const user_votes = getUserVoteblocks(vote_blocks, nickname);
+  const join_list = getJoinList(votes);
+
+  // bug with update allvoteblocks
 
   return (
     <>
       <PartyTimelineCard
         className="col-span-4"
         party={party}
-        AllvoteBlocks={vote_blocks}
-        userVoteBlocks={user_votes}
+        allvoteblocks={vote_blocks}
+        user_votes={user_votes}
         VoteNumber={join_list.length}
+        nickname={nickname}
+        userid={userid}
       />
-      <PartyJoinCard className="col-span-2" Allvotes={vote_blocks} joinList={join_list} />
+      <PartyJoinCard className="col-span-2" allvoteblocks={vote_blocks} joinList={join_list} />
     </>
   );
 };

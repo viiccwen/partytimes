@@ -37,7 +37,10 @@ export const PartyPanel = ({ token, id, email, nickname }: PartyPanelProps) => {
       const response = await GetPartyList();
 
       if (response.correct) {
-        setParty(response.data.party);
+        const party_list = response.data?.parties;
+        if (party_list) {
+          setParty(party_list);
+        }
       }
     };
 
@@ -55,10 +58,6 @@ export const PartyPanel = ({ token, id, email, nickname }: PartyPanelProps) => {
       console.log(response.error);
     }
   };
-
-  useEffect(() => {
-    console.log(open);  
-  }, [open])
 
   return (
     <>

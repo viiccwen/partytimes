@@ -11,7 +11,6 @@ import {
   Control,
   Controller,
   FieldValues,
-  UseFormRegister,
 } from "react-hook-form";
 
 interface TimeSelectProps {
