@@ -10,6 +10,7 @@ import { GetUserInfo } from "@/actions/user-actions";
 import { cookies } from "next/headers";
 import { InspectPartyContainer } from "./inspect-party-container";
 import { redirect } from "next/navigation";
+import { CalculateTotalHours } from "@/lib/party-timeline-helper";
 
 interface InspectPartyPanelProps {
   party: party_return_schema_type;
@@ -46,15 +47,4 @@ export const InspectPartyPanel = async ({ party }: InspectPartyPanelProps) => {
       </div>
     </>
   );
-};
-
-const CalculateTotalHours = (party: party_return_schema_type): number => {
-  let start_time = party.start_time === 12 ? 0 : party.start_time;
-  start_time =
-    party.start_ampm === ampm[0] ? party.start_time : party.start_time + 12;
-
-  let end_time = party.end_time === 12 ? 0 : party.end_time;
-  end_time = party.end_ampm === ampm[0] ? party.end_time : party.end_time + 12;
-
-  return end_time - start_time;
 };
