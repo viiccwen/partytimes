@@ -32,9 +32,7 @@ export const PartyTimelineHeader = ({
   HandleCancelButton,
   HandleDeleteButton,
 }: PartyTimelineHeaderProps) => {
-  const clicked_user: clicked_user_type = useVoteBlockStore(
-    (state) => state.clicked_user
-  );
+  const { isBounced, clicked_user } = useVoteBlockStore();
 
   return (
     <div className={className}>
@@ -60,10 +58,10 @@ export const PartyTimelineHeader = ({
             </Button>
             <Button
               variant="default"
-              className="gap-2"
+              className="gap-2 bg-blue-500 hover:bg-blue-700 text-white "
               onClick={HandleCheckButton}
             >
-              <CircleCheckBig className="w-4 h-4" />
+              <CircleCheckBig className="w-4 h-4 " />
               確認
             </Button>
           </div>
@@ -82,7 +80,7 @@ export const PartyTimelineHeader = ({
             </Button>
             <Button
               variant="default"
-              className="gap-2"
+              className="gap-2 bg-blue-500 hover:bg-blue-700 text-white "
               onClick={HandleScheduleButton}
             >
               <CircleCheckBig className="w-4 h-4" />
@@ -104,7 +102,11 @@ export const PartyTimelineHeader = ({
             </Button>
             <Button
               variant="outline"
-              className="gap-2"
+              className={`bg-blue-500 hover:bg-blue-700 text-white gap-2 ${
+                !isEditing && isBounced
+                  ? "transition scale-110 duration-300 ease-in-out"
+                  : "transition scale-100 duration-300 ease-in-out"
+              }`}
               onClick={HandleCheckButton}
             >
               <PenLine className="w-4 h-4" />

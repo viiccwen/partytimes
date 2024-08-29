@@ -29,6 +29,7 @@ type party_inspect_type = {
   isEditing: boolean;
   isScheduling: boolean;
   isMouseDown: boolean;
+  isBounced: boolean;
 
   updateCurPointsPosition: (row: number, col: number) => void;
   updateCurPointsUserid: (userid: string) => void;
@@ -36,6 +37,7 @@ type party_inspect_type = {
   updateIsEditing: (isEditing: boolean) => void;
   updateIsScheduling: (isScheduling: boolean) => void;
   updateIsMouseDown: (isMouseDown: boolean) => void;
+  updateIsBounced: (isBounced: boolean) => void;
 
   getTimeSlotBlocks: (
     votes: votes_schema_type[],
@@ -56,6 +58,7 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
   isEditing: false,
   isScheduling: false,
   isMouseDown: false,
+  isBounced: false,
 
   updateCurPointsPosition: (row, col) =>
     set({ cur_points_position: { row, col } }),
@@ -65,7 +68,8 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
   updateIsEditing: (isEditing) => set({ isEditing }),
   updateIsScheduling: (isScheduling) => set({ isScheduling }),
   updateIsMouseDown: (isMouseDown) => set({ isMouseDown }),
-
+  updateIsBounced: (isBounced) => set({ isBounced }),
+  
   getTimeSlotBlocks(votes, total_hours, party) {
     let blocks: block_type[][][] = Array.from(
       { length: party.date.length },

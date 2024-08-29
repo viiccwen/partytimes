@@ -65,11 +65,18 @@ export const generateGridCells = (
       isEditing || isScheduling
         ? "hover:cursor-row-resize select-none"
         : "hover:cursor-pointer";
-    const borderAppearance =
+    const RowborderAppearance =
       row % 2 == 0
-        ? "border-t-2"
+        ? "border-t-[1px]"
         : row == total_half_hours - 1
-        ? "border-b-2"
+        ? "border-b-[1px]"
+        : "";
+
+    const colBorderAppearance =
+      col == 0
+        ? "border-l-[1px]"
+        : col == date_length - 1
+        ? "border-r-[1px]"
         : "";
 
     const BlockAppearance = () => {
@@ -92,9 +99,10 @@ export const generateGridCells = (
       <div
         key={block_key}
         className={cn(
-          "border-x border-gray-400 h-[24px] col-auto hover:border-2 hover:border-dashed",
+          "border-r-[1px] border-slate-400 h-[24px] col-auto hover:border-[1px] hover:border-dashed",
           editingAppearance,
-          borderAppearance,
+          RowborderAppearance,
+          colBorderAppearance,
           BlockAppearance()
         )}
         onMouseDown={() => {
