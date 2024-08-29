@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { Button } from "../ui/button";
-
 import { CheckAuth } from "../../actions/user-actions";
 import { ModeToggle } from "./mode-toggle";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { MenuBar } from "./menubar";
 
 const Cookies = require("js-cookie");
 
@@ -36,6 +37,7 @@ const links = [
 
 export const Navbar = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     const islogin = async (token: any) => {
@@ -52,17 +54,32 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <div className="w-full bg-slate-900">
-      <div className="flex justify-end p-5 gap-5">
-        {links.map(
-          (ele, index) =>
-            ele.protected === isLogin && (
-              <Button key={index} asChild>
-                <Link href={ele.url}>{ele.name}</Link>
-              </Button>
-            )
-        )}
-        <ModeToggle />
+    <div className="w-full">
+      <div className="flex justify-between p-5">
+        <div className="flex ml-10">
+          <Image
+            src="/partytime-navbar-logo.png"
+            alt="logo"
+            width={130}
+            height={130}
+            className="cursor-pointer dark:invert"
+            onClick={() => {
+              router.push("/");
+            }}
+          />
+        </div>
+        <MenuBar side="left" isLogin={isLogin} />
+        <div className="flex gap-14 mr-10">
+          {links.map(
+            (ele, index) =>
+              ele.protected === isLogin && (
+                <button key={index} className="hover:text-blue-500">
+                  <Link href={ele.url}>{ele.name}</Link>
+                </button>
+              )
+          )}
+          <ModeToggle />
+        </div>
       </div>
     </div>
   );

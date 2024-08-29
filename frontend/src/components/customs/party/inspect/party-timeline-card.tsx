@@ -58,6 +58,7 @@ export const PartyTimelineCard = ({
     updateIsEditing,
     updateIsScheduling,
     updateIsMouseDown,
+    updateIsBounced,
     getUserVoteblocks,
   } = useVoteBlockStore();
   const { setOpen, setTimeslots } = useGuestVoteStore();
@@ -93,12 +94,23 @@ export const PartyTimelineCard = ({
     }
     return newSet;
   };
-
   const HandleClickTimeBlock = useCallback(
     (row: number, col: number) => {
       if (!isEditing && !isScheduling) {
-        // change a way to show error
-        toast.error("請先進入編輯模式");
+        updateIsBounced(true);
+
+        setTimeout(() => {
+          updateIsBounced(false);
+        }, 150);
+
+        setTimeout(() => {
+          updateIsBounced(true);
+        }, 300);
+
+        setTimeout(() => {
+          updateIsBounced(false);
+        }, 450);
+
         return;
       }
 
@@ -118,7 +130,7 @@ export const PartyTimelineCard = ({
         });
       }
     },
-    [isEditing, isScheduling, isMouseDown]
+    [isEditing, isScheduling, isMouseDown, updateIsBounced]
   );
 
   const TimeLineComponent = useMemo(() => {
@@ -168,8 +180,6 @@ export const PartyTimelineCard = ({
           getUserVoteblocks(allvoteblocks, clicked_user.creatorName)
         );
       }
-
-      toast.success("已進入編輯模式");
     } else if (userSelectBlock.size === 0) {
       toast.error("請選擇時間區塊！");
     } else {
@@ -231,10 +241,6 @@ export const PartyTimelineCard = ({
 
     if (!isScheduling) {
       updateIsScheduling(true);
-
-      // schudule block
-
-      toast.success("已進入登記模式");
     } else if (userSelectBlock.size === 0) {
       toast.error("請選擇時間區塊！");
     } else {
