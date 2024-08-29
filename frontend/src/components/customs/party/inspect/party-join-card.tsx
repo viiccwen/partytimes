@@ -113,14 +113,14 @@ const ParticipantButton = memo(
     <button
       value={join.userId}
       className={cn(
-        "h-[35px] text-lg text-start font-bold transition",
+        "h-[35px] text-lg text-start transition",
         showAllParticipants || point_joinList.has(join.userId)
           ? "dark:text-white text-black"
           : "text-gray-400",
         clicked_user.userId === join.userId
           ? "dark:text-blue-500 text-blue-700"
           : "",
-        "dark:hover:text-blue-400 hover:text-blue-600"
+        "dark:hover:text-blue-400 hover:text-blue-600 text-sm md:text-lg"
       )}
       onClick={() => handleClick(join)}
       onMouseEnter={() => updateCurPointsUserid(join.userId)}

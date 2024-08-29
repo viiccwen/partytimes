@@ -1,8 +1,13 @@
 import { block_type, clicked_user_type } from "@/stores/inspect-party-store";
-import { party_return_schema_type, timeslots_create_schema_type } from "./type";
+import {
+  decision_schema_type,
+  party_return_schema_type,
+  timeslots_create_schema_type,
+} from "./type";
 import { ReactNode } from "react";
 import { cn } from "./utils";
 import { ampm } from "./schema";
+import { CalendarCheck2 } from "lucide-react";
 
 export const CalculateTotalHours = (
   party: party_return_schema_type
@@ -36,7 +41,7 @@ export const generateGridCells = (
   updateCurPointsPosition: (row: number, col: number) => void,
   updateIsMouseDown: (isMouseDown: boolean) => void,
   cur_points_userid: string,
-  clicked_user: clicked_user_type
+  clicked_user: clicked_user_type,
 ): React.ReactElement => {
   const date_length = party.date.length;
   const pointed_status = cur_points_userid !== "";
@@ -70,7 +75,7 @@ export const generateGridCells = (
     const BlockAppearance = () => {
       if (!isEditing && !isScheduling) {
         // todo: change to another block
-        if(isScheduled) return "bg-orange-400";
+        if (isScheduled) return "bg-orange-400";
 
         if (clicked_status) {
           return isClicked ? "bg-blue-400" : "";
@@ -108,7 +113,7 @@ export const generateGridCells = (
       >
         {/* todo: add scheduled block */}
         {/* {isScheduled ? "scheduled" : ""} */}
-        </div>
+      </div>
     );
   };
 
@@ -121,7 +126,7 @@ export const generateGridCells = (
 
     return (
       <div key={row} className="flex">
-        <div className="flex justify-end items-center w-[60px] text-slate-600 select-none">
+        <div className="text-sm flex justify-end items-center w-[60px] text-slate-600 select-none">
           {time}
         </div>
         <div className={`grid grid-cols-${date_length} w-full ml-2`}>
@@ -140,7 +145,56 @@ export const generateGridCells = (
   );
 };
 
+export const GenerateScheduledBlock = (
+  party: party_return_schema_type,
+  scheduled_time: decision_schema_type | null
+) => {
+  if (scheduled_time === null) return null;
+
+  const date = scheduled_time.date;
+  const row = party.date.findIndex((v) => v === date);
+  const total_half_hours = CalculateTotalHours(party) * 2;
+  const start_time = scheduled_time.start_time;
+  const end_time = scheduled_time.end_time;
+  const start_ampm = scheduled_time.start_ampm;
+  const end_ampm = scheduled_time.end_ampm;
+
+  const start =
+    (start_time === 12 ? 0 : start_time) +
+    (start_ampm === "PM" ? 12 : 0) -
+    party.start_time;
+  const end =
+    (end_time === 12 ? 0 : end_time) +
+    (end_ampm === "PM" ? 12 : 0) -
+    party.start_time;
+
+  const height = (end - start) * 2;
+  const top = start * 2;
+
+  return (
+    <div className="mt-2 relative">
+      <div
+        className="hover:cursor-pointer absolute z-10 bg-orange-400 rounded-lg h-full flex justify-center items-center text-white"
+        style={{
+          top: `${top * 1.5}rem`,
+          left: `calc(65px + (100% - 65px) * ${row} / ${party.date.length} + (100% - 65px) / ${party.date.length} / 5)`,
+          width: `calc(100% / ${date.length})`,
+          height: `${height * 24}px`,
+        }}
+      >
+        <div className="text-xs flex flex-col"><CalendarCheck2 className="w-4 h-4" /></div>
+      </div>
+    </div>
+  );
+};
+
 export const generateHeader = (party: party_return_schema_type): ReactNode => {
+  const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const getWeekday = (dateString: string) => {
+    const date = new Date(dateString);
+    return weekdays[date.getDay()];
+  };
+  
   return (
     <div className="flex mt-5">
       <div className="w-[60px]"></div>
@@ -148,7 +202,8 @@ export const generateHeader = (party: party_return_schema_type): ReactNode => {
       <div className={`w-full ml-2 grid grid-cols-5`}>
         {party.date.map((date) => (
           <div key={date} className="text-center">
-            {date}
+            <div className="text-xs text-slate-400">{getWeekday(date)}</div>
+            <div className="text-sm">{date.slice(5).replace("-", "/")}</div>
           </div>
         ))}
       </div>

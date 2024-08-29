@@ -17,6 +17,7 @@ import {
   CalculateTotalHours,
   generateGridCells,
   generateHeader,
+  GenerateScheduledBlock,
   GenerateTimeSlots,
 } from "@/lib/party-timeline-helper";
 import { CreateVote, DeleteVote } from "@/actions/vote-actions";
@@ -31,6 +32,7 @@ interface PartyTimelineCardProps {
   VoteNumber: number;
   userid: number;
   has_scheduled: boolean;
+  scheduled_time: decision_schema_type | null;
 }
 
 const Cookie = require("js-cookie");
@@ -42,7 +44,8 @@ export const PartyTimelineCard = ({
   VoteNumber,
   user_votes,
   userid,
-  has_scheduled
+  has_scheduled,
+  scheduled_time,
 }: PartyTimelineCardProps) => {
   const {
     clicked_user,
@@ -136,10 +139,12 @@ export const PartyTimelineCard = ({
       cur_points_userid,
       clicked_user
     );
+    const scheduledBlock = GenerateScheduledBlock(party, scheduled_time);
 
     const container = (
       <div>
         {header}
+        {scheduledBlock !== null && scheduledBlock}
         {gridCells}
       </div>
     );
