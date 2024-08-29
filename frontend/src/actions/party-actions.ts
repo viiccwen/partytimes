@@ -74,7 +74,6 @@ export const GetPartyList =
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         return { correct: true, data };
       } else {
         const data = await response.json();

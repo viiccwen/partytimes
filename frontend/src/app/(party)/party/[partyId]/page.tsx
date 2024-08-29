@@ -4,6 +4,7 @@ import { GetVoteTimes } from "@/actions/vote-actions";
 import { Navbar } from "@/components/customs/navbar";
 import { InspectPartyContainer } from "@/components/customs/party/inspect/inspect-party-container";
 import { CalculateTotalHours } from "@/lib/party-timeline-helper";
+import { decision_schema_type } from "@/lib/type";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
@@ -39,9 +40,7 @@ export default async function PartyPage({
     : -1;
 
   const total_hours = CalculateTotalHours(party_data);
-
-  // debug
-  console.log(party_data);
+  const scheduled_time: decision_schema_type | null = party_data.decision;
 
   return (
     <>
@@ -49,13 +48,14 @@ export default async function PartyPage({
       <Navbar />
       <div className="m-7">
         <div className="w-full">
-          <div className="grid grid-cols-6 gap-6">
+          <div className="flex flex-col md:flex-row gap-6">
             <InspectPartyContainer
               party={party_data}
               votes={votes.data}
               total_hours={total_hours}
               nickname={nickname}
               userid={userid}
+              scheduled_time={scheduled_time}
             />
           </div>
         </div>
