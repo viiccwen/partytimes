@@ -227,7 +227,6 @@ export const PartyTimelineCard = ({
     updateIsScheduling(false);
   }, [user_votes, updateIsEditing, updateIsScheduling]);
 
-  // todo: implement
   const HandleScheduleButton = async () => {
     if (has_scheduled) {
       const res = await DeleteSchedule(party.partyid);
@@ -246,7 +245,6 @@ export const PartyTimelineCard = ({
     } else {
       const timeslot = GenerateTimeSlots(userSelectBlock, party)[0];
 
-      // createSchedule
       const res = await CreateSchedule(party.partyid, timeslot);
       if (!res.correct) toast.error(res.error);
       else {

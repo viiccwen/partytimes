@@ -5,8 +5,11 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "partytime",
-  description: "partytime 都不揪",
+  title: {
+    template: "%s - PartyTime",
+    default: "PartyTime",
+  },
+  description: "都不揪？｜揪團揪餐好簡單，盡在PartyTime",
 };
 
 export default function RootLayout({

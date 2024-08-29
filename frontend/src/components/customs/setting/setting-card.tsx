@@ -39,15 +39,15 @@ export const SettingCard = ({ id, nickname, email }: SettingCardProps) => {
           <div className="space-y-5">
             <div className="text-lg font-bold">基本資料</div>
             <Separator />
-            <div className="flex gap-[100px] items-center">
-              <p className="font-bold">名稱</p>
+            <div className="flex items-center">
+              <p className="font-bold w-[60px] md:w-[100px]">名稱</p>
               <div className="flex items-center gap-4">
                 <p>{nickname}</p>
                 <EditNameButton value={nickname} />
               </div>
             </div>
-            <div className="flex gap-[90px] items-center">
-              <p className="font-bold">Email</p>
+            <div className="flex items-center">
+              <p className="font-bold w-[60px] md:w-[100px]">Email</p>
               <div className="flex items-center gap-4">
                 <p>{email}</p>
                 <EditEmailButton value={email} />

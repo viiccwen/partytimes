@@ -12,11 +12,12 @@ import {
   Controller,
   FieldValues,
 } from "react-hook-form";
+import { party_create_schema_type } from "@/lib/type";
 
 interface TimeSelectProps {
   defaultValue: string;
   registerName: string;
-  control: Control<FieldValues, any>;
+  control: Control<party_create_schema_type, any>;
 }
 
 // todo: sharing the controller code on GitHub
@@ -30,9 +31,9 @@ export const TimeSelect = ({
     <Controller
       control={control}
       defaultValue={defaultValue}
-      name={registerName}
+      name={registerName as keyof party_create_schema_type}
       render={({ field }) => (
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
           <SelectTrigger className="w-[70px]">
             <SelectValue placeholder={defaultValue} ref={field.ref} />
           </SelectTrigger>
@@ -58,7 +59,7 @@ export const TimeSelect = ({
 interface AmPmSelectProps {
   defaultValue: string;
   registerName: string;
-  control: Control<FieldValues, any>;
+  control: Control<party_create_schema_type, any>;
 }
 
 export const AmPmSelect = ({
@@ -70,9 +71,9 @@ export const AmPmSelect = ({
     <Controller
       control={control}
       defaultValue={defaultValue}
-      name={registerName}
+      name={registerName as keyof party_create_schema_type}
       render={({ field }) => (
-        <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
           <SelectTrigger className="w-[70px]">
             <SelectValue placeholder={defaultValue} ref={field.ref} />
           </SelectTrigger>

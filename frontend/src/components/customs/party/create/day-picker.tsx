@@ -65,7 +65,6 @@ export const DayPicker = ({
   }, [currentDate]);
 
   const HandleClick = (value: string) => {
-    // limit up to 7 days
     if (selectedDate?.length === 7 && !selectedDate.includes(value)) {
       toast.error("最多選擇 7 天!");
       return;
@@ -124,7 +123,7 @@ export const DayPicker = ({
 
       <div className="grid grid-cols-7 text-center my-3">
         {days.map((day, index) => (
-          <div key={`day-${index}`} className="text-sm">
+          <div key={`day-${index}`} className="text-xs md:text-sm">
             {day}
           </div>
         ))}
@@ -132,21 +131,19 @@ export const DayPicker = ({
       <Separator className="w-full my-3" />
 
       <div className="grid grid-cols-7">
-        {/* daypicker */}
         {daysArray.map((day, index) =>
           day ? (
             <div className="flex justify-center">
               <Button
-            //   bug: warning key prop
                 key={`day-${index}-button`}
                 variant="outline"
-                className={`bg-inherit border-none text-slate-700 text-sm rounded-full w-[40px] h-[40px] m-3 place-content-center ${
+                className={`bg-inherit border-none text-slate-700 text-sm rounded-full w-[30px] h-[30px] md:w-[40px] md:h-[40px] m-3 place-content-center ${
                   selectedDate?.includes(
                     `${currentDate.getFullYear()}-${
                       currentDate.getMonth() + 1
                     }-${day}`
                   )
-                    ? "bg-orange-400 text-white hover:bg-orange-500 hover:text-white "
+                    ? "bg-orange-400 text-white hover:bg-orange-500 hover:text-white"
                     : "hover:bg-orange-300 hover:text-white dark:text-white"
                 }`}
                 disabled={CheckValidDate({

@@ -27,7 +27,6 @@ export const EditNameButton = ({ value }: EditNameButtonProps) => {
         const response = await EditName(name);
 
         if(response.correct) {
-            // todo: add a success toast
             window.location.reload();
         }
     }

@@ -76,7 +76,6 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
       () => Array.from({ length: total_hours * 2 }, () => [])
     );
 
-    // add votes
     votes.forEach((vote: votes_schema_type) => {
       vote.timeslots.forEach((timeslot) => {
         const date = timeslot.date;
@@ -96,7 +95,6 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
           (end_ampm === "PM" ? 12 : 0) -
           party.start_time;
 
-        // push start to end blocks
         for (let i = start; i < end; i += 0.5) {
           const col = i * 2;
           blocks[row][col].push({
@@ -107,37 +105,6 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
         }
       });
     });
-
-    // add decision
-    // if (party.status) {
-    //   const timeslot = party.decision;
-    //   const date = timeslot.date;
-    //   const row = party.date.findIndex((v) => v === date);
-
-    //   const start_time = timeslot.start_time;
-    //   const end_time = timeslot.end_time;
-    //   const start_ampm = timeslot.start_ampm;
-    //   const end_ampm = timeslot.end_ampm;
-
-    //   const start =
-    //     (start_time === 12 ? 0 : start_time) +
-    //     (start_ampm === "PM" ? 12 : 0) -
-    //     party.start_time;
-    //   const end =
-    //     (end_time === 12 ? 0 : end_time) +
-    //     (end_ampm === "PM" ? 12 : 0) -
-    //     party.start_time;
-
-    //   for (let i = start; i < end; i += 0.5) {
-    //     const col = i * 2;
-        
-    //     blocks[row][col].push({
-    //       creatorName: "派對時間",
-    //       userId: "-1",
-    //       isScheduled: true,
-    //     });
-    //   }
-    // }
 
     return blocks;
   },

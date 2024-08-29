@@ -16,7 +16,7 @@ export const ShareURLButton = () => {
       onClick={handleClick}
     >
       <Share2 className="w-4 h-4" />
-      <p>分享</p>
+      <p className="hidden md:block">分享</p>
     </Button>
   );
 };

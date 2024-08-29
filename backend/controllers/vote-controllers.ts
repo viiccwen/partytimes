@@ -146,8 +146,6 @@ export const GetVoteTimes = async (req: any, res: any) => {
   }
 };
 
-// todo: if user is a login user, then only the correct user can delete the vote
-// todo: if user is a guest, then everyone can delete the vote
 export const DeleteVote = async (req: any, res: any) => {
   try {
     const { partyid, userid } = await req.params;

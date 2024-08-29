@@ -95,6 +95,7 @@ export const GetPartyList = async (req: any, res: any) => {
   try {
     const party = await prisma.party.findMany({
       where: { userId: req.user.id },
+      include: { decision: true },
     });
 
     const filteredParty = party?.map((party) => {
@@ -108,6 +109,7 @@ export const GetPartyList = async (req: any, res: any) => {
         start_ampm: party.start_ampm,
         end_time: party.end_time,
         end_ampm: party.end_ampm,
+        decision: party.decision,
       };
     });
 
@@ -124,16 +126,17 @@ export const DeleteParty = async (req: any, res: any) => {
 
     if (!partyid) throw new Error("Please provide correct party information");
 
+    // check is party owner
+    const party = await prisma.party.findFirst({
+      where: { partyid, userId },
+    });
+
+    if (!party) throw new Error("You are not the owner of this party");
+
     await prisma.$transaction(async (prisma) => {
-      await prisma.votetime.deleteMany({
-        where: { partyid },
-      });
-
-      const party = await prisma.party.delete({
-        where: { partyid, userId },
-      });
-
-      if (!party) throw new Error("Failed to delete party");
+      await prisma.party.delete({ where: { partyid } });
+      await prisma.votetime.deleteMany({ where: { partyid } });
+      await prisma.decision.deleteMany({ where: { partyid } });
     });
 
     res.sendStatus(200);

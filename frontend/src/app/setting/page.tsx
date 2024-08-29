@@ -5,6 +5,11 @@ import { CheckAuth, GetUserInfo } from "@/actions/user-actions";
 import { redirect } from "next/navigation";
 import { userinfo_fetch_return_type } from "@/lib/type";
 import { SettingCard } from "@/components/customs/setting/setting-card";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Setting",
+};
 
 export default async function SettingPage() {
   const Cookies = cookies();
@@ -29,7 +34,7 @@ export default async function SettingPage() {
     <>
       <Toaster richColors />
       <Navbar />
-      <div className="m-[50px]">
+      <div className="m-[20px] md:m-[50px]">
         <SettingCard id={id} email={email} nickname={nickname} />
       </div>
     </>

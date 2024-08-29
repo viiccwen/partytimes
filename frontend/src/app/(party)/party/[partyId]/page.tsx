@@ -5,6 +5,7 @@ import { Navbar } from "@/components/customs/navbar";
 import { InspectPartyContainer } from "@/components/customs/party/inspect/inspect-party-container";
 import { CalculateTotalHours } from "@/lib/party-timeline-helper";
 import { decision_schema_type } from "@/lib/type";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
@@ -62,4 +63,17 @@ export default async function PartyPage({
       </div>
     </>
   );
+}
+
+export async function generateMetadata({ params }: { params: { partyId: string } }): Promise<Metadata> {
+  const party = await GetParty(params.partyId);
+  const party_data = party.data?.party;
+
+  if (!party.correct || party_data === undefined) {
+    redirect("/error");
+  }
+
+  return {
+    title: party_data.title + " - PartyTime",
+  };
 }

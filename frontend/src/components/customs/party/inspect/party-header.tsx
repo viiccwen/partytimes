@@ -10,8 +10,8 @@ interface PartyHeaderProps {
 export const PartyHeader = ({ party, className }: PartyHeaderProps) => {
   return (
     <div className={className}>
-      <div className="flex justify-between">
-        <p className="text-2xl font-bold">{party.title}</p>
+      <div className="flex justify-between items-center">
+        <p className="text-xl md:text-2xl font-bold">{party.title}</p>
         <div className="flex gap-2">
           <ShareURLButton />
           <EditButton
@@ -22,7 +22,7 @@ export const PartyHeader = ({ party, className }: PartyHeaderProps) => {
           />
         </div>
       </div>
-      <div>{party.description}</div>
+      <div className="text-sm md:text-base">{party.description}</div>
     </div>
   );
 };

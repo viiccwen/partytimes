@@ -37,8 +37,8 @@ export const PartyTimelineHeader = ({
   return (
     <div className={className}>
       {isEditing ? (
-        <div className="flex justify-between">
-          <p className="text-2xl font-bold">選擇中...</p>
+        <div className="flex justify-between items-center">
+          <p className="text-base md:text-2xl font-bold">選擇中...</p>
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -46,7 +46,7 @@ export const PartyTimelineHeader = ({
               onClick={HandleDeleteButton}
             >
               <Trash2 className="w-4 h-4" />
-              刪除
+              <p className="hidden md:block">刪除</p>
             </Button>
             <Button
               variant="outline"
@@ -54,7 +54,7 @@ export const PartyTimelineHeader = ({
               onClick={HandleCancelButton}
             >
               <CircleX className="w-4 h-4" />
-              取消
+              <p className="hidden md:block">取消</p>
             </Button>
             <Button
               variant="default"
@@ -62,13 +62,13 @@ export const PartyTimelineHeader = ({
               onClick={HandleCheckButton}
             >
               <CircleCheckBig className="w-4 h-4 " />
-              確認
+              <p className="hidden md:block">確認</p>
             </Button>
           </div>
         </div>
       ) : isScheduling ? (
-        <div className="flex justify-between">
-          <p className="text-2xl font-bold">決定日期...</p>
+        <div className="flex justify-between items-center">
+          <p className="text-base md:text-2xl font-bold">決定日期...</p>
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -76,7 +76,7 @@ export const PartyTimelineHeader = ({
               onClick={HandleCancelButton}
             >
               <CircleX className="w-4 h-4" />
-              取消
+              <p className="hidden md:block">取消</p>
             </Button>
             <Button
               variant="default"
@@ -84,13 +84,13 @@ export const PartyTimelineHeader = ({
               onClick={HandleScheduleButton}
             >
               <CircleCheckBig className="w-4 h-4" />
-              確認
+              <p className="hidden md:block">確認</p>
             </Button>
           </div>
         </div>
       ) : (
-        <div className="flex justify-between">
-          <p className="text-2xl font-bold">投票</p>
+        <div className="flex justify-between items-center">
+          <p className="text-base md:text-2xl font-bold">投票</p>
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -102,7 +102,7 @@ export const PartyTimelineHeader = ({
             </Button>
             <Button
               variant="outline"
-              className={`bg-blue-500 hover:bg-blue-700 text-white gap-2 ${
+              className={`bg-blue-500 hover:bg-blue-700 text-white gap-2 hover:text-white ${
                 !isEditing && isBounced
                   ? "transition scale-110 duration-300 ease-in-out"
                   : "transition scale-100 duration-300 ease-in-out"
