@@ -75,20 +75,22 @@ export const PartyPanel = ({
         </div>
 
         <TabsContent value="all">
-          <PartyTable party={parties} />
+          <PartyTable initialParty={parties} token={token} />
         </TabsContent>
         <TabsContent value="planned">
           <PartyTable
-            party={parties.filter(
+            initialParty={parties.filter(
               (content: party_return_schema_type) => content.status === true
             )}
+            token={token}
           />
         </TabsContent>
         <TabsContent value="unplanned">
           <PartyTable
-            party={parties.filter(
+            initialParty={parties.filter(
               (content: party_return_schema_type) => content.status === false
             )}
+            token={token}
           />
         </TabsContent>
         {/* <TabsContent value="responed">待施工...</TabsContent> */}

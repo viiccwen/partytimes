@@ -8,16 +8,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import {
-  party_return_schema_type,
-} from "@/lib/type";
+import useSWR from "swr";
+
+import { party_return_schema_type } from "@/lib/type";
 import { Clock, Text } from "lucide-react";
 import { create } from "zustand";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { GetPartyList } from "@/actions/party-actions";
 
 interface PartyTableProps {
-  party: party_return_schema_type[];
+  initialParty: party_return_schema_type[];
+  token: string;
 }
 
 type PartyTableStore = {
@@ -38,15 +40,37 @@ type time_type = {
   end_ampm: "AM" | "PM";
 };
 
-export const PartyTable = ({ party }: PartyTableProps) => {
+const fetcher = (token: string) =>
+  GetPartyList(token).then((res) => res.data?.party);
+
+export const PartyTable = ({ initialParty, token }: PartyTableProps) => {
+  const { data: party, error } = useSWR(token, fetcher, {
+    fallbackData: initialParty,
+    refreshInterval: 5000,
+  });
+
   const formatDate = (date: string) => {
-    const [year, month, day] = new Date(date).toISOString().split('T')[0].split('-');
+    const [year, month, day] = new Date(date)
+      .toISOString()
+      .split("T")[0]
+      .split("-");
     return `${year}/${month}/${day}`;
   };
 
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (!party) {
+    return <div>Loading...</div>;
+  }
+
   const formatTime = (timeslot: time_type): string => {
-    const formatHour = (hour: number) => (hour < 1 ? hour + 12 : hour).toString().replace(".5", ":30");
-    return `${formatHour(timeslot.start_time)} ${timeslot.start_ampm} ~ ${formatHour(timeslot.end_time)} ${timeslot.end_ampm}`;
+    const formatHour = (hour: number) =>
+      (hour < 1 ? hour + 12 : hour).toString().replace(".5", ":30");
+    return `${formatHour(timeslot.start_time)} ${
+      timeslot.start_ampm
+    } ~ ${formatHour(timeslot.end_time)} ${timeslot.end_ampm}`;
   };
 
   return (
@@ -63,9 +87,14 @@ export const PartyTable = ({ party }: PartyTableProps) => {
                 <div className="flex gap-3 items-center text-sm w-[90px] md:text-base">
                   {content.status ? formatDate(content.date[0]) : "未計畫"}
                 </div>
-                <Separator orientation="vertical" className="h-full mx-5 hidden md:block" />
+                <Separator
+                  orientation="vertical"
+                  className="h-full mx-5 hidden md:block"
+                />
                 <div className="flex flex-col items-start gap-3">
-                  <div className="text-sm md:text-lg mb-3 font-bold">{content.title}</div>
+                  <div className="text-sm md:text-lg mb-3 font-bold">
+                    {content.title}
+                  </div>
                   <div className="text-xs md:text-base flex items-center gap-2">
                     {content.description ? (
                       <>
@@ -78,12 +107,14 @@ export const PartyTable = ({ party }: PartyTableProps) => {
                   </div>
                   <div className="text-xs md:text-base flex items-center gap-2">
                     <Clock size={16} />
-                    {content.status ? formatTime(content.decision) : formatTime({
-                      start_time: content.start_time,
-                      start_ampm: content.start_ampm,
-                      end_time: content.end_time,
-                      end_ampm: content.end_ampm,
-                    })}
+                    {content.status
+                      ? formatTime(content.decision)
+                      : formatTime({
+                          start_time: content.start_time,
+                          start_ampm: content.start_ampm,
+                          end_time: content.end_time,
+                          end_ampm: content.end_ampm,
+                        })}
                   </div>
                 </div>
               </div>
