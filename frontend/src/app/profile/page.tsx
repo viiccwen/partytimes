@@ -7,8 +7,13 @@ import { Toaster } from "sonner";
 
 import { userinfo_fetch_return_type } from "@/lib/type";
 import { GetPartyList } from "@/actions/party-actions";
+import { Metadata } from "next";
+import { Suspense } from "react";
 
-// check for valid user
+export const metadata: Metadata = {
+  title: "Profile",
+};
+
 export default async function ProfilePage() {
   const Cookies = cookies();
   const token: string | undefined = Cookies.get("token")?.value
@@ -29,7 +34,7 @@ export default async function ProfilePage() {
 
   const party = await GetPartyList(token);
 
-  if(!party.correct || !party.data) {
+  if (!party.correct || !party.data) {
     redirect("/error");
   }
 
@@ -38,7 +43,15 @@ export default async function ProfilePage() {
       <Toaster richColors />
       <Navbar />
       <div className="m-7">
-        <PartyPanel token={token} id={id} nickname={nickname} email={email} parties={party.data.party} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <PartyPanel
+            token={token}
+            id={id}
+            nickname={nickname}
+            email={email}
+            parties={party.data.party}
+          />
+        </Suspense>
       </div>
     </>
   );

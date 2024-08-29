@@ -46,6 +46,15 @@ export const decision_schema = z.object({
   partyid: z.string().optional(),
 });
 
+export const party_create_schema = z.object({
+  title: z.string().min(1, "派對名稱不可為空").max(30, "派對名稱最多30字"),
+  description: z.string().max(50, "派對簡介最多50字"),
+  start_time: z.string(),
+  start_ampm: z.enum(ampm),
+  end_time: z.string(),
+  end_ampm: z.enum(ampm),
+});
+
 export const party_return_schema = z.object({
   title: z.string(),
   partyid: z.string(),

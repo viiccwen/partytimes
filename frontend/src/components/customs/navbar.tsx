@@ -11,7 +11,6 @@ import { MenuBar } from "./menubar";
 
 const Cookies = require("js-cookie");
 
-// link
 const links = [
   {
     name: "創建",
@@ -19,7 +18,7 @@ const links = [
     protected: true,
   },
   {
-    name: "個人主頁",
+    name: "主頁",
     url: "/profile",
     protected: true,
   },
@@ -56,7 +55,10 @@ export const Navbar = () => {
   return (
     <div className="w-full">
       <div className="flex justify-between p-5">
-        <div className="flex ml-10">
+        <div className="flex ml-3 md:hidden">
+          <MenuBar side="left" isLogin={isLogin} />
+        </div>
+        <div className="flex justify-center md:ml-10">
           <Image
             src="/partytime-navbar-logo.png"
             alt="logo"
@@ -68,16 +70,17 @@ export const Navbar = () => {
             }}
           />
         </div>
-        <MenuBar side="left" isLogin={isLogin} />
-        <div className="flex gap-14 mr-10">
-          {links.map(
-            (ele, index) =>
-              ele.protected === isLogin && (
-                <button key={index} className="hover:text-blue-500">
-                  <Link href={ele.url}>{ele.name}</Link>
-                </button>
-              )
-          )}
+        <div className="gap-14 md:mr-10 mr-3 flex">
+          <div className="hidden md:flex">
+            {links.map(
+              (ele, index) =>
+                ele.protected === isLogin && (
+                  <button key={index} className="mr-10 hover:text-blue-500 transition duration-300 ease-in-out">
+                    <Link href={ele.url}>{ele.name}</Link>
+                  </button>
+                )
+            )}
+          </div>
           <ModeToggle />
         </div>
       </div>

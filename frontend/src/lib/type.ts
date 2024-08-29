@@ -4,10 +4,12 @@ import {
   decision_schema,
   guest_schema,
   login_schema,
+  party_create_schema,
   party_edit_schema,
   party_return_schema,
   register_schema,
   timeslots_create_schema,
+  timeslots_return_schema,
   user_info_schema,
   votes_schema,
 } from "./schema";
@@ -29,7 +31,11 @@ export type timeslots_create_schema_type = z.infer<
   typeof timeslots_create_schema
 >;
 
+export type timeslots_return_schema_type = z.infer<typeof timeslots_return_schema>;
+
 export type votes_schema_type = z.infer<typeof votes_schema>;
+
+export type party_create_schema_type = z.infer<typeof party_create_schema>;
 
 // fetch return type
 export type general_fetch_return_type = {

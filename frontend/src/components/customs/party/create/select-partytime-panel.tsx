@@ -11,42 +11,34 @@ import { create } from "zustand";
 import { useForm } from "react-hook-form";
 
 import { CreateParty } from "@/actions/party-actions";
-
-type PageState = {
-  page: number;
-  FirstPage: () => void;
-  SecondPage: () => void;
-};
-
-const usePageStore = create<PageState>((set) => ({
-  page: 1,
-  FirstPage: () => set({ page: 1 }),
-  SecondPage: () => set({ page: 2 }),
-}));
+import { zodResolver } from "@hookform/resolvers/zod";
+import { party_create_schema } from "@/lib/schema";
+import { party_create_schema_type } from "@/lib/type";
 
 export const SelectPartyTimePanel = () => {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<string[]>([]);
-  const { page, FirstPage, SecondPage } = usePageStore();
+  const [page, setPage] = useState<number>(1);
 
-  // todo: add types and zodresolver
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm();
+  } = useForm<party_create_schema_type>({
+    resolver: zodResolver(party_create_schema),
+  });
 
   const HandleNextClick = () => {
     if (selectedDate.length === 0) {
       toast.error("請選擇日期!");
       return;
     }
-    SecondPage();
+    setPage(2);
   };
 
   const HandlePrevClick = () => {
-    FirstPage();
+    setPage(1);
   };
 
   const onSubmit = async (formdata: any) => {
@@ -57,7 +49,7 @@ export const SelectPartyTimePanel = () => {
     const resposne = await CreateParty(formdata);
 
     if (resposne.correct) {
-      router.push(`/party/${resposne.data.partyid}`);
+      router.push(`/party/${resposne.data?.partyid}`);
     } else {
       toast.error(resposne.error);
     }
@@ -65,7 +57,7 @@ export const SelectPartyTimePanel = () => {
 
   if (page === 1) {
     return (
-      <div className="mt-10 mx-20">
+      <div className="mt-10 mx-10 md:mx-20">
         <div className="flex justify-between items-center">
           <p className="text-2xl font-bold">創建派對 🎉</p>
           <Button variant="outline" onClick={HandleNextClick}>
@@ -85,22 +77,30 @@ export const SelectPartyTimePanel = () => {
   } else if (page === 2) {
     return (
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mt-10 mx-20">
+        <div className="mt-10 mx-10 md:mx-20">
           <div className="flex justify-between items-center">
-            <p className="text-2xl font-bold">創建派對 🎉</p>
+            <p className="text-lg md:text-2xl font-bold">創建派對 🎉</p>
             <div className=" space-x-2">
               <Button variant="outline" onClick={HandlePrevClick}>
-                上一步
-                <CircleArrowLeft className="w-4 h-4 ml-4" />
+                <div className="flex flex-col md:flex-row items-center">
+                  <span className="hidden md:block">上一步</span>
+                  <CircleArrowLeft className="w-4 h-4 mt-2 md:mt-0 md:ml-4" />
+                  <span className="text-sm text-slate-500 md:hidden">
+                    上一步
+                  </span>
+                </div>
               </Button>
               <Button variant="outline" type="submit">
-                創建
-                <CirclePlus className="w-4 h-4 ml-4" />
+                <div className="flex flex-col md:flex-row items-center">
+                  <span className="hidden md:block">創建</span>
+                  <CirclePlus className="w-4 h-4 mt-2 md:mt-0 md:ml-4" />
+                  <span className="text-sm text-slate-500 md:hidden">創建</span>
+                </div>
               </Button>
             </div>
           </div>
           <div className="mt-7">
-            <CreatePartyCard register={register} control={control} />
+            <CreatePartyCard register={register} control={control} errors={errors} />
           </div>
         </div>
       </form>

@@ -41,8 +41,10 @@ export const generateGridCells = (
   updateCurPointsPosition: (row: number, col: number) => void,
   updateIsMouseDown: (isMouseDown: boolean) => void,
   cur_points_userid: string,
-  clicked_user: clicked_user_type,
+  clicked_user: clicked_user_type
 ): React.ReactElement => {
+  if(!party || !party.date) return <></>;
+
   const date_length = party.date.length;
   const pointed_status = cur_points_userid !== "";
   const clicked_status = clicked_user.userId !== "";
@@ -71,7 +73,6 @@ export const generateGridCells = (
         : row == total_half_hours - 1
         ? "border-b-[1px]"
         : "";
-
     const colBorderAppearance =
       col == 0
         ? "border-l-[1px]"
@@ -137,7 +138,13 @@ export const generateGridCells = (
         <div className="text-sm flex justify-end items-center w-[60px] text-slate-600 select-none">
           {time}
         </div>
-        <div className={`grid grid-cols-${date_length} w-full ml-2`}>
+        {/* bug: grid is not working properly */}
+        <div
+          className={`grid w-full ml-2`}
+          style={{
+            gridTemplateColumns: `repeat(${party.date.length}, 1fr)`,
+          }}
+        >
           {Array.from({ length: date_length }, (_, col) =>
             renderCell(row, col)
           )}
@@ -190,24 +197,38 @@ export const GenerateScheduledBlock = (
           height: `${height * 24}px`,
         }}
       >
-        <div className="text-xs flex flex-col"><CalendarCheck2 className="w-4 h-4" /></div>
+        <div className="text-xs flex flex-col">
+          <CalendarCheck2 className="w-4 h-4" />
+        </div>
       </div>
     </div>
   );
 };
 
 export const generateHeader = (party: party_return_schema_type): ReactNode => {
+  if(!party || !party.date) return null;
+
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const getWeekday = (dateString: string) => {
     const date = new Date(dateString);
     return weekdays[date.getDay()];
   };
-  
+
+  const GetDateLength = (length: number) => {
+    console.log(length.toString());
+    return `grid-cols-${length.toString()}`;
+  };
+
   return (
     <div className="flex mt-5">
       <div className="w-[60px]"></div>
       {/* bug: grid is not working properly */}
-      <div className={`w-full ml-2 grid grid-cols-5`}>
+      <div
+        className={`w-full ml-2 grid`}
+        style={{
+          gridTemplateColumns: `repeat(${party.date.length}, 1fr)`,
+        }}
+      >
         {party.date.map((date) => (
           <div key={date} className="text-center">
             <div className="text-xs text-slate-400">{getWeekday(date)}</div>

@@ -19,7 +19,7 @@ export const StatusLabel = ({ status }: StatusLabelProps) => {
   return (
     <div className="flex items-center space-x-2">
       <div className={`w-2 h-2 rounded-full ${current_status.color}`}></div>
-      <p>{current_status.status}</p>
+      <p className="hidden md:block">{current_status.status}</p>
     </div>
   );
 };

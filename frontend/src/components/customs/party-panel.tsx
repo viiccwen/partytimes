@@ -7,7 +7,6 @@ import { PartyTable } from "./profile/party-table";
 import { SettingButton } from "./profile/setting-button";
 import { LogOutButton } from "./profile/logout-button";
 
-import { GetPartyList } from "@/actions/party-actions";
 import { party_return_schema_type } from "@/lib/type";
 import { NicknameAlertDialog } from "./user/nickname-alert-dialog";
 
@@ -62,11 +61,12 @@ export const PartyPanel = ({
     <>
       <Tabs defaultValue="all" className="w-full">
         <div className="flex justify-between">
-          <TabsList className="grid w-[400px] grid-cols-4">
-            <TabsTrigger value="all">所有</TabsTrigger>
-            <TabsTrigger value="planned">已計畫</TabsTrigger>
-            <TabsTrigger value="unplanned">未計畫</TabsTrigger>
-            <TabsTrigger value="responed">回覆</TabsTrigger>
+          {/* todo: response party function */}
+          <TabsList className="grid md:w-[400px] grid-cols-3">
+            <TabsTrigger value="all" className="text-xs md:text-sm">所有</TabsTrigger>
+            <TabsTrigger value="planned" className="text-xs md:text-sm">已計畫</TabsTrigger>
+            <TabsTrigger value="unplanned" className="text-xs md:text-sm">未計畫</TabsTrigger>
+            {/* <TabsTrigger value="responed" className="text-xs md:text-sm">回覆</TabsTrigger> */}
           </TabsList>
           <div className="flex gap-3">
             <SettingButton />
@@ -91,7 +91,7 @@ export const PartyPanel = ({
             )}
           />
         </TabsContent>
-        <TabsContent value="responed">{/* Todo: response party */}</TabsContent>
+        {/* <TabsContent value="responed">待施工...</TabsContent> */}
       </Tabs>
 
       <NicknameAlertDialog open={open} onSubmit={onSubmit} />
