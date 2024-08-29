@@ -34,23 +34,12 @@ const links = [
   },
 ];
 
-export const Navbar = () => {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+interface NavbarProps {
+  isLogin: boolean;
+}
+
+export const Navbar = ({ isLogin }: NavbarProps) => {
   const router = useRouter();
-
-  useEffect(() => {
-    const islogin = async (token: any) => {
-      const res = await CheckAuth(token);
-      setIsLogin(res);
-    };
-
-    const token = Cookies.get("token");
-    if (token !== undefined) {
-      islogin(token);
-    } else {
-      setIsLogin(false);
-    }
-  }, []);
 
   return (
     <div className="w-full">

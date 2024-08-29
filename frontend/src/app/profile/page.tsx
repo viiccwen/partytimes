@@ -20,7 +20,7 @@ export default async function ProfilePage() {
     ? Cookies.get("token")?.value
     : undefined;
 
-  const auth: boolean = await CheckAuth(token);
+  const isLogin = await CheckAuth(token);
   const userinfo: userinfo_fetch_return_type = await GetUserInfo(token);
   const id: number = userinfo.data?.id ? userinfo.data.id : -1;
   const nickname: string = userinfo.data?.nickname
@@ -28,7 +28,7 @@ export default async function ProfilePage() {
     : "";
   const email: string = userinfo.data?.email ? userinfo.data.email : "";
 
-  if (!auth || token === undefined || !userinfo.correct) {
+  if (!isLogin || token === undefined || !userinfo.correct) {
     redirect("/login");
   }
 
@@ -41,17 +41,15 @@ export default async function ProfilePage() {
   return (
     <>
       <Toaster richColors />
-      <Navbar />
+      <Navbar isLogin={isLogin} />
       <div className="m-7">
-        <Suspense fallback={<div>Loading...</div>}>
-          <PartyPanel
-            token={token}
-            id={id}
-            nickname={nickname}
-            email={email}
-            parties={party.data.party}
-          />
-        </Suspense>
+        <PartyPanel
+          token={token}
+          id={id}
+          nickname={nickname}
+          email={email}
+          parties={party.data.party}
+        />
       </div>
     </>
   );

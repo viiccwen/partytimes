@@ -1,5 +1,5 @@
 import { GetParty } from "@/actions/party-actions";
-import { GetUserInfo } from "@/actions/user-actions";
+import { CheckAuth, GetUserInfo } from "@/actions/user-actions";
 import { GetVoteTimes } from "@/actions/vote-actions";
 import { Navbar } from "@/components/customs/navbar";
 import { InspectPartyContainer } from "@/components/customs/party/inspect/inspect-party-container";
@@ -27,6 +27,8 @@ export default async function PartyPage({
     ? cookie.get("token")?.value
     : undefined;
 
+  const isLogin = await CheckAuth(token);
+
   const votes = await GetVoteTimes(party_data.partyid);
   if (votes.data === undefined) redirect("/error");
 
@@ -46,7 +48,7 @@ export default async function PartyPage({
   return (
     <>
       <Toaster richColors />
-      <Navbar />
+      <Navbar isLogin={isLogin} />
       <div className="m-7">
         <div className="w-full">
           <div className="flex flex-col md:flex-row gap-6">
@@ -65,15 +67,15 @@ export default async function PartyPage({
   );
 }
 
-export async function generateMetadata({ params }: { params: { partyId: string } }): Promise<Metadata> {
-  const party = await GetParty(params.partyId);
-  const party_data = party.data?.party;
+// export async function generateMetadata({ params }: { params: { partyId: string } }): Promise<Metadata> {
+//   const party = await GetParty(params.partyId);
+//   const party_data = party.data?.party;
 
-  if (!party.correct || party_data === undefined) {
-    redirect("/error");
-  }
+//   if (!party.correct || party_data === undefined) {
+//     redirect("/error");
+//   }
 
-  return {
-    title: party_data.title + " - PartyTime",
-  };
-}
+//   return {
+//     title: party_data.title + " - PartyTime",
+//   };
+// }

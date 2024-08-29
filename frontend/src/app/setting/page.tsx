@@ -17,7 +17,7 @@ export default async function SettingPage() {
     ? Cookies.get("token")?.value
     : undefined;
 
-  const auth: boolean = await CheckAuth(token);
+  const isLogin = await CheckAuth(token);
 
   const userinfo: userinfo_fetch_return_type = await GetUserInfo(token);
   const id: number = userinfo.data?.id ? userinfo.data.id : -1;
@@ -26,14 +26,14 @@ export default async function SettingPage() {
     : "";
   const email: string = userinfo.data?.email ? userinfo.data.email : "";
 
-  if (!auth) {
+  if (!isLogin) {
     redirect("/login");
   }
 
   return (
     <>
       <Toaster richColors />
-      <Navbar />
+      <Navbar isLogin={isLogin} />
       <div className="m-[20px] md:m-[50px]">
         <SettingCard id={id} email={email} nickname={nickname} />
       </div>

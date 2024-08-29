@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { DeleteParty } from "@/actions/party-actions";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { party_table_store } from "../profile/party-table";
 
 interface DeletePartyButtonProps {
   partyid: string;
@@ -19,6 +20,7 @@ export const DeletePartyButton = ({
 }: DeletePartyButtonProps) => {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
+  const { setOpen } = party_table_store();
 
   const HandleClick = async () => {
     setIsDeleting(true);
@@ -26,6 +28,7 @@ export const DeletePartyButton = ({
       const response = await DeleteParty(partyid);
 
       if (response.correct) {
+        setOpen(false);
         router.push("/profile");
       } else {
         toast.error(response.error);
