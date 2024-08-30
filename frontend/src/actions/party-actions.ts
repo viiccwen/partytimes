@@ -4,6 +4,7 @@ import {
   get_party_fetch_return_type,
   get_partylist_fetch_return_type,
   general_fetch_return_type,
+  party_create_schema_type,
 } from "@/lib/type";
 import { revalidatePath } from "next/cache";
 
@@ -11,9 +12,13 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const Cookie = require("js-cookie");
 
 export const CreateParty = async (
-  formdata: any
+  formdata: party_create_schema_type & {date: string[]}
 ): Promise<create_party_fetch_return_type> => {
   const token = Cookie.get("token");
+
+  const start_time = Number(formdata.start_time);
+  const end_time = Number(formdata.end_time);
+
   try {
     const response = await fetch(`${API_URL}/party/create`, {
       method: "POST",
@@ -21,7 +26,15 @@ export const CreateParty = async (
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(formdata),
+      body: JSON.stringify({
+        date: formdata.date,
+        title: formdata.title,
+        description: formdata.description,
+        start_time: start_time,
+        start_ampm: formdata.start_ampm,
+        end_time: end_time,
+        end_ampm: formdata.end_ampm,
+      }),
     });
 
     if (response.ok) {

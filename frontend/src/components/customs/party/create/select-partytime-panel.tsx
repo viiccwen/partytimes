@@ -41,12 +41,25 @@ export const SelectPartyTimePanel = () => {
     setPage(1);
   };
 
-  const onSubmit = async (formdata: any) => {
-    formdata.date = selectedDate;
-    formdata.start_time = Number(formdata.start_time);
-    formdata.end_time = Number(formdata.end_time);
+  const onSubmit = async (formdata: party_create_schema_type) => {
+    const start_time = Number(formdata.start_time);
+    const end_time = Number(formdata.end_time);
 
-    const resposne = await CreateParty(formdata);
+    const tw_start_time =
+      (start_time === 12 ? 0 : start_time) +
+      (formdata.start_ampm === "PM" ? 12 : 0) -
+      start_time;
+    const tw_end_time =
+      (end_time === 12 ? 0 : end_time) +
+      (formdata.end_ampm === "PM" ? 12 : 0) -
+      start_time;
+
+    if (tw_start_time >= tw_end_time) {
+      toast.error("開始時間不能大於或等於結束時間!");
+      return;
+    }
+
+    const resposne = await CreateParty({...formdata, date: selectedDate});
 
     if (resposne.correct) {
       router.push(`/party/${resposne.data?.partyid}`);
@@ -100,7 +113,11 @@ export const SelectPartyTimePanel = () => {
             </div>
           </div>
           <div className="mt-7">
-            <CreatePartyCard register={register} control={control} errors={errors} />
+            <CreatePartyCard
+              register={register}
+              control={control}
+              errors={errors}
+            />
           </div>
         </div>
       </form>
