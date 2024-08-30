@@ -67,15 +67,15 @@ export default async function PartyPage({
   );
 }
 
-// export async function generateMetadata({ params }: { params: { partyId: string } }): Promise<Metadata> {
-//   const party = await GetParty(params.partyId);
-//   const party_data = party.data?.party;
+export async function generateMetadata({ params }: { params: { partyId: string } }): Promise<Metadata> {
+  const party = await GetParty(params.partyId);
+  const party_data = party.data?.party;
 
-//   if (!party.correct || party_data === undefined) {
-//     redirect("/error");
-//   }
+  if (!party.correct || party_data === undefined) {
+    redirect("/error");
+  }
 
-//   return {
-//     title: party_data.title + " - PartyTime",
-//   };
-// }
+  return {
+    title: party_data.title,
+  };
+}
