@@ -6,10 +6,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    template: "%s - PartyTime",
-    default: "PartyTime",
+    template: "%s - PartyTimes",
+    default: "PartyTimes",
   },
-  description: "都不揪？｜揪團揪餐好簡單，盡在PartyTime",
+  description: "都不揪？｜揪團揪餐好簡單，盡在PartyTimes",
 };
 
 export default function RootLayout({
