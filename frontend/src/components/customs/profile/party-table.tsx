@@ -82,10 +82,10 @@ export const PartyTable = ({ initialParty, token }: PartyTableProps) => {
       <CardContent>
         {party.map((content: party_return_schema_type, index: number) => (
           <Link href={`/party/${content.partyid}`} key={index}>
-            <button className="flex w-full h-[150px] gap-5 border-2 rounded-lg p-5 my-5 hover:text-white hover:bg-blue-500 transition duration-500 ease-in-out">
+            <button className="flex w-full h-[150px] gap-5 border-2 rounded-lg p-5 my-5 hover:text-white hover:bg-blue-500 transition duration-300 ease-in-out">
               <div className="flex h-full">
                 <div className="flex gap-3 items-center text-sm w-[90px] md:text-base">
-                  {content.status ? formatDate(content.date[0]) : "未計畫"}
+                  {content.status ? formatDate(content.decision.date) : "未計畫"}
                 </div>
                 <Separator
                   orientation="vertical"
