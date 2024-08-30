@@ -82,15 +82,16 @@ export const generateGridCells = (
 
     const BlockAppearance = () => {
       if (!isEditing && !isScheduling) {
-        // todo: change to another block
-        if (isScheduled) return "bg-orange-400";
-
         if (clicked_status) {
           return isClicked ? "bg-blue-400" : "";
         } else if (pointed_status) {
           return isPointed ? "bg-blue-400" : "";
         }
         return isVoted ? DecideBlockColor(VoteNumber, isVoted) : "";
+      } else if(isScheduling) {
+        // let all timeblock be blue, only scheduled block be orange
+        if(isSelected) return "bg-orange-400";
+        if(isVoted) return DecideBlockColor(VoteNumber, isVoted);
       } else {
         return isSelected ? "bg-blue-400" : "";
       }
@@ -120,8 +121,6 @@ export const generateGridCells = (
         onDragStart={(e) => e.preventDefault()}
         onMouseLeave={() => updateCurPointsPosition(-1, -1)}
       >
-        {/* todo: add scheduled block */}
-        {/* {isScheduled ? "scheduled" : ""} */}
       </div>
     );
   };
