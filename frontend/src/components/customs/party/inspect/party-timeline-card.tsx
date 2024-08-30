@@ -239,6 +239,7 @@ export const PartyTimelineCard = ({
     }
 
     if (!isScheduling) {
+      setUserSelectBlock(new Set<string>());
       updateIsScheduling(true);
     } else if (userSelectBlock.size === 0) {
       toast.error("請選擇時間區塊！");
