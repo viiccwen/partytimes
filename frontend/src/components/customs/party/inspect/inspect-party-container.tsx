@@ -4,6 +4,7 @@ import { decision_schema_type, party_return_schema_type, votes_schema_type } fro
 import { PartyTimelineCard } from "./party-timeline-card";
 import { PartyJoinCard } from "./party-join-card";
 import { useVoteBlockStore } from "@/stores/inspect-party-store";
+import { cn } from "@/lib/utils";
 
 interface InspectPartyContainerProps {
   party: party_return_schema_type;

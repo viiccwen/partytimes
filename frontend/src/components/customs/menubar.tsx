@@ -61,7 +61,7 @@ export const MenuBar = ({
   return (
     <Sheet>
       <SheetTrigger>
-        <MenuIcon />
+        <MenuIcon className="text-white" />
       </SheetTrigger>
       <SheetContent side={side}>
         <div className="flex justify-center items-center">

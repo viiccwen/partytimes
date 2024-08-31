@@ -15,6 +15,7 @@ import { HydrateProvider } from "../hydrate-provider";
 import { EditNameButton } from "./edit-name-button";
 import { EditEmailButton } from "./edit-email-button";
 import { BackButton } from "../back-button";
+import { ModeToggle } from "../mode-toggle";
 
 interface SettingCardProps {
   id: number;
@@ -51,6 +52,12 @@ export const SettingCard = ({ id, nickname, email }: SettingCardProps) => {
               <div className="flex items-center gap-4">
                 <p>{email}</p>
                 <EditEmailButton value={email} />
+              </div>
+            </div>
+            <div className="flex items-center">
+              <p className="font-bold w-[60px] md:w-[100px]">外觀</p>
+              <div className="flex items-center gap-4">
+                <ModeToggle />
               </div>
             </div>
           </div>

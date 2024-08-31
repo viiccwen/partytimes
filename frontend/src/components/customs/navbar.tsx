@@ -1,15 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-
-import { CheckAuth } from "../../actions/user-actions";
 import { ModeToggle } from "./mode-toggle";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { MenuBar } from "./menubar";
-
-const Cookies = require("js-cookie");
 
 const links = [
   {
@@ -23,11 +18,6 @@ const links = [
     protected: true,
   },
   {
-    name: "註冊",
-    url: "/register",
-    protected: false,
-  },
-  {
     name: "登入",
     url: "/login",
     protected: false,
@@ -36,24 +26,25 @@ const links = [
 
 interface NavbarProps {
   isLogin: boolean;
+  HasFixed: boolean;
 }
 
-export const Navbar = ({ isLogin }: NavbarProps) => {
+export const Navbar = ({ isLogin, HasFixed }: NavbarProps) => {
   const router = useRouter();
 
   return (
-    <div className="w-full">
+    <div className={`w-full ${HasFixed ? "fixed" : ""} backdrop-blur-sm`}>
       <div className="flex justify-between p-5">
         <div className="flex ml-3 md:hidden">
           <MenuBar side="left" isLogin={isLogin} />
         </div>
         <div className="flex justify-center md:ml-10">
           <Image
-            src="/partytime-navbar-logo.png"
+            src="/PartyTimes-logo.png"
             alt="logo"
-            width={130}
-            height={130}
-            className="cursor-pointer dark:invert"
+            width={170}
+            height={50}
+            className="cursor-pointer invert"
             onClick={() => {
               router.push("/");
             }}
@@ -64,13 +55,16 @@ export const Navbar = ({ isLogin }: NavbarProps) => {
             {links.map(
               (ele, index) =>
                 ele.protected === isLogin && (
-                  <button key={index} className="mr-10 hover:text-blue-500 transition duration-300 ease-in-out">
+                  <button
+                    key={index}
+                    className="text-white bg-purple-600 px-4 py-2 rounded-full mr-10 transition duration-300 ease-in-out hover:text-purple-300 hover:shadow-lg"
+                  >
                     <Link href={ele.url}>{ele.name}</Link>
                   </button>
                 )
             )}
           </div>
-          <ModeToggle />
+          {/* <ModeToggle /> */}
         </div>
       </div>
     </div>
