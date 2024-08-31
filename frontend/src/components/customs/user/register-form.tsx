@@ -20,6 +20,7 @@ import { register_schema_type } from "@/lib/type";
 import { register_schema } from "@/lib/schema";
 import { Register } from "@/actions/user-actions";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const RegisterForm = () => {
   const router = useRouter();
@@ -44,7 +45,7 @@ export const RegisterForm = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="w-[350px]">
+        <Card className={cn("w-[350px] md:w-[400px]")}>
           <CardHeader>
             <CardTitle>註冊</CardTitle>
             <CardDescription>註冊都不揪？</CardDescription>
@@ -71,7 +72,7 @@ export const RegisterForm = () => {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex justify-between">
+          <CardFooter className="flex justify-between mt-8">
             <Button variant="link" asChild>
               <Link href="/login">有帳號了？</Link>
             </Button>

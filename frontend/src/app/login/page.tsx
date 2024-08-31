@@ -18,12 +18,12 @@ export default async function LoginPage() {
   const isLogin = await CheckAuth(token);
 
   return (
-    <>
+    <div className="h-screen">
       <Toaster />
-      <Navbar isLogin={isLogin} />
-      <div className="h-screen flex justify-center items-center">
+      <Navbar isLogin={isLogin} HasFixed={false} />
+      <div className="flex mt-[150px] justify-center items-center">
         <LoginForm />
       </div>
-    </>
+    </div>
   );
 }

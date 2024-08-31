@@ -21,6 +21,7 @@ import { login_schema_type } from "@/lib/type";
 import { login_schema } from "@/lib/schema";
 import { Button } from "@/components/ui/button";
 import { Login } from "@/actions/user-actions";
+import { cn } from "@/lib/utils";
 
 export const LoginForm = () => {
   const router = useRouter();
@@ -45,14 +46,14 @@ export const LoginForm = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Card className="w-[350px]">
+        <Card className={cn("w-[350px] md:w-[400px]")}>
           <CardHeader>
             <CardTitle>登入</CardTitle>
             <CardDescription>登入都不揪？</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-3">
+            <div className="grid w-full items-center gap-4 mt-5">
+              <div className="flex flex-col gap-8">
                 <Input placeholder="username" {...register("username")} />
                 {errors.username && (
                     <span className="text-red-500 text-sm">{errors.username.message}</span>
@@ -68,9 +69,9 @@ export const LoginForm = () => {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex justify-between">
+          <CardFooter className="flex justify-between mt-8">
             <Button variant="link" asChild>
-              <Link href="/login">還沒有帳號？</Link>
+              <Link href="/register">還沒有帳號？</Link>
             </Button>
             <Button type="submit">登入</Button>
           </CardFooter>

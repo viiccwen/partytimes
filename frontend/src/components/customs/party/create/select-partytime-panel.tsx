@@ -72,7 +72,7 @@ export const SelectPartyTimePanel = () => {
     return (
       <div className="mt-10 mx-10 md:mx-20">
         <div className="flex justify-between items-center">
-          <p className="text-2xl font-bold">創建派對 🎉</p>
+          <p className="text-2xl font-bold text-white">創建派對 🎉</p>
           <Button variant="outline" onClick={HandleNextClick}>
             下一步
             <CircleArrowRight className="w-4 h-4 ml-4" />
@@ -92,7 +92,7 @@ export const SelectPartyTimePanel = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mt-10 mx-10 md:mx-20">
           <div className="flex justify-between items-center">
-            <p className="text-lg md:text-2xl font-bold">創建派對 🎉</p>
+            <p className="text-lg md:text-2xl font-bold text-white">創建派對 🎉</p>
             <div className=" space-x-2">
               <Button variant="outline" onClick={HandlePrevClick}>
                 <div className="flex flex-col md:flex-row items-center">

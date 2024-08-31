@@ -39,9 +39,9 @@ export default async function ProfilePage() {
   }
 
   return (
-    <>
+    <div className="min-h-screen">
       <Toaster richColors />
-      <Navbar isLogin={isLogin} />
+      <Navbar isLogin={isLogin} HasFixed={false} />
       <div className="m-7">
         <PartyPanel
           token={token}
@@ -51,6 +51,6 @@ export default async function ProfilePage() {
           parties={party.data.party}
         />
       </div>
-    </>
+    </div>
   );
 }

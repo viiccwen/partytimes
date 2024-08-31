@@ -31,12 +31,12 @@ export default async function SettingPage() {
   }
 
   return (
-    <>
+    <div className="h-screen">
       <Toaster richColors />
-      <Navbar isLogin={isLogin} />
+      <Navbar isLogin={isLogin} HasFixed={false} />
       <div className="m-[20px] md:m-[50px]">
         <SettingCard id={id} email={email} nickname={nickname} />
       </div>
-    </>
+    </div>
   );
 }

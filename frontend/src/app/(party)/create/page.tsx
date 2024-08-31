@@ -23,10 +23,10 @@ export default async function PartyCreatePage() {
   }
 
   return (
-    <>
-      <Navbar isLogin={isLogin} />
+    <div className="h-screen">
+      <Navbar isLogin={isLogin} HasFixed={false} />
       <Toaster richColors />
       <SelectPartyTimePanel />
-    </>
+    </div>
   );
 }

@@ -38,36 +38,34 @@ export default async function PartyPage({
     ? userinfo.data.nickname
     : "";
 
-  const userid: number = userinfo.data?.id
-    ? userinfo.data.id
-    : -1;
+  const userid: number = userinfo.data?.id ? userinfo.data.id : -1;
 
   const total_hours = CalculateTotalHours(party_data);
   const scheduled_time: decision_schema_type | null = party_data.decision;
 
   return (
-    <>
+    <div className="min-h-screen">
       <Toaster richColors />
-      <Navbar isLogin={isLogin} />
-      <div className="m-7">
-        <div className="w-full">
-          <div className="flex flex-col md:flex-row gap-6">
-            <InspectPartyContainer
-              party={party_data}
-              votes={votes.data}
-              total_hours={total_hours}
-              nickname={nickname}
-              userid={userid}
-              scheduled_time={scheduled_time}
-            />
-          </div>
-        </div>
+      <Navbar isLogin={isLogin} HasFixed={false} />
+      <div className="flex flex-col gap-6 mx-7 md:flex-row">
+        <InspectPartyContainer
+          party={party_data}
+          votes={votes.data}
+          total_hours={total_hours}
+          nickname={nickname}
+          userid={userid}
+          scheduled_time={scheduled_time}
+        />
       </div>
-    </>
+    </div>
   );
 }
 
-export async function generateMetadata({ params }: { params: { partyId: string } }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { partyId: string };
+}): Promise<Metadata> {
   const party = await GetParty(params.partyId);
   const party_data = party.data?.party;
 
