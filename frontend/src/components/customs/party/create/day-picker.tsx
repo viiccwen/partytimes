@@ -64,6 +64,12 @@ export const DayPicker = ({
     setDaysArray(daysArray);
   }, [currentDate]);
 
+  const formatDate = (year: number, month: number, day: number): string => {
+    const formattedMonth = month.toString().padStart(2, "0");
+    const formattedDay = day.toString().padStart(2, "0");
+    return `${year}-${formattedMonth}-${formattedDay}`;
+  };
+
   const HandleClick = (value: string) => {
     if (selectedDate?.length === 7 && !selectedDate.includes(value)) {
       toast.error("最多選擇 7 天!");
@@ -82,7 +88,7 @@ export const DayPicker = ({
       }
     });
   };
-
+  
   return (
     <div className="w-full">
       <div className="flex justify-around items-center mb-10">
@@ -139,9 +145,11 @@ export const DayPicker = ({
                 variant="outline"
                 className={`bg-inherit border-none text-slate-700 text-sm rounded-full w-[30px] h-[30px] md:w-[40px] md:h-[40px] m-3 place-content-center ${
                   selectedDate?.includes(
-                    `${currentDate.getFullYear()}-${
-                      currentDate.getMonth() + 1
-                    }-${day}`
+                    formatDate(
+                      currentDate.getFullYear(),
+                      currentDate.getMonth() + 1,
+                      day
+                    )
                   )
                     ? "bg-orange-400 text-white hover:bg-orange-500 hover:text-white"
                     : "hover:bg-orange-300 hover:text-white dark:text-white"
@@ -150,9 +158,11 @@ export const DayPicker = ({
                   day,
                   currentDate,
                 })}
-                value={`${currentDate.getFullYear()}-${
-                  currentDate.getMonth() + 1
-                }-${day}`}
+                value={formatDate(
+                  currentDate.getFullYear(),
+                  currentDate.getMonth() + 1,
+                  day
+                )}
                 onClick={(e) => HandleClick(e.currentTarget.value)}
               >
                 {day}
