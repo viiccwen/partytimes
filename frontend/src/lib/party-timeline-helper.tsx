@@ -8,6 +8,7 @@ import { ReactNode } from "react";
 import { cn } from "./utils";
 import { ampm } from "./schema";
 import { CalendarCheck2 } from "lucide-react";
+import moment from "moment";
 
 export const CalculateTotalHours = (
   party: party_return_schema_type
@@ -43,7 +44,7 @@ export const generateGridCells = (
   cur_points_userid: string,
   clicked_user: clicked_user_type
 ): React.ReactElement => {
-  if(!party || !party.date) return <></>;
+  if (!party || !party.date) return <></>;
 
   const date_length = party.date.length;
   const pointed_status = cur_points_userid !== "";
@@ -88,10 +89,10 @@ export const generateGridCells = (
           return isPointed ? "bg-blue-400" : "";
         }
         return isVoted ? DecideBlockColor(VoteNumber, isVoted) : "";
-      } else if(isScheduling) {
+      } else if (isScheduling) {
         // let all timeblock be blue, only scheduled block be orange
-        if(isSelected) return "bg-orange-400";
-        if(isVoted) return DecideBlockColor(VoteNumber, isVoted);
+        if (isSelected) return "bg-orange-400";
+        if (isVoted) return DecideBlockColor(VoteNumber, isVoted);
       } else {
         return isSelected ? "bg-blue-400" : "";
       }
@@ -107,6 +108,29 @@ export const generateGridCells = (
           colBorderAppearance,
           BlockAppearance()
         )}
+        onTouchStart={(e) => {
+          e.preventDefault();
+          HandleClickTimeBlock(row, col, false);
+        }}
+        // onTouchMove={(e) => {
+        //   e.preventDefault();
+        //   const touch = e.touches[0];
+        //   const element = document.elementFromPoint(
+        //     touch.clientX,
+        //     touch.clientY
+        //   );
+        //   if (element) {
+        //     const cellData = element.getAttribute("data-cell");
+        //     if (cellData) {
+        //       const [cellRow, cellCol] = cellData.split("-").map(Number);
+        //       updateCurPointsPosition(cellCol, cellRow);
+        //       HandleClickTimeBlock(cellRow, cellCol, true);
+        //     }
+        //   }
+        // }}
+        // onTouchEnd={(e) => {
+        //   updateIsMouseDown(false);
+        // }}
         onMouseDown={() => {
           updateIsMouseDown(true);
           HandleClickTimeBlock(row, col, false);
@@ -120,8 +144,7 @@ export const generateGridCells = (
         }}
         onDragStart={(e) => e.preventDefault()}
         onMouseLeave={() => updateCurPointsPosition(-1, -1)}
-      >
-      </div>
+      ></div>
     );
   };
 
@@ -137,7 +160,6 @@ export const generateGridCells = (
         <div className="text-sm flex justify-end items-center w-[60px] text-slate-600 select-none">
           {time}
         </div>
-        {/* bug: grid is not working properly */}
         <div
           className={`grid w-full ml-2`}
           style={{
@@ -205,17 +227,12 @@ export const GenerateScheduledBlock = (
 };
 
 export const generateHeader = (party: party_return_schema_type): ReactNode => {
-  if(!party || !party.date) return null;
+  if (!party || !party.date) return null;
 
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const getWeekday = (dateString: string) => {
-    const date = new Date(dateString);
-    return weekdays[date.getDay()];
-  };
-
-  const GetDateLength = (length: number) => {
-    console.log(length.toString());
-    return `grid-cols-${length.toString()}`;
+    const date = moment(dateString, moment.ISO_8601, true);
+    return weekdays[date.day()];
   };
 
   return (

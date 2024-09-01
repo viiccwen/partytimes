@@ -51,10 +51,15 @@ export const PartyTable = ({ initialParty, token }: PartyTableProps) => {
   });
 
   const formatDate = (date: string) => {
-    const [year, month, day] = new Date(moment(date).format())
-      .toISOString()
-      .split("T")[0]
-      .split("-");
+    const momentDate = moment(date, moment.ISO_8601, true);
+    if (!momentDate.isValid()) {
+      console.error("Invalid date input:", date);
+      return "Invalid Date";
+    }
+
+    const [year, month, day] = momentDate.format("YYYY/MM/DD").split("/");
+    console.log("Year:", year, "Month:", month, "Day:", day);
+
     return `${year}/${month}/${day}`;
   };
 

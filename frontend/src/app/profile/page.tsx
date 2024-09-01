@@ -8,7 +8,6 @@ import { Toaster } from "sonner";
 import { userinfo_fetch_return_type } from "@/lib/type";
 import { GetPartyList } from "@/actions/party-actions";
 import { Metadata } from "next";
-import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Profile",
