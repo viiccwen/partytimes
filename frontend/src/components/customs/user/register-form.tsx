@@ -36,7 +36,7 @@ export const RegisterForm = () => {
     const response = await Register(formdata);
 
     if (response.correct) {
-        router.push("/");
+        router.push("/profile");
     } else {
       toast.error(response.error);
     }
@@ -56,6 +56,10 @@ export const RegisterForm = () => {
                 <Input placeholder="username" {...register("username")} />
                 {errors.username && (
                     <span className="text-red-500 text-sm">{errors.username.message}</span>
+                )}
+                <Input placeholder="nickname" {...register("nickname")} />
+                {errors.nickname && (
+                    <span className="text-red-500 text-sm">{errors.nickname.message}</span>
                 )}
                 <Input
                   type="password"

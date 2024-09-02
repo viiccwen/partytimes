@@ -53,6 +53,7 @@ export const handleGoogleOAuthCallback = async (req: any, res: any) => {
       user = await prisma.user.create({
         data: {
           username: displayName,
+          nickname: displayName,
           email: emails[0].value,
           [provider + "Id"]: id,
           password: "", // oauth don't need password
@@ -71,7 +72,7 @@ export const handleGoogleOAuthCallback = async (req: any, res: any) => {
 };
 
 export const handleGitHubOAuthCallback = async (req: any, res: any) => {
-  const { provider, id, displayName, accessToken } = req.user;
+  const { provider, id, username, displayName, accessToken } = req.user;
 
   try {
     // get email
@@ -102,7 +103,8 @@ export const handleGitHubOAuthCallback = async (req: any, res: any) => {
     if (!user) {
       user = await prisma.user.create({
         data: {
-          username: displayName,
+          username: username,
+          nickname: displayName,
           email: primaryEmail,
           [provider + "Id"]: id,
           password: "", // oauth don't need password
@@ -122,10 +124,10 @@ export const handleGitHubOAuthCallback = async (req: any, res: any) => {
 
 export const Register = async (req: any, res: any) => {
   try {
-    const { username, password, email } = await req.body;
+    const { username, nickname, password, email } = await req.body;
 
     // check for missing fields
-    if (!username || !password || !email) {
+    if (!username || !nickname || !password || !email) {
       throw new Error("Please provide username and password");
     }
 
@@ -149,6 +151,7 @@ export const Register = async (req: any, res: any) => {
     const newUser = await prisma.user.create({
       data: {
         username: username,
+        nickname: nickname,
         password: hashedPassword,
         email: email,
       },

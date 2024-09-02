@@ -29,7 +29,7 @@ export default async function Home() {
             <Link href="/register">
               <button
                 className={cn(
-                  "bg-white text-black px-6 py-2 rounded-xl mt-10 transition-all duration-300",
+                  "bg-white text-black px-6 py-2 rounded-full mt-10 transition-all duration-300",
                   "hover:bg-gray-100 hover:text-black hover:shadow-lg"
                 )}
               >

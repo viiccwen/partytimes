@@ -5,6 +5,10 @@ export const register_schema = z.object({
     .string()
     .min(6, "使用者帳號至少6位數")
     .max(20, "使用者帳號最多20位數"),
+  nickname: z
+    .string()
+    .min(1, "使用者暱稱不可為空")
+    .max(20, "使用者暱稱最多20位數"),
   password: z
     .string()
     .min(6, "使用者密碼至少6位數")
