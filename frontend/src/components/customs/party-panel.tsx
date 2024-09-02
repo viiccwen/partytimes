@@ -47,7 +47,7 @@ export const PartyPanel = ({
       setOpen(false);
       toast.success("暱稱設定成功");
     } else {
-      console.log(response.error);
+      toast.error(response.error);
     }
   };
 

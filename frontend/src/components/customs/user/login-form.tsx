@@ -73,13 +73,13 @@ export const LoginForm = () => {
                 )}
               </div>
             </div>
+            <div className="flex justify-between items-center mt-10">
+              <Button variant="link" asChild>
+                <Link href="/register">還沒有帳號？</Link>
+              </Button>
+              <Button type="submit">登入</Button>
+            </div>
           </form>
-          <div className="flex justify-between items-center mt-10">
-            <Button variant="link" asChild>
-              <Link href="/register">還沒有帳號？</Link>
-            </Button>
-            <Button type="submit">登入</Button>
-          </div>
           <Separator className="mt-5" />
           <div className="flex flex-col gap-4 mt-5">
             <GoogleOAuthButton />
