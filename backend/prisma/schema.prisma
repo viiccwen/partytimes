@@ -14,12 +14,15 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
+  id       String  @id @default(uuid())
+  email    String
   username String  @unique
   nickname String?
   password String
   role     Plan    @default(FREE)
+
+  githubId String? @unique
+  googleId String? @unique
 
   parties   Party[]
   votetimes Votetime[]
@@ -41,7 +44,7 @@ model Party {
   votetimes Votetime[]
 
   creator User @relation(fields: [userId], references: [id])
-  userId  Int
+  userId  String
 
   status   Boolean   @default(false)
   decision Decision?
@@ -54,7 +57,7 @@ model Votetime {
   timeslots TimeSlot[]
 
   creator User @relation(fields: [userId], references: [id])
-  userId  Int
+  userId  String
 
   partyAt Party  @relation(fields: [partyid], references: [partyid], onDelete: Cascade)
   partyid String
