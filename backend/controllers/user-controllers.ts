@@ -39,6 +39,87 @@ export const Login = async (req: any, res: any) => {
   }
 };
 
+export const handleGoogleOAuthCallback = async (req: any, res: any) => {
+  const { provider, id, displayName, emails } = req.user;
+
+  try {
+    let user = await prisma.user.findFirst({
+      where: {
+        [provider + "Id"]: id,
+      },
+    });
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          username: displayName,
+          email: emails[0].value,
+          [provider + "Id"]: id,
+          password: "", // oauth don't need password
+        },
+      });
+    }
+
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, {
+      algorithm: "HS256",
+      expiresIn: "12h",
+    });
+    res.redirect(`${process.env.AUTH_REDIRECT_URL}?token=${token}`);
+  } catch (error: any) {
+    res.redirect(`${process.env.AUTH_REDIRECT_URL}?error=${error.message}`);
+  }
+};
+
+export const handleGitHubOAuthCallback = async (req: any, res: any) => {
+  const { provider, id, displayName, accessToken } = req.user;
+
+  try {
+    // get email
+    const response = await fetch("https://api.github.com/user/emails", {
+      headers: {
+        Authorization: `token ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to get emails...`);
+    }
+
+    const email_data = await response.json();
+    const primaryEmail = email_data.find((email: any) => email.primary)?.email;
+
+    if (!primaryEmail) {
+      throw new Error("No primary email found...");
+    }
+
+    let user = await prisma.user.findFirst({
+      where: {
+        [provider + "Id"]: id,
+        email: primaryEmail,
+      },
+    });
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          username: displayName,
+          email: primaryEmail,
+          [provider + "Id"]: id,
+          password: "", // oauth don't need password
+        },
+      });
+    }
+
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, {
+      algorithm: "HS256",
+      expiresIn: "12h",
+    });
+    res.redirect(`${process.env.AUTH_REDIRECT_URL}?token=${token}`);
+  } catch (error: any) {
+    res.redirect(`${process.env.AUTH_REDIRECT_URL}?error=${error.message}`);
+  }
+};
+
 export const Register = async (req: any, res: any) => {
   try {
     const { username, password, email } = await req.body;
