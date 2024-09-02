@@ -59,6 +59,12 @@ export const SelectPartyTimePanel = () => {
       return;
     }
 
+    selectedDate.sort((a, b) => {
+      const dateA = new Date(a);
+      const dateB = new Date(b);
+      return dateA.getTime() - dateB.getTime();
+    });
+
     const resposne = await CreateParty({...formdata, date: selectedDate});
 
     if (resposne.correct) {

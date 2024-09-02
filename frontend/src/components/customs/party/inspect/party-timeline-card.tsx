@@ -62,9 +62,13 @@ export const PartyTimelineCard = ({
     getUserVoteblocks,
   } = useVoteBlockStore();
   const { setOpen, setTimeslots } = useGuestVoteStore();
-
+  const blockElement = document.getElementsByClassName("block").item(0);
+  const block_width = blockElement
+    ? parseFloat(blockElement.clientWidth.toString()) / 1.5
+    : 0;
   const [userSelectBlock, setUserSelectBlock] =
     useState<Set<string>>(user_votes);
+  const [TouchedBlock, setTouchedBlock] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState<boolean>(false);
   const router = useRouter();
 
@@ -149,9 +153,16 @@ export const PartyTimelineCard = ({
       updateCurPointsPosition,
       updateIsMouseDown,
       cur_points_userid,
-      clicked_user
+      clicked_user,
+      TouchedBlock,
+      setTouchedBlock
     );
-    const scheduledBlock = GenerateScheduledBlock(party, scheduled_time);
+
+    const scheduledBlock = GenerateScheduledBlock(
+      party,
+      scheduled_time,
+      block_width
+    );
 
     const container = (
       <div>

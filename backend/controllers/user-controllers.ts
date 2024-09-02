@@ -27,7 +27,7 @@ export const Login = async (req: any, res: any) => {
     if (isMatch) {
       const token = jwt.sign({ id: user.id }, JWT_SECRET, {
         algorithm: "HS256",
-        expiresIn: "1h",
+        expiresIn: "12h",
       });
 
       res.status(200).json({ token: token });
@@ -75,7 +75,7 @@ export const Register = async (req: any, res: any) => {
 
     const token = jwt.sign({ id: newUser.id }, JWT_SECRET, {
       algorithm: "HS256",
-      expiresIn: "1h",
+      expiresIn: "12h",
     });
 
     res.status(200).json({ token: token });
@@ -161,7 +161,14 @@ export const UpdateUserEmail = async (req: any, res: any) => {
     if (!req.user) throw new Error("You are not logged in");
     if (!req.body.email) throw new Error("Please provide a email");
 
-    let user = await prisma.user.update({
+    // check for existing user
+    let user = await prisma.user.findFirst({
+      where: { email: req.body.email },
+    });
+
+    if (user) throw new Error("Email already exists");
+
+    user = await prisma.user.update({
       where: {
         id: req.user.id,
       },

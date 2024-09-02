@@ -28,6 +28,8 @@ export const EditNameButton = ({ value }: EditNameButtonProps) => {
 
         if(response.correct) {
             window.location.reload();
+        } else {
+            toast.error(response.error);
         }
     }
 

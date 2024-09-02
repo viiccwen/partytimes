@@ -47,7 +47,7 @@ export default async function PartyPage({
     <div className="min-h-screen">
       <Toaster richColors />
       <Navbar isLogin={isLogin} HasFixed={false} />
-      <div className="flex flex-col gap-6 mx-7 md:flex-row">
+      <div className="flex flex-col gap-6 md:mx-7 md:flex-row">
         <InspectPartyContainer
           party={party_data}
           votes={votes.data}

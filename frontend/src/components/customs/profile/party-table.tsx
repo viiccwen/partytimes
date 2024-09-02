@@ -100,9 +100,13 @@ export const PartyTable = ({ initialParty, token }: PartyTableProps) => {
                   className="h-full mx-5 hidden md:block"
                 />
                 <div className="flex flex-col items-start gap-3">
-                  <div className="text-sm md:text-lg mb-3 font-bold">
+                  <div className="text-sm md:text-lg mb-3 font-bold md:hidden">
+                    {content.title.length > 13 ? content.title.substring(0, 13) + "..." : content.title}
+                  </div>
+                  <div className="text-sm md:text-lg mb-3 font-bold hidden md:block">
                     {content.title}
                   </div>
+
                   <div className="text-xs md:text-base flex items-center gap-2">
                     {content.description ? (
                       <>

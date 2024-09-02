@@ -66,7 +66,7 @@ export const MenuBar = ({
       <SheetContent side={side}>
         <div className="flex justify-center items-center">
           <Image
-            src="/partytime-navbar-logo.png"
+            src="/PartyTimes-logo.png"
             alt="logo"
             width={200}
             height={200}

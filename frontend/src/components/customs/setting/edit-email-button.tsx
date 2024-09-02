@@ -29,6 +29,8 @@ export const EditEmailButton = ({ value }: EditEmailButtonProps) => {
     if(response.correct) {
         // todo: add a success toast
         window.location.reload();
+    } else {
+      toast.error(response.error);
     }
 }
 
