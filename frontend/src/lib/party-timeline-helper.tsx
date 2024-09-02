@@ -4,7 +4,7 @@ import {
   party_return_schema_type,
   timeslots_create_schema_type,
 } from "./type";
-import { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { cn } from "./utils";
 import { ampm } from "./schema";
 import { CalendarCheck2 } from "lucide-react";
@@ -29,7 +29,6 @@ export const formatTime = (hour: number, ampm: string): string => {
   }`;
 };
 
-// bug: sometimes the grid is not working properly
 export const generateGridCells = (
   party: party_return_schema_type,
   total_half_hours: number,
@@ -42,7 +41,9 @@ export const generateGridCells = (
   updateCurPointsPosition: (row: number, col: number) => void,
   updateIsMouseDown: (isMouseDown: boolean) => void,
   cur_points_userid: string,
-  clicked_user: clicked_user_type
+  clicked_user: clicked_user_type,
+  TouchedBlock: string | null,
+  updateTouchedBlock: Dispatch<SetStateAction<string | null>>
 ): React.ReactElement => {
   if (!party || !party.date) return <></>;
 
@@ -101,8 +102,9 @@ export const generateGridCells = (
     return (
       <div
         key={block_key}
+        id={block_key}
         className={cn(
-          "border-r-[1px] border-slate-400 h-[24px] col-auto hover:border-[1px] hover:border-dashed",
+          "block touch-none border-r-[1px] border-slate-400 h-[24px] col-auto hover:border-[1px] md:hover:border-dashed",
           editingAppearance,
           RowborderAppearance,
           colBorderAppearance,
@@ -110,27 +112,32 @@ export const generateGridCells = (
         )}
         onTouchStart={(e) => {
           e.preventDefault();
+          updateIsMouseDown(true);
           HandleClickTimeBlock(row, col, false);
+          updateTouchedBlock(e.currentTarget.id);
         }}
-        // onTouchMove={(e) => {
-        //   e.preventDefault();
-        //   const touch = e.touches[0];
-        //   const element = document.elementFromPoint(
-        //     touch.clientX,
-        //     touch.clientY
-        //   );
-        //   if (element) {
-        //     const cellData = element.getAttribute("data-cell");
-        //     if (cellData) {
-        //       const [cellRow, cellCol] = cellData.split("-").map(Number);
-        //       updateCurPointsPosition(cellCol, cellRow);
-        //       HandleClickTimeBlock(cellRow, cellCol, true);
-        //     }
-        //   }
-        // }}
-        // onTouchEnd={(e) => {
-        //   updateIsMouseDown(false);
-        // }}
+        onTouchMove={(e) => {
+          e.preventDefault();
+          if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            const element = document.elementFromPoint(
+              touch.clientX,
+              touch.clientY
+            );
+            const block_id = element?.id;
+            if (element && block_id && block_id !== TouchedBlock) {
+              const [col, row] = block_id.split("-").map(Number);
+              updateCurPointsPosition(col, row);
+              HandleClickTimeBlock(row, col, true);
+              updateTouchedBlock(block_id);
+            }
+          }
+        }}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          updateIsMouseDown(false);
+          updateCurPointsPosition(-1, -1);
+        }}
         onMouseDown={() => {
           updateIsMouseDown(true);
           HandleClickTimeBlock(row, col, false);
@@ -157,7 +164,7 @@ export const generateGridCells = (
 
     return (
       <div key={row} className="flex">
-        <div className="text-sm flex justify-end items-center w-[60px] text-slate-600 select-none">
+        <div className="text-sm flex justify-start items-center w-[50px] text-slate-600 select-none">
           {time}
         </div>
         <div
@@ -183,13 +190,13 @@ export const generateGridCells = (
 
 export const GenerateScheduledBlock = (
   party: party_return_schema_type,
-  scheduled_time: decision_schema_type | null
+  scheduled_time: decision_schema_type | null,
+  block_width: number
 ) => {
   if (scheduled_time === null) return null;
 
   const date = scheduled_time.date;
   const row = party.date.findIndex((v) => v === date);
-  const total_half_hours = CalculateTotalHours(party) * 2;
   const start_time = scheduled_time.start_time;
   const end_time = scheduled_time.end_time;
   const start_ampm = scheduled_time.start_ampm;
@@ -207,14 +214,16 @@ export const GenerateScheduledBlock = (
   const height = (end - start) * 2;
   const top = start * 2;
 
+  
+
   return (
     <div className="mt-2 relative">
       <div
         className="hover:cursor-pointer absolute z-10 bg-orange-400 rounded-lg h-full flex justify-center items-center text-white"
         style={{
           top: `${top * 1.5}rem`,
-          left: `calc(65px + (100% - 65px) * ${row} / ${party.date.length} + (100% - 65px) / ${party.date.length} / 5)`,
-          width: `calc(100% / ${date.length})`,
+          left: `calc(40px + (100% - 40px) * ${row} / ${party.date.length} + (100% - 40px) / ${party.date.length} / 5)`,
+          width: `${block_width}px`,
           height: `${height * 24}px`,
         }}
       >
@@ -237,8 +246,7 @@ export const generateHeader = (party: party_return_schema_type): ReactNode => {
 
   return (
     <div className="flex mt-5">
-      <div className="w-[60px]"></div>
-      {/* bug: grid is not working properly */}
+      <div className="w-[50px]"></div>
       <div
         className={`w-full ml-2 grid`}
         style={{
