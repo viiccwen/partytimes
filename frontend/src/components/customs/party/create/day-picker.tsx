@@ -139,7 +139,7 @@ export const DayPicker = ({
       <div className="grid grid-cols-7">
         {daysArray.map((day, index) =>
           day ? (
-            <div className="flex justify-center">
+            <div key={`days-${index}`} className="flex justify-center">
               <Button
                 key={`day-${index}-button`}
                 variant="outline"
@@ -169,7 +169,7 @@ export const DayPicker = ({
               </Button>
             </div>
           ) : (
-            <div className="w-[40px] h-[40px]"></div>
+            <div key={`days-hidden-${index}`} className="w-[40px] h-[40px]"></div>
           )
         )}
       </div>

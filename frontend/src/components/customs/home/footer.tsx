@@ -96,6 +96,7 @@ const LinkBlock = ({ title, linkblocks }: LinkBlockProp) => {
       <div className="font-bold text-white">{title}</div>
       {linkblocks.map((linkblock, index) => (
         <Link
+        key={`linkblock-${index}`}
           href={linkblock.link}
           className="text-slate-200 transition-all duration-300 hover:text-white"
         >

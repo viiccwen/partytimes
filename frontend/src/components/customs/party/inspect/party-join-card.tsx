@@ -21,8 +21,6 @@ export const PartyJoinCard = ({
   joinList,
 }: PartyJoinCardProps) => {
   const { cur_points_position, clicked_user, isEditing,  updateClickedUser, updateCurPointsUserid } = useVoteBlockStore();
-  if (!allvoteblocks || allvoteblocks.length === 0) return null;
-
   const [point_joinList, setPointJoinList] = useState(new Set<string>());
 
   const showAllParticipants = useMemo(
@@ -67,6 +65,8 @@ export const PartyJoinCard = ({
     [clicked_user, updateClickedUser]
   );
 
+  if (!allvoteblocks || allvoteblocks.length === 0) return null;
+
   return (
     <Card className={className}>
       <CardContent className="flex flex-col">
@@ -101,15 +101,15 @@ interface ParticipantButtonProps {
   updateCurPointsUserid: (userid: string) => void;
 }
 
-const ParticipantButton = memo(
-  ({
-    join,
-    showAllParticipants,
-    point_joinList,
-    clicked_user,
-    handleClick,
-    updateCurPointsUserid,
-  }: ParticipantButtonProps) => (
+const ParticipantButton = memo(function ParticipantButton({
+  join,
+  showAllParticipants,
+  point_joinList,
+  clicked_user,
+  handleClick,
+  updateCurPointsUserid,
+}: ParticipantButtonProps) {
+  return (
     <button
       value={join.userId}
       className={cn(
@@ -128,8 +128,8 @@ const ParticipantButton = memo(
     >
       {join.creatorName}
     </button>
-  )
-);
+  );
+});
 
 const getBlockUsers = (
   all_voteblocks: block_type[][][],
@@ -139,3 +139,5 @@ const getBlockUsers = (
   if (row === -1 || col === -1) return new Set<string>();
   return new Set(all_voteblocks[row][col].map((vote) => vote.userId));
 };
+
+ParticipantButton.displayName = "ParticipantButton";
