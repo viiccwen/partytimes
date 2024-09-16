@@ -1,6 +1,5 @@
 import { prisma } from "..";
 
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -22,7 +21,7 @@ export const Login = async (req: any, res: any) => {
       throw new Error("Wrong username or password");
     }
 
-    const isMatch = await bcrypt.compare(password, user?.password);
+    const isMatch = await Bun.password.verify(user.password, password);
 
     if (isMatch) {
       const token = jwt.sign({ id: user.id }, JWT_SECRET, {
@@ -146,7 +145,7 @@ export const Register = async (req: any, res: any) => {
 
     if (user) throw new Error("Email already exists");
 
-    const hashedPassword = await bcrypt.hashSync(password, 10);
+    const hashedPassword = await Bun.password.hash(password);
 
     const newUser = await prisma.user.create({
       data: {
