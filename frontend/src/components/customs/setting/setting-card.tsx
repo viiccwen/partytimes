@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,8 +9,6 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { DeleteAccountButton } from "./delete-account-button";
-
-import { HydrateProvider } from "../hydrate-provider";
 import { EditNameButton } from "./edit-name-button";
 import { EditEmailButton } from "./edit-email-button";
 import { BackButton } from "../back-button";
@@ -70,7 +67,7 @@ export const SettingCard = ({ id, nickname, email }: SettingCardProps) => {
                   <p className="font-bold text-red-500">刪除帳號</p>
                   <p className="text-sm text-slate-500">
                     This will delete your account as well as all events and poll
-                    responses you've created. This action cannot be undone.
+                    responses you&apos;ve created. This action cannot be undone.
                   </p>
                 </div>
                 <DeleteAccountButton />

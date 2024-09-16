@@ -72,8 +72,6 @@ export const PartyTimelineCard = ({
   const [hydrated, setHydrated] = useState<boolean>(false);
   const router = useRouter();
 
-  if (!allvoteblocks || allvoteblocks.length === 0) return null;
-
   const ToggleBlockSelection = (prev: Set<string>, block_key: string) => {
     const newSet = new Set(prev);
     newSet.has(block_key) ? newSet.delete(block_key) : newSet.add(block_key);
@@ -179,6 +177,16 @@ export const PartyTimelineCard = ({
     userSelectBlock,
     cur_points_userid,
     clicked_user,
+    TouchedBlock,
+    VoteNumber,
+    allvoteblocks,
+    block_width,
+    isEditing,
+    isScheduling,
+    scheduled_time,
+    updateCurPointsPosition,
+    updateIsMouseDown,
+    setTouchedBlock
   ]);
 
   const HandleCheckButton = async () => {
@@ -268,6 +276,13 @@ export const PartyTimelineCard = ({
     }
   };
 
+  const RefreshVoteData = async () => {
+    updateCurPointsPosition(-1, -1);
+    updateClickedUser("", "");
+    updateIsEditing(false);
+    router.refresh();
+  };
+
   const HandleDeleteButton = useCallback(async () => {
     let delete_userid: number;
     if (clicked_user.userId === "" && userid === -1) {
@@ -285,20 +300,14 @@ export const PartyTimelineCard = ({
       await RefreshVoteData();
       toast.success("successfully delete vote!");
     }
-  }, [party.partyid, clicked_user.userId]);
-
-  const RefreshVoteData = async () => {
-    updateCurPointsPosition(-1, -1);
-    updateClickedUser("", "");
-    updateIsEditing(false);
-    router.refresh();
-  };
+  }, [party.partyid, clicked_user.userId, userid, RefreshVoteData]);
 
   useEffect(() => {
     setHydrated(true);
   }, []);
 
   if (!hydrated) return null;
+  if (!allvoteblocks || allvoteblocks.length === 0) return null;
 
   return (
     <>
