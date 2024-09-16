@@ -1,0 +1,30 @@
+import { PrismaClient } from "@prisma/client";
+import party_router from "./routers/party-routers";
+import user_router from "./routers/user-routers";
+import vote_router from "./routers/vote-router";
+import schedule_router from "./routers/schedule-router";
+import oauth_router from "./routers/oauth-routers";
+
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const passport = require("passport");
+const API_PORT = process.env.API_PORT || 3000;
+
+const app = express();
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use(passport.initialize());
+
+app.use("/api", user_router);
+app.use("/api", party_router);
+app.use("/api", vote_router);
+app.use("/api", schedule_router);
+app.use("/api", oauth_router);
+
+app.listen(API_PORT, () => {
+  console.log(`Server is running on port ${API_PORT}`);
+});
+
+export const prisma = new PrismaClient();
