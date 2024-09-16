@@ -3,41 +3,6 @@ import { prisma } from "..";
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export const Login = async (req: any, res: any) => {
-  try {
-    const { username, password } = await req.body;
-
-    if (!username || !password) {
-      throw new Error("Please provide username and password");
-    }
-
-    const user = await prisma.user.findFirst({
-      where: {
-        username: username,
-      },
-    });
-
-    if (!user) {
-      throw new Error("Wrong username or password");
-    }
-
-    const isMatch = await Bun.password.verify(user.password, password);
-
-    if (isMatch) {
-      const token = jwt.sign({ id: user.id }, JWT_SECRET, {
-        algorithm: "HS256",
-        expiresIn: "12h",
-      });
-
-      res.status(200).json({ token: token });
-    } else {
-      throw new Error("Wrong username or password");
-    }
-  } catch (error: any) {
-    res.status(401).json({ error: error.message });
-  }
-};
-
 export const handleGoogleOAuthCallback = async (req: any, res: any) => {
   const { provider, id, displayName, emails } = req.user;
 
@@ -121,52 +86,6 @@ export const handleGitHubOAuthCallback = async (req: any, res: any) => {
   }
 };
 
-export const Register = async (req: any, res: any) => {
-  try {
-    const { username, nickname, password, email } = await req.body;
-
-    // check for missing fields
-    if (!username || !nickname || !password || !email) {
-      throw new Error("Please provide username and password");
-    }
-
-    let user;
-
-    // check for existing user
-    user = await prisma.user.findFirst({
-      where: { username: username },
-    });
-
-    if (user) throw new Error("Username already exists");
-
-    user = await prisma.user.findFirst({
-      where: { email: email },
-    });
-
-    if (user) throw new Error("Email already exists");
-
-    const hashedPassword = await Bun.password.hash(password);
-
-    const newUser = await prisma.user.create({
-      data: {
-        username: username,
-        nickname: nickname,
-        password: hashedPassword,
-        email: email,
-      },
-    });
-
-    const token = jwt.sign({ id: newUser.id }, JWT_SECRET, {
-      algorithm: "HS256",
-      expiresIn: "12h",
-    });
-
-    res.status(200).json({ token: token });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 export const CheckAuth = async (req: any, res: any) => {
   if (req.user) {
     res.status(200).json({ message: "You are logged in" });
@@ -189,6 +108,7 @@ export const DeleteAccount = async (req: any, res: any) => {
 
     res.status(200).json({ message: "Account deleted" });
   } catch (error: any) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -234,35 +154,6 @@ export const UpdateUserName = async (req: any, res: any) => {
     if (!user) throw new Error("User not found");
 
     res.status(200).json({ nickname: user.nickname });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-export const UpdateUserEmail = async (req: any, res: any) => {
-  try {
-    if (!req.user) throw new Error("You are not logged in");
-    if (!req.body.email) throw new Error("Please provide a email");
-
-    // check for existing user
-    let user = await prisma.user.findFirst({
-      where: { email: req.body.email },
-    });
-
-    if (user) throw new Error("Email already exists");
-
-    user = await prisma.user.update({
-      where: {
-        id: req.user.id,
-      },
-      data: {
-        email: req.body.email,
-      },
-    });
-
-    if (!user) throw new Error("User not found");
-
-    res.status(200).json({ email: user.email });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

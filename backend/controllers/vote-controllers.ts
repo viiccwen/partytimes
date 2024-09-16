@@ -156,7 +156,7 @@ export const DeleteVote = async (req: any, res: any) => {
     }
 
     const vote = await prisma.votetime.findFirst({
-      where: { partyid, userId: parseInt(userid) },
+      where: { partyid, userId: userid },
     });
     if (!vote) throw new Error("Vote not found");
 

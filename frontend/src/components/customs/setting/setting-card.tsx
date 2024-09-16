@@ -10,7 +10,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { DeleteAccountButton } from "./delete-account-button";
 import { EditNameButton } from "./edit-name-button";
-import { EditEmailButton } from "./edit-email-button";
 import { BackButton } from "../back-button";
 import { ModeToggle } from "../mode-toggle";
 
@@ -48,7 +47,6 @@ export const SettingCard = ({ id, nickname, email }: SettingCardProps) => {
               <p className="font-bold w-[60px] md:w-[100px]">Email</p>
               <div className="flex items-center gap-4">
                 <p>{email}</p>
-                <EditEmailButton value={email} />
               </div>
             </div>
             <div className="flex items-center">
