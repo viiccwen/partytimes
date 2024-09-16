@@ -62,21 +62,46 @@ export default async function Home() {
             className="mt-[500px]"
             title="學生的揪團神器"
             description="學生專屬的揪團神器，讓你輕鬆揪團、輕鬆決定會議時間"
-            image="/test.png"
+            images={[
+              {
+                src: "/homepage/1.png",
+                className: "w-[300px] h-[300px] md:w-[400px] md:h-[428px]",
+              },
+              {
+                src: "/homepage/2.png",
+                className:
+                  " absolute w-[200px] h-[348px] top-[130px] left-[160px] md:w-[200px] md:h-[348px] md:top-[200px] md:left-[260px]",
+              },
+            ]}
             reverse={false}
           />
           <DescriptionBlock
             className="mt-[200px]"
             title="決定會議超方便"
             description="無須登入，輕鬆決定會議時間"
-            image="/test.png"
+            images={[
+              {
+                src: "/homepage/3.png",
+                className: "w-[360px] h-[340px] md:w-[500px] md:h-[480px]",
+              },
+            ]}
             reverse={true}
           />
           <DescriptionBlock
             className="mt-[200px]"
             title="視覺化投票時段"
             description="幫助你選出最佳的會議時間"
-            image="/test.png"
+            images={[
+              {
+                src: "/homepage/4.png",
+                className: "w-[300px] h-[200px] md:w-[600px] md:h-[400px]",
+              },
+              {
+                src: "/homepage/5.png",
+                className:
+                  " absolute w-[300px] h-[200px] md:w-[400px] md:h-[300px] top-[100px] left-[40px] md:top-[200px] md:left-[280px]",
+              },
+            ]}
             reverse={false}
           />
           <Footer />
