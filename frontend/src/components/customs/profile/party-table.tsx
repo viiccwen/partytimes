@@ -19,7 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { GetPartyList } from "@/actions/party-actions";
 
 interface PartyTableProps {
-  initialParty: party_return_schema_type[];
+  party: party_return_schema_type[];
   token: string;
 }
 
@@ -41,15 +41,7 @@ type time_type = {
   end_ampm: "AM" | "PM";
 };
 
-const fetcher = (token: string) =>
-  GetPartyList(token).then((res) => res.data?.party);
-
-export const PartyTable = ({ initialParty, token }: PartyTableProps) => {
-  const { data: party, error } = useSWR(token, fetcher, {
-    fallbackData: initialParty,
-    refreshInterval: 5000,
-  });
-
+export const PartyTable = ({ party, token }: PartyTableProps) => {
   const formatDate = (date: string) => {
     const momentDate = moment(date, moment.ISO_8601, true);
     const [year, month, day] = momentDate.format("YYYY/MM/DD").split("/");
@@ -57,13 +49,7 @@ export const PartyTable = ({ initialParty, token }: PartyTableProps) => {
     return `${year}/${month}/${day}`;
   };
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (!party) {
-    return <div>Loading...</div>;
-  }
+  
 
   const formatTime = (timeslot: time_type): string => {
     const formatHour = (hour: number) =>
