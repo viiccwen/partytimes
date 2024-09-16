@@ -9,6 +9,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const passport = require("passport");
+const dotenv = require("dotenv");
+
+if(process.env.NODE_ENV === "production") 
+  dotenv.config({ path: ".env.production" });
+else
+  dotenv.config({ path: ".env.development" });
+
 const API_PORT = process.env.API_PORT || 3000;
 
 const app = express();

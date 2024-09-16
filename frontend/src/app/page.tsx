@@ -26,7 +26,7 @@ export default async function Home() {
             <div className="text-white text-lg mt-5">
               讓你輕鬆揪團、輕鬆決定會議時間
             </div>
-            <Link href="/register">
+            <Link href="/login">
               <button
                 className={cn(
                   "bg-white text-black px-6 py-2 rounded-full mt-10 transition-all duration-300",

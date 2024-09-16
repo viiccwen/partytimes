@@ -11,6 +11,9 @@ import { party_return_schema_type } from "@/lib/type";
 import { NicknameAlertDialog } from "./user/nickname-alert-dialog";
 
 import { EditName } from "@/actions/user-actions";
+import { GetPartyList } from "@/actions/party-actions";
+
+import useSWR from "swr";
 import { z } from "zod";
 import { toast } from "sonner";
 
@@ -28,6 +31,9 @@ const nickname_schema = z.object({
 
 type nickname_schema_type = z.infer<typeof nickname_schema>;
 
+const fetcher = (token: string) =>
+  GetPartyList(token).then((res) => res.data?.party);
+
 export const PartyPanel = ({
   token,
   id,
@@ -35,7 +41,6 @@ export const PartyPanel = ({
   nickname,
   parties,
 }: PartyPanelProps) => {
-
   const [open, setOpen] = useState<boolean>(!nickname);
   const [hydrated, setHydrated] = useState<boolean>(false);
 
@@ -51,11 +56,18 @@ export const PartyPanel = ({
     }
   };
 
+  const { data: party, error } = useSWR(token, fetcher, {
+    fallbackData: parties,
+    refreshInterval: 5000,
+  });
+
   useEffect(() => {
     setHydrated(true);
   }, []);
 
   if (!hydrated) return null;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!party) return <div>Loading...</div>;
 
   return (
     <>
@@ -63,9 +75,15 @@ export const PartyPanel = ({
         <div className="flex justify-between">
           {/* todo: response party function */}
           <TabsList className="grid md:w-[400px] grid-cols-3">
-            <TabsTrigger value="all" className="text-xs md:text-sm">所有</TabsTrigger>
-            <TabsTrigger value="planned" className="text-xs md:text-sm">已計畫</TabsTrigger>
-            <TabsTrigger value="unplanned" className="text-xs md:text-sm">未計畫</TabsTrigger>
+            <TabsTrigger value="all" className="text-xs md:text-sm">
+              所有
+            </TabsTrigger>
+            <TabsTrigger value="planned" className="text-xs md:text-sm">
+              已計畫
+            </TabsTrigger>
+            <TabsTrigger value="unplanned" className="text-xs md:text-sm">
+              未計畫
+            </TabsTrigger>
             {/* <TabsTrigger value="responed" className="text-xs md:text-sm">回覆</TabsTrigger> */}
           </TabsList>
           <div className="flex gap-3">
@@ -75,11 +93,11 @@ export const PartyPanel = ({
         </div>
 
         <TabsContent value="all">
-          <PartyTable initialParty={parties} token={token} />
+          <PartyTable party={parties} token={token} />
         </TabsContent>
         <TabsContent value="planned">
           <PartyTable
-            initialParty={parties.filter(
+            party={parties.filter(
               (content: party_return_schema_type) => content.status === true
             )}
             token={token}
@@ -87,7 +105,7 @@ export const PartyPanel = ({
         </TabsContent>
         <TabsContent value="unplanned">
           <PartyTable
-            initialParty={parties.filter(
+            party={parties.filter(
               (content: party_return_schema_type) => content.status === false
             )}
             token={token}
