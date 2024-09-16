@@ -7,7 +7,7 @@ interface DescriptionBlockProps {
   className?: string;
   title: string;
   description: string;
-  image: string;
+  images: { src: string; className?: string }[];
   reverse: boolean;
 }
 
@@ -15,7 +15,7 @@ export const DescriptionBlock = ({
   className,
   title,
   description,
-  image,
+  images,
   reverse,
 }: DescriptionBlockProps) => {
   return (
@@ -33,14 +33,20 @@ export const DescriptionBlock = ({
             <div className="text-sky-200 text-2xl font-bold">{title}</div>
             <div className="text-slate-100 text-lg">{description}</div>
           </div>
-          <div>
-            <Image
-              className={cn("rounded-2xl transition-all duration-300 ease-in-out", "hover:shadow-xl")}
-              src={image}
-              alt="home"
-              width={500}
-              height={500}
-            />
+          <div className="relative">
+            {images.map((image, index) => (
+              <Image
+                key={`image-${image.src}`}
+                className={cn(
+                  "rounded-2xl transition-all duration-300 ease-in-out hover:shadow-lg",
+                  image.className
+                )}
+                src={image.src}
+                alt={`image-${index}`}
+                width={400}
+                height={400}
+              />
+            ))}
           </div>
         </div>
       </div>
