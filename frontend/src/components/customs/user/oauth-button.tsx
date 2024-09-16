@@ -34,7 +34,7 @@ export const GithubOAuthButton = () => {
       className="flex gap-2"
       onClick={HandleGithubOAuth}
     >
-      <Image src="/github.png" alt="google" width={20} height={20} />
+      <Image className="dark:invert" src="/github.png" alt="google" width={20} height={20} />
       Github
     </Button>
   );
