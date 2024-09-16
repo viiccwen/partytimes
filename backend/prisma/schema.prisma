@@ -44,7 +44,7 @@ model Party {
 
   votetimes Votetime[]
 
-  creator User @relation(fields: [userId], references: [id])
+  creator User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
 
   status   Boolean   @default(false)
@@ -57,7 +57,7 @@ model Votetime {
 
   timeslots TimeSlot[]
 
-  creator User @relation(fields: [userId], references: [id])
+  creator User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
 
   partyAt Party  @relation(fields: [partyid], references: [partyid], onDelete: Cascade)
