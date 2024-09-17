@@ -1,8 +1,6 @@
+'use client';
 import { Button } from "@/components/ui/button";
-import {
-  clicked_user_type,
-  useVoteBlockStore,
-} from "@/stores/inspect-party-store";
+import { useVoteBlockStore } from "@/stores/inspect-party-store";
 import {
   CircleCheckBig,
   CircleX,
@@ -15,6 +13,9 @@ interface PartyTimelineHeaderProps {
   className?: string;
   isEditing: boolean;
   isScheduling: boolean;
+  isConfirmClicked: boolean;
+  isDeleteClicked: boolean;
+  isScheduledClicked: boolean;
   has_scheduled: boolean;
   HandleCancelButton: () => void;
   HandleCheckButton: () => void;
@@ -26,6 +27,9 @@ export const PartyTimelineHeader = ({
   className,
   isEditing,
   isScheduling,
+  isConfirmClicked,
+  isDeleteClicked,
+  isScheduledClicked,
   has_scheduled,
   HandleCheckButton,
   HandleScheduleButton,
@@ -44,9 +48,10 @@ export const PartyTimelineHeader = ({
               variant="outline"
               className="gap-2 text-red-400 hover:text-white hover:bg-red-400"
               onClick={HandleDeleteButton}
+              disabled={isConfirmClicked || isDeleteClicked}
             >
               <Trash2 className="w-4 h-4" />
-              <p className="hidden md:block">刪除</p>
+              <p className="hidden md:block">{isDeleteClicked ? "刪除中..." : "刪除"}</p>
             </Button>
             <Button
               variant="outline"
@@ -60,9 +65,10 @@ export const PartyTimelineHeader = ({
               variant="default"
               className="gap-2 bg-blue-500 hover:bg-blue-700 text-white "
               onClick={HandleCheckButton}
+              disabled={isConfirmClicked || isDeleteClicked}
             >
               <CircleCheckBig className="w-4 h-4 " />
-              <p className="hidden md:block">確認</p>
+              <p className="hidden md:block">{isConfirmClicked ? "確認中..." : "確認"}</p>
             </Button>
           </div>
         </div>
@@ -80,11 +86,12 @@ export const PartyTimelineHeader = ({
             </Button>
             <Button
               variant="default"
-              className="gap-2 bg-blue-500 hover:bg-blue-700 text-white "
+              className="gap-2 bg-blue-500 hover:bg-blue-700 text-white"
               onClick={HandleScheduleButton}
+              disabled={isConfirmClicked || isDeleteClicked || isScheduledClicked}
             >
               <CircleCheckBig className="w-4 h-4" />
-              <p className="hidden md:block">確認</p>
+              <p className="hidden md:block">{isConfirmClicked || isScheduledClicked ? "確認中..." : "確認"}</p>
             </Button>
           </div>
         </div>
