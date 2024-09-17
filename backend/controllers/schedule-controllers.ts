@@ -5,7 +5,7 @@ export const DecideSchedule = async (req: any, res: any) => {
     const { partyid, timeslot } = await req.body;
 
     if (!partyid || !timeslot) {
-      throw new Error("Please provide all required fields");
+      throw new Error("請提供正確的登記資訊！");
     }
 
     const scheduled_party = await prisma.party.update({
@@ -21,7 +21,7 @@ export const DecideSchedule = async (req: any, res: any) => {
     });
 
     if (!scheduled_party) {
-      throw new Error("Failed to schedule the party");
+      throw new Error("登記失敗！");
     }
 
     res.sendStatus(200);
@@ -36,7 +36,7 @@ export const DeleteSchedule = async (req: any, res: any) => {
 
     if (!partyid) {
       throw new Error(
-        "Party not found or you don't have permission to delete it"
+        "派對不存在！"
       );
     }
 
@@ -51,7 +51,7 @@ export const DeleteSchedule = async (req: any, res: any) => {
     });
 
     if (!deleted_party) {
-      throw new Error("Failed to delete the party");
+      throw new Error("刪除失敗！");
     }
 
     res.sendStatus(200);
