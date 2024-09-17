@@ -3,7 +3,7 @@ import { CheckAuth, GetUserInfo } from "@/actions/user-actions";
 import { GetVoteTimes } from "@/actions/vote-actions";
 import { Navbar } from "@/components/customs/navbar";
 import { InspectPartyContainer } from "@/components/customs/party/inspect/inspect-party-container";
-import { CalculateTotalHours } from "@/lib/party-timeline-helper";
+import { CalculateTotalHours } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
 import { decision_schema_type } from "@/lib/type";
 import { Metadata } from "next";
 import { cookies } from "next/headers";

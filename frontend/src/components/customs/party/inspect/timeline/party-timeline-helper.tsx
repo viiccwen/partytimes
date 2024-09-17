@@ -3,10 +3,10 @@ import {
   decision_schema_type,
   party_return_schema_type,
   timeslots_create_schema_type,
-} from "./type";
+} from "@/lib/type";
 import { Dispatch, ReactNode, SetStateAction } from "react";
-import { cn } from "./utils";
-import { ampm } from "./schema";
+import { cn } from "@/lib/utils";
+import { ampm } from "@/lib/schema";
 import { CalendarCheck2 } from "lucide-react";
 import moment from "moment";
 

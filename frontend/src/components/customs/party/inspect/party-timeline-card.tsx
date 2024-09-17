@@ -1,28 +1,16 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "sonner";
 
 import { PartyHeader } from "./party-header";
 import { PartyTimelineHeader } from "./party-timeline-header";
 import { GuestDialog } from "../guest-dialog";
+import { PartyTimelineLogic } from "./timeline/party-timeline-logic";
+import { TimeLineComponent } from "./timeline/timeline-component";
 
+import { block_type } from "@/stores/inspect-party-store";
 import { decision_schema_type, party_return_schema_type } from "@/lib/type";
-
-import { CheckAuth } from "@/actions/user-actions";
-import { useGuestVoteStore } from "@/stores/guest-vote-store";
-import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
-import {
-  CalculateTotalHours,
-  generateGridCells,
-  generateHeader,
-  GenerateScheduledBlock,
-  GenerateTimeSlots,
-} from "@/lib/party-timeline-helper";
-import { CreateVote, DeleteVote } from "@/actions/vote-actions";
-import { useRouter } from "next/navigation";
-import { CreateSchedule, DeleteSchedule } from "@/actions/schedule-action";
 
 interface PartyTimelineCardProps {
   className?: string;
@@ -35,8 +23,6 @@ interface PartyTimelineCardProps {
   scheduled_time: decision_schema_type | null;
 }
 
-const Cookie = require("js-cookie");
-
 export const PartyTimelineCard = ({
   className,
   party,
@@ -47,270 +33,38 @@ export const PartyTimelineCard = ({
   has_scheduled,
   scheduled_time,
 }: PartyTimelineCardProps) => {
-  const {
-    clicked_user,
-    cur_points_userid,
-    isEditing,
-    isScheduling,
-    isMouseDown,
-    updateClickedUser,
-    updateCurPointsPosition,
-    updateIsEditing,
-    updateIsScheduling,
-    updateIsMouseDown,
-    updateIsBounced,
-    getUserVoteblocks,
-  } = useVoteBlockStore();
-  const { setOpen, setTimeslots } = useGuestVoteStore();
-  const blockElement = document.getElementsByClassName("block").item(0);
-  const block_width = blockElement
-    ? parseFloat(blockElement.clientWidth.toString()) / 1.5
-    : 0;
   const [userSelectBlock, setUserSelectBlock] =
     useState<Set<string>>(user_votes);
-  const [isClicked, setIsClicked] = useState<boolean>(false);
-  const [TouchedBlock, setTouchedBlock] = useState<string | null>(null);
+  const [isConfirmClicked, setIsConfirmClicked] = useState<boolean>(false);
+  const [isDeleteClicked, setIsDeleteClicked] = useState<boolean>(false);
+  const [isScheduledClicked, setIsScheduledClicked] = useState<boolean>(false);
   const [hydrated, setHydrated] = useState<boolean>(false);
-  const router = useRouter();
 
-  const ToggleBlockSelection = (prev: Set<string>, block_key: string) => {
-    const newSet = new Set(prev);
-    newSet.has(block_key) ? newSet.delete(block_key) : newSet.add(block_key);
-    return newSet;
-  };
-
-  const ToggleBlockSchedule = (prev: Set<string>, col: number, row: number) => {
-    const block_key = `${col}-${row}`;
-    const newSet = new Set<string>();
-
-    Array.from(prev).forEach((key) => {
-      const [prevCol, prevRow] = key.split("-").map(Number);
-      if (prevCol === col) {
-        newSet.add(key);
-      }
-    });
-
-    if (newSet.has(block_key)) {
-      newSet.delete(block_key);
-    } else {
-      newSet.add(block_key);
-    }
-    return newSet;
-  };
-  const HandleClickTimeBlock = useCallback(
-    (row: number, col: number) => {
-      if (!isEditing && !isScheduling) {
-        updateIsBounced(true);
-
-        setTimeout(() => {
-          updateIsBounced(false);
-        }, 150);
-
-        setTimeout(() => {
-          updateIsBounced(true);
-        }, 300);
-
-        setTimeout(() => {
-          updateIsBounced(false);
-        }, 450);
-
-        return;
-      }
-
-      const block_key = `${col}-${row}`;
-
-      if (isEditing) {
-        setUserSelectBlock((prev) => {
-          return ToggleBlockSelection(prev, block_key);
-        });
-      } else if (isScheduling) {
-        if (!isMouseDown) {
-          setUserSelectBlock(new Set<string>());
-        }
-
-        setUserSelectBlock((prev) => {
-          return ToggleBlockSchedule(prev, col, row);
-        });
-      }
-    },
-    [isEditing, isScheduling, isMouseDown, updateIsBounced]
-  );
-
-  const TimeLineComponent = useMemo(() => {
-    const total_hours = CalculateTotalHours(party);
-    const total_half_hours = total_hours * 2;
-    const header = generateHeader(party);
-    const gridCells = generateGridCells(
-      party,
-      total_half_hours,
-      VoteNumber,
-      HandleClickTimeBlock,
-      userSelectBlock,
-      isEditing,
-      isScheduling,
-      allvoteblocks,
-      updateCurPointsPosition,
-      updateIsMouseDown,
-      cur_points_userid,
-      clicked_user,
-      TouchedBlock,
-      setTouchedBlock
-    );
-
-    const scheduledBlock = GenerateScheduledBlock(
-      party,
-      scheduled_time,
-      block_width
-    );
-
-    const container = (
-      <div>
-        {header}
-        {scheduledBlock !== null && scheduledBlock}
-        {gridCells}
-      </div>
-    );
-
-    return container;
-  }, [
-    party,
-    HandleClickTimeBlock,
-    userSelectBlock,
-    cur_points_userid,
-    clicked_user,
-    TouchedBlock,
-    VoteNumber,
-    allvoteblocks,
-    block_width,
+  const {
+    HandleCheckButton,
+    HandleScheduleButton,
+    HandleDeleteButton,
+    HandleCancelButton,
     isEditing,
     isScheduling,
-    scheduled_time,
-    updateCurPointsPosition,
-    updateIsMouseDown,
-    setTouchedBlock,
-  ]);
-
-  const HandleCheckButton = async () => {
-    if (!isEditing) {
-      updateIsEditing(true);
-
-      // let userSelectBlock be the same as clicked user's vote blocks
-      if (clicked_user.userId !== "") {
-        setUserSelectBlock(
-          getUserVoteblocks(allvoteblocks, clicked_user.creatorName)
-        );
-      }
-    } else if (userSelectBlock.size === 0) {
-      toast.error("請選擇時間區塊！");
-    } else {
-      // check token
-      setIsClicked(true);
-      const token = Cookie.get("token");
-      const isAuth = await CheckAuth(token);
-      const timeslots = GenerateTimeSlots(userSelectBlock, party);
-
-      if (!isAuth) {
-        if (clicked_user.userId === "") {
-          // show guest dialog & create vote by new guest user
-          setTimeslots(timeslots);
-          setOpen(true);
-        } else {
-          // create vote by old guest user
-          const res = await CreateVote(
-            timeslots,
-            party.partyid,
-            clicked_user.creatorName,
-            clicked_user.userId
-          );
-
-          if (!res.correct) toast.error(res.error);
-          else {
-            await RefreshVoteData();
-            toast.success("successfully create vote!");
-          }
-        }
-      } else {
-        // create vote by login user
-        const res = await CreateVote(timeslots, party.partyid);
-
-        if (!res.correct) toast.error(res.error);
-        else {
-          await RefreshVoteData();
-          toast.success("successfully create vote!");
-          setIsClicked(false);
-        }
-      }
-    }
-  };
-
-  const HandleCancelButton = useCallback(() => {
-    setUserSelectBlock(user_votes);
-    updateIsEditing(false);
-    updateIsScheduling(false);
-  }, [user_votes, updateIsEditing, updateIsScheduling]);
-
-  const HandleScheduleButton = async () => {
-    if (has_scheduled) {
-      const res = await DeleteSchedule(party.partyid);
-      if (!res.correct) toast.error(res.error);
-      else {
-        await RefreshVoteData();
-        toast.success("successfully delete schedule!");
-        return;
-      }
-    }
-
-    if (!isScheduling) {
-      setUserSelectBlock(new Set<string>());
-      updateIsScheduling(true);
-    } else if (userSelectBlock.size === 0) {
-      toast.error("請選擇時間區塊！");
-    } else {
-      const timeslot = GenerateTimeSlots(userSelectBlock, party)[0];
-
-      const res = await CreateSchedule(party.partyid, timeslot);
-      if (!res.correct) toast.error(res.error);
-      else {
-        await RefreshVoteData();
-        setUserSelectBlock(new Set<string>());
-        toast.success("successfully create schedule!");
-      }
-      updateIsScheduling(false);
-    }
-  };
-
-  const RefreshVoteData = async () => {
-    updateCurPointsPosition(-1, -1);
-    updateClickedUser("", "");
-    updateIsEditing(false);
-    router.refresh();
-  };
-
-  const HandleDeleteButton = useCallback(async () => {
-    let delete_userid: number;
-    if (clicked_user.userId === "" && userid === -1) {
-      toast.error("請先選擇使用者!");
-      return;
-    } else if (clicked_user.userId === "" && userid !== -1) {
-      delete_userid = userid;
-    } else {
-      delete_userid = Number(clicked_user.userId);
-    }
-    const res = await DeleteVote(party.partyid, delete_userid);
-
-    if (!res.correct) toast.error(res.error);
-    else {
-      await RefreshVoteData();
-      toast.success("successfully delete vote!");
-    }
-  }, [party.partyid, clicked_user.userId, userid, RefreshVoteData]);
+  } = PartyTimelineLogic({
+    setUserSelectBlock,
+    party,
+    userSelectBlock,
+    user_votes,
+    has_scheduled,
+    allvoteblocks,
+    setIsConfirmClicked,
+    setIsDeleteClicked,
+    setIsScheduledClicked,
+    userid,
+  });
 
   useEffect(() => {
     setHydrated(true);
   }, []);
 
-  if (!hydrated) return null;
-  if (!allvoteblocks || allvoteblocks.length === 0) return null;
+  if (!hydrated || !allvoteblocks || allvoteblocks.length === 0) return null;
 
   return (
     <>
@@ -325,11 +79,22 @@ export const PartyTimelineCard = ({
             HandleDeleteButton={HandleDeleteButton}
             isEditing={isEditing}
             isScheduling={isScheduling}
-            isClicked={isClicked}
+            isConfirmClicked={isConfirmClicked}
+            isDeleteClicked={isDeleteClicked}
+            isScheduledClicked={isScheduledClicked}
             has_scheduled={has_scheduled}
             HandleCancelButton={HandleCancelButton}
           />
-          {TimeLineComponent}
+          <TimeLineComponent
+            party={party}
+            allvoteblocks={allvoteblocks}
+            VoteNumber={VoteNumber}
+            userSelectBlock={userSelectBlock}
+            setUserSelectBlock={setUserSelectBlock}
+            isEditing={isEditing}
+            isScheduling={isScheduling}
+            scheduled_time={scheduled_time}
+          />
         </CardContent>
       </Card>
       <GuestDialog partyid={party.partyid} />
