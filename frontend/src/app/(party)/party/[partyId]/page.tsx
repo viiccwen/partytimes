@@ -39,8 +39,6 @@ export default async function PartyPage({
   const total_hours = CalculateTotalHours(party);
   const scheduled_time: decision_schema_type | null = party.decision;
 
-  console.log(party.start_time, party.start_ampm, party.end_time, party.end_ampm);
-
   return (
     <div className="min-h-screen">
       <Toaster richColors />

@@ -155,31 +155,42 @@ export const DeleteVote = async (req: any, res: any) => {
       throw new Error("請提供所有必要資訊");
     }
 
-    const vote = await prisma.votetime.findFirst({
-      where: { partyid, userId: userid },
-    });
-    if (!vote) throw new Error("投票不存在");
-
-    const owner = await prisma.user.findFirst({
-      where: { id: vote.userId },
+    let guest = await prisma.user.findFirst({
+      where: { id: userid, role: "GUEST" },
     });
 
-    if (!owner) throw new Error("擁有者不存在");
+    if (guest) {
+      const vote = await prisma.votetime.findFirst({
+        where: { partyid, userId: userid },
+      });
+      if (!vote) throw new Error("投票不存在");
 
-    if (owner.role !== "GUEST") {
+      const deletedVote = await prisma.votetime.delete({
+        where: { id: vote.id },
+      });
+
+      if (!deletedVote) throw new Error("刪除失敗！");
+
+      res.sendStatus(200);
+    } else {
       if (!token) throw new Error("你尚未登入");
 
       const decoded: any = await Verify(token);
-      if (!decoded || decoded.id !== owner.id) throw new Error("未授權用戶");
+      if (!decoded || decoded.id !== userid) throw new Error("未授權用戶");
+
+      const vote = await prisma.votetime.findFirst({
+        where: { partyid, userId: userid },
+      });
+      if (!vote) throw new Error("投票不存在");
+
+      const deletedVote = await prisma.votetime.delete({
+        where: { id: vote.id },
+      });
+
+      if (!deletedVote) throw new Error("刪除失敗！");
+
+      res.sendStatus(200);
     }
-
-    const deletedVote = await prisma.votetime.delete({
-      where: { id: vote.id },
-    });
-
-    if (!deletedVote) throw new Error("刪除失敗！");
-
-    res.sendStatus(200);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
