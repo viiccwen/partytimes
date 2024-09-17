@@ -12,7 +12,7 @@ export const AuthMiddleware = async (req: any, res: any, next: any) => {
     }
 
     if(!token){
-        return res.status(401).json({message: "Not authorized"});
+        return res.status(401).json({message: "未授權！"});
     }
 
     try {
@@ -27,6 +27,6 @@ export const AuthMiddleware = async (req: any, res: any, next: any) => {
         next();
         
     } catch (error) {
-        return res.status(401).json({message: "Not authorized"});
+        return res.status(401).json({message: "未授權！"});
     }
 };
