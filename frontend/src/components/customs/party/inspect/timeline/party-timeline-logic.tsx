@@ -8,6 +8,7 @@ import { GenerateTimeSlots } from "@/components/customs/party/inspect/timeline/p
 import { useRouter } from "next/navigation";
 import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
 import { party_return_schema_type } from "@/lib/type";
+import { useGuestVoteStore } from "@/stores/guest-vote-store";
 const Cookie = require("js-cookie");
 
 interface PartyTimelineLogicProps {
@@ -47,6 +48,8 @@ export const PartyTimelineLogic = ({
     getUserVoteblocks,
   } = useVoteBlockStore();
 
+  const { setOpen, setTimeslots } = useGuestVoteStore();
+
   const HandleCheckButton = async () => {
     if (!isEditing) {
       updateIsEditing(true);
@@ -59,13 +62,36 @@ export const PartyTimelineLogic = ({
     } else if (userSelectBlock.size === 0) {
       toast.error("請選擇時間區塊！");
     } else {
-      setIsConfirmClicked(true);
+      
       const token = Cookie.get("token");
       const isAuth = await CheckAuth(token);
       const timeslots = GenerateTimeSlots(userSelectBlock, party);
+
       if (!isAuth) {
-        toast.error("未授權用戶！");
+        if(clicked_user.userId === "") {
+          // show guest dialog & create vote by new guest user
+          setTimeslots(timeslots);
+          setOpen(true);
+        } else {
+          // create vote by old guest user
+          setIsConfirmClicked(true);
+          const res = await CreateVote(
+            timeslots,
+            party.partyid,
+            clicked_user.creatorName,
+            clicked_user.userId
+          );
+
+          if (!res.correct) toast.error(res.error);
+          else {
+            await RefreshVoteData();
+            toast.success("successfully create vote!");
+            setIsConfirmClicked(false);
+          }
+        }
       } else {
+        // create vote by login user
+        setIsConfirmClicked(true);
         const res = await CreateVote(timeslots, party.partyid);
         if (!res.correct) toast.error(res.error);
         else {
@@ -130,13 +156,11 @@ export const PartyTimelineLogic = ({
     if (clicked_user.userId === "" && userid === -1) {
       toast.error("請先選擇使用者!");
       return;
-    } else if (clicked_user.userId === "" && userid !== -1) {
-      delete_userid = userid;
-    } else delete_userid = Number(clicked_user.userId);
+    }
 
     setIsDeleteClicked(true);
 
-    const res = await DeleteVote(party.partyid, delete_userid);
+    const res = await DeleteVote(party.partyid, clicked_user.userId);
 
     if (!res.correct) toast.error(res.error);
     else {
