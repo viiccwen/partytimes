@@ -47,14 +47,14 @@ export const handleGitHubOAuthCallback = async (req: any, res: any) => {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to get emails...`);
+      throw new Error(`取得email失敗...`);
     }
 
     const email_data = await response.json();
     const primaryEmail = email_data.find((email: any) => email.primary)?.email;
 
     if (!primaryEmail) {
-      throw new Error("No primary email found...");
+      throw new Error("沒有主要email...");
     }
 
     let user = await prisma.user.findFirst({
@@ -88,15 +88,15 @@ export const handleGitHubOAuthCallback = async (req: any, res: any) => {
 
 export const CheckAuth = async (req: any, res: any) => {
   if (req.user) {
-    res.status(200).json({ message: "You are logged in" });
+    res.status(200).json({ message: "你已登入" });
   } else {
-    res.status(401).json({ message: "You are not logged in" });
+    res.status(401).json({ message: "你尚未登入" });
   }
 };
 
 export const DeleteAccount = async (req: any, res: any) => {
   try {
-    if (!req.user) throw new Error("You are not logged in");
+    if (!req.user) throw new Error("你尚未登入");
 
     const user = await prisma.user.delete({
       where: {
@@ -104,9 +104,9 @@ export const DeleteAccount = async (req: any, res: any) => {
       },
     });
 
-    if (!user) throw new Error("User not found");
+    if (!user) throw new Error("使用者不存在！");
 
-    res.status(200).json({ message: "Account deleted" });
+    res.status(200).json({ message: "帳戶已刪除！" });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
@@ -114,7 +114,7 @@ export const DeleteAccount = async (req: any, res: any) => {
 
 export const GetUserInfo = async (req: any, res: any) => {
   try {
-    if (!req.user) throw new Error("You are not logged in");
+    if (!req.user) throw new Error("你尚未登入");
 
     let user = await prisma.user.findFirst({
       where: {
@@ -122,7 +122,7 @@ export const GetUserInfo = async (req: any, res: any) => {
       },
     });
 
-    if (!user) throw new Error("User not found");
+    if (!user) throw new Error("使用者不存在！");
 
     const FilterUser = {
       id: user.id,
@@ -139,7 +139,7 @@ export const GetUserInfo = async (req: any, res: any) => {
 export const UpdateUserName = async (req: any, res: any) => {
   try {
     const { nickname } = await req.body;
-    if (!nickname) throw new Error("Please provide a nickname");
+    if (!nickname) throw new Error("請提供暱稱");
 
     let user = await prisma.user.update({
       where: {
@@ -150,7 +150,7 @@ export const UpdateUserName = async (req: any, res: any) => {
       },
     });
 
-    if (!user) throw new Error("User not found");
+    if (!user) throw new Error("使用者不存在！");
 
     res.status(200).json({ nickname: user.nickname });
   } catch (error: any) {
