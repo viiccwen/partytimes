@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import party_router from "./routers/party-routers";
 import user_router from "./routers/user-routers";
-import vote_router from "./routers/vote-router";
-import schedule_router from "./routers/schedule-router";
+import vote_router from "./routers/vote-routers";
+import schedule_router from "./routers/schedule-routers";
 import oauth_router from "./routers/oauth-routers";
 
 const express = require("express");
