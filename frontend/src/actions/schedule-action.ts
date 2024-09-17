@@ -1,7 +1,6 @@
 import { decision_schema_type, general_fetch_return_type } from "@/lib/type";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const Cookie = require("js-cookie");
 
 export const CreateSchedule = async (
   partyid: string,

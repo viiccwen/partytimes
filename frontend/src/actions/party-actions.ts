@@ -14,12 +14,13 @@ const Cookie = require("js-cookie");
 export const CreateParty = async (
   formdata: party_create_schema_type & {date: string[]}
 ): Promise<create_party_fetch_return_type> => {
-  const token = Cookie.get("token");
-
-  const start_time = Number(formdata.start_time);
-  const end_time = Number(formdata.end_time);
-
   try {
+    const start_time = Number(formdata.start_time);
+    const end_time = Number(formdata.end_time);
+
+    const token = Cookie.get("token");
+    if(!token) throw new Error("尚未登入或是登入狀況有錯誤！");
+
     const response = await fetch(`${API_URL}/party/create`, {
       method: "POST",
       headers: {
@@ -102,6 +103,8 @@ export const DeleteParty = async (
 ): Promise<general_fetch_return_type> => {
   try {
     const token = Cookie.get("token");
+    if(!token) throw new Error("尚未登入或是登入狀況有錯誤！");
+    
     const response = await fetch(`${API_URL}/party/delete`, {
       method: "POST",
       headers: {
@@ -110,7 +113,7 @@ export const DeleteParty = async (
       },
       body: JSON.stringify({ partyid }),
     });
-
+    
     if (response.ok) {
       return { correct: true };
     } else {
@@ -126,8 +129,10 @@ export const UpdateParty = async (
   formdata: party_edit_schema_type,
   partyid: string
 ): Promise<general_fetch_return_type> => {
-  const token = Cookie.get("token");
   try {
+    const token = Cookie.get("token");
+    if(!token) throw new Error("尚未登入或是登入狀況有錯誤！");
+
     const response = await fetch(`${API_URL}/party/update`, {
       method: "POST",
       headers: {
