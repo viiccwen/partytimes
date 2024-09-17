@@ -26,7 +26,6 @@ export const CreateVote = async (
         body: JSON.stringify({ partyid, timeslots }),
       });
     } else if (nickname && guestid) {
-
       // use guest user to update vote
       response = await fetch(`${API_URL}/vote/create`, {
         method: "POST",
@@ -35,8 +34,7 @@ export const CreateVote = async (
         },
         body: JSON.stringify({ partyid, nickname, guestid, timeslots }),
       });
-    } else if(nickname) {
-
+    } else if (nickname) {
       // first time create vote by guest user
       response = await fetch(`${API_URL}/vote/create`, {
         method: "POST",
@@ -85,19 +83,28 @@ export const GetVoteTimes = async (
 
 export const DeleteVote = async (
   partyid: string,
-  userid: number
+  userid: string
 ): Promise<general_fetch_return_type> => {
   try {
     let token = Cookie.get("token");
-    if (!token) throw new Error("尚未登入或是登入狀況有錯誤！");
+    let response;
 
-    const response = await fetch(`${API_URL}/vote/delete/${partyid}/${userid}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
-    });
+    if (!token) {
+      response = await fetch(`${API_URL}/vote/delete/${partyid}/${userid}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } else {
+      response = await fetch(`${API_URL}/vote/delete/${partyid}/${userid}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      });
+    }
 
     if (response.ok) {
       return { correct: true };
@@ -108,4 +115,4 @@ export const DeleteVote = async (
   } catch (error: any) {
     return { correct: false, error: error.message };
   }
-}
+};
