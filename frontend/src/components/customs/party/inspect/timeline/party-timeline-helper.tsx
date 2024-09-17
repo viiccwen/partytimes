@@ -29,6 +29,7 @@ export const CalculateTotalHours = (
 };
 
 export const formatTime = (hour: number, ampm: string): string => {
+
   if(hour === 0 || hour == 24) return "12 AM";
   if(hour === 12) return "12 PM";
   if(hour < 12 && ampm === "AM") return `${hour} AM`;
@@ -162,9 +163,10 @@ export const generateGridCells = (
 
   const renderRow = (row: number) => {
     const hour = Math.floor(row / 2);
+    const start_time = ConverTo24Hours(party.start_time, party.start_ampm, true);
     const time =
       row % 2 === 0
-        ? formatTime(party.start_time + hour, party.start_ampm)
+        ? formatTime(start_time + hour, party.start_ampm)
         : "";
 
     return (
