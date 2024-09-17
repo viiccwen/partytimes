@@ -108,7 +108,6 @@ export const DeleteAccount = async (req: any, res: any) => {
 
     res.status(200).json({ message: "Account deleted" });
   } catch (error: any) {
-    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
