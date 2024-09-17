@@ -68,6 +68,7 @@ export const PartyTimelineCard = ({
     : 0;
   const [userSelectBlock, setUserSelectBlock] =
     useState<Set<string>>(user_votes);
+  const [isClicked, setIsClicked] = useState<boolean>(false);
   const [TouchedBlock, setTouchedBlock] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState<boolean>(false);
   const router = useRouter();
@@ -186,7 +187,7 @@ export const PartyTimelineCard = ({
     scheduled_time,
     updateCurPointsPosition,
     updateIsMouseDown,
-    setTouchedBlock
+    setTouchedBlock,
   ]);
 
   const HandleCheckButton = async () => {
@@ -203,6 +204,7 @@ export const PartyTimelineCard = ({
       toast.error("請選擇時間區塊！");
     } else {
       // check token
+      setIsClicked(true);
       const token = Cookie.get("token");
       const isAuth = await CheckAuth(token);
       const timeslots = GenerateTimeSlots(userSelectBlock, party);
@@ -235,6 +237,7 @@ export const PartyTimelineCard = ({
         else {
           await RefreshVoteData();
           toast.success("successfully create vote!");
+          setIsClicked(false);
         }
       }
     }
@@ -322,6 +325,7 @@ export const PartyTimelineCard = ({
             HandleDeleteButton={HandleDeleteButton}
             isEditing={isEditing}
             isScheduling={isScheduling}
+            isClicked={isClicked}
             has_scheduled={has_scheduled}
             HandleCancelButton={HandleCancelButton}
           />

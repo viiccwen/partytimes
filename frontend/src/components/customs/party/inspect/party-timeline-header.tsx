@@ -1,8 +1,6 @@
+'use client';
 import { Button } from "@/components/ui/button";
-import {
-  clicked_user_type,
-  useVoteBlockStore,
-} from "@/stores/inspect-party-store";
+import { useVoteBlockStore } from "@/stores/inspect-party-store";
 import {
   CircleCheckBig,
   CircleX,
@@ -15,6 +13,7 @@ interface PartyTimelineHeaderProps {
   className?: string;
   isEditing: boolean;
   isScheduling: boolean;
+  isClicked: boolean;
   has_scheduled: boolean;
   HandleCancelButton: () => void;
   HandleCheckButton: () => void;
@@ -26,6 +25,7 @@ export const PartyTimelineHeader = ({
   className,
   isEditing,
   isScheduling,
+  isClicked,
   has_scheduled,
   HandleCheckButton,
   HandleScheduleButton,
@@ -60,9 +60,10 @@ export const PartyTimelineHeader = ({
               variant="default"
               className="gap-2 bg-blue-500 hover:bg-blue-700 text-white "
               onClick={HandleCheckButton}
+              disabled={isClicked}
             >
               <CircleCheckBig className="w-4 h-4 " />
-              <p className="hidden md:block">確認</p>
+              <p className="hidden md:block">{isClicked ? "確認中..." : "確認"}</p>
             </Button>
           </div>
         </div>
@@ -80,11 +81,12 @@ export const PartyTimelineHeader = ({
             </Button>
             <Button
               variant="default"
-              className="gap-2 bg-blue-500 hover:bg-blue-700 text-white "
+              className="gap-2 bg-blue-500 hover:bg-blue-700 text-white"
               onClick={HandleScheduleButton}
+              disabled={isClicked}
             >
               <CircleCheckBig className="w-4 h-4" />
-              <p className="hidden md:block">確認</p>
+              <p className="hidden md:block">{isClicked ? "確認中..." : "確認"}</p>
             </Button>
           </div>
         </div>
