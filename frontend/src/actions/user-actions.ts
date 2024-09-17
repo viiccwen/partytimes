@@ -29,11 +29,13 @@ export const Logout = (): void => {
 
 export const DeleteAccount = async (): Promise<general_fetch_return_type> => {
   try {
+    const token = Cookie.get("token");
+    if(!token) throw new Error("尚未登入或是登入狀況有錯誤！");
     const response = await fetch(`${API_URL}/user/delete`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${Cookie.get("token")}`,
+        authorization: `Bearer ${token}`,
       },
     });
 
@@ -53,7 +55,7 @@ export const GetUserInfo = async (
   token: string | undefined
 ): Promise<userinfo_fetch_return_type> => {
   try {
-    if (token == undefined) throw new Error("Token is not found");
+    if(!token) throw new Error("尚未登入或是登入狀況有錯誤！");
 
     const response = await fetch(`${API_URL}/user/get`, {
       method: "GET",
@@ -78,11 +80,13 @@ export const GetUserInfo = async (
 
 export const EditName = async (nickname: string): Promise<general_fetch_return_type>  => {
   try {
+    const token = Cookie.get("token");
+    if(!token) throw new Error("尚未登入或是登入狀況有錯誤！");
     const response = await fetch(`${API_URL}/user/update/name`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${Cookie.get("token")}`,
+        authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ nickname }),
     });
