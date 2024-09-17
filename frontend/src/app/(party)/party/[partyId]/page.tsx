@@ -39,11 +39,14 @@ export default async function PartyPage({
   const total_hours = CalculateTotalHours(party);
   const scheduled_time: decision_schema_type | null = party.decision;
 
+  console.log(party.start_time, party.start_ampm, party.end_time, party.end_ampm);
+  console.log(total_hours);
+
   return (
     <div className="min-h-screen">
       <Toaster richColors />
       <Navbar isLogin={isLogin} HasFixed={false} />
-      <div className="flex flex-col gap-6 md:mx-7 md:flex-row">
+      <div className="flex flex-col gap-6 md:mx-7 md:flex-row mb-[100px]">
         <InspectPartyContainer
           party={party}
           votes={votes.data}

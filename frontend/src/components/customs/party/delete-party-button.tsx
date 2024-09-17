@@ -29,7 +29,7 @@ export const DeletePartyButton = ({
 
       if (response.correct) {
         setOpen(false);
-        router.push("/profile");
+        window.location.replace("/profile");
       } else {
         toast.error(response.error);
       }

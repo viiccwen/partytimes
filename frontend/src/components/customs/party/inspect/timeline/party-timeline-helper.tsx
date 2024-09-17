@@ -6,27 +6,35 @@ import {
 } from "@/lib/type";
 import { Dispatch, ReactNode, SetStateAction } from "react";
 import { cn } from "@/lib/utils";
-import { ampm } from "@/lib/schema";
 import { CalendarCheck2 } from "lucide-react";
 import moment from "moment";
+
+export const ConverTo24Hours = (time: number, ampm: string, isStart: boolean) => {
+  let return_time: number = time === 12 ? 0 : time;
+
+  if (return_time === 0 && ampm == "AM" && isStart) return_time = 0;
+  else if (return_time === 0 && ampm == "AM" && !isStart) return_time = 24;
+  else
+    return_time = (ampm === "PM") ? return_time + 12 : return_time;
+
+  return return_time;
+};
 
 export const CalculateTotalHours = (
   party: party_return_schema_type
 ): number => {
-  let start_time = party.start_time === 12 ? 0 : party.start_time;
-  start_time =
-    party.start_ampm === ampm[0] ? party.start_time : party.start_time + 12;
-
-  let end_time = party.end_time === 12 ? 0 : party.end_time;
-  end_time = party.end_ampm === ampm[0] ? party.end_time : party.end_time + 12;
-
+  let start_time: number = ConverTo24Hours(party.start_time, party.start_ampm, true);
+  let end_time: number = ConverTo24Hours(party.end_time, party.end_ampm, false);
   return end_time - start_time;
 };
 
 export const formatTime = (hour: number, ampm: string): string => {
-  return `${hour > 12 ? hour - 12 : hour} ${
-    hour >= 12 && ampm == "AM" ? "PM" : "AM"
-  }`;
+  if(hour === 0 || hour == 24) return "12 AM";
+  if(hour === 12) return "12 PM";
+  if(hour < 12 && ampm === "AM") return `${hour} AM`;
+  if(hour < 12 && ampm === "PM") return `${hour} PM`;
+  if(hour > 12 && ampm === "AM") return `${hour - 12} PM`;
+  return "";
 };
 
 export const generateGridCells = (
@@ -54,9 +62,6 @@ export const generateGridCells = (
   const renderCell = (row: number, col: number) => {
     const block_key: string = `${col}-${row}`;
     const isSelected: boolean = userSelectBlock.has(block_key);
-    const isScheduled: boolean = AllvoteBlocks[col][row].some(
-      (block) => block.isScheduled
-    );
     const isVoted: number = AllvoteBlocks[col][row].length;
     const isPointed: boolean = AllvoteBlocks[col][row].some(
       (block) => block.userId === cur_points_userid
@@ -202,19 +207,11 @@ export const GenerateScheduledBlock = (
   const start_ampm = scheduled_time.start_ampm;
   const end_ampm = scheduled_time.end_ampm;
 
-  const start =
-    (start_time === 12 ? 0 : start_time) +
-    (start_ampm === "PM" ? 12 : 0) -
-    party.start_time;
-  const end =
-    (end_time === 12 ? 0 : end_time) +
-    (end_ampm === "PM" ? 12 : 0) -
-    party.start_time;
+  const start = ConverTo24Hours(start_time, start_ampm, true) - party.start_time;
+  const end = ConverTo24Hours(end_time, end_ampm, false) - party.start_time;
 
   const height = (end - start) * 2;
   const top = start * 2;
-
-  
 
   return (
     <div className="mt-2 relative">
