@@ -89,6 +89,8 @@ export const DeleteVote = async (
 ): Promise<general_fetch_return_type> => {
   try {
     let token = Cookie.get("token");
+    if (!token) throw new Error("尚未登入或是登入狀況有錯誤！");
+
     const response = await fetch(`${API_URL}/vote/delete/${partyid}/${userid}`, {
       method: "DELETE",
       headers: {
