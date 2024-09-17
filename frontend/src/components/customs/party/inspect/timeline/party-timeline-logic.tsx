@@ -70,7 +70,7 @@ export const PartyTimelineLogic = ({
         if (!res.correct) toast.error(res.error);
         else {
           await RefreshVoteData();
-          toast.success("successfully create vote!");
+          toast.success("創建投票成功！");
           setIsConfirmClicked(false);
         }
       }
@@ -89,7 +89,7 @@ export const PartyTimelineLogic = ({
       if (!res.correct) toast.error(res.error);
       else {
         await RefreshVoteData();
-        toast.success("successfully delete schedule!");
+        toast.success("刪除登記成功！");
         return;
       }
     }
@@ -111,7 +111,7 @@ export const PartyTimelineLogic = ({
 
       await RefreshVoteData();
       setUserSelectBlock(new Set<string>());
-      toast.success("successfully create schedule!");
+      toast.success("創建登記成功！");
 
       updateIsScheduling(false);
       setIsScheduledClicked(false);
@@ -141,7 +141,7 @@ export const PartyTimelineLogic = ({
     if (!res.correct) toast.error(res.error);
     else {
       await RefreshVoteData();
-      toast.success("successfully delete vote!");
+      toast.success("刪除投票成功！");
     }
 
     setIsDeleteClicked(false);
