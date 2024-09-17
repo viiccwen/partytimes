@@ -14,6 +14,7 @@ import { CreateParty } from "@/actions/party-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { party_create_schema } from "@/lib/schema";
 import { party_create_schema_type } from "@/lib/type";
+import { ConverTo24Hours } from "../inspect/timeline/party-timeline-helper";
 
 export const SelectPartyTimePanel = () => {
   const router = useRouter();
@@ -45,14 +46,8 @@ export const SelectPartyTimePanel = () => {
     const start_time = Number(formdata.start_time);
     const end_time = Number(formdata.end_time);
 
-    const tw_start_time =
-      (start_time === 12 ? 0 : start_time) +
-      (formdata.start_ampm === "PM" ? 12 : 0) -
-      start_time;
-    const tw_end_time =
-      (end_time === 12 ? 0 : end_time) +
-      (formdata.end_ampm === "PM" ? 12 : 0) -
-      start_time;
+    const tw_start_time = ConverTo24Hours(start_time, formdata.start_ampm, true);
+    const tw_end_time = ConverTo24Hours(end_time, formdata.end_ampm, false);
 
     if (tw_start_time >= tw_end_time) {
       toast.error("開始時間不能大於或等於結束時間!");
