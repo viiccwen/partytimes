@@ -218,8 +218,8 @@ export const GenerateScheduledBlock = (
   const end_ampm = scheduled_time.end_ampm;
 
   const start =
-    ConverTo24Hours(start_time, start_ampm, true) - party.start_time;
-  const end = ConverTo24Hours(end_time, end_ampm, false) - party.start_time;
+    ConverTo24Hours(start_time, start_ampm, true) - ConverTo24Hours(party.start_time, start_ampm, true);
+  const end = ConverTo24Hours(end_time, end_ampm, false) - ConverTo24Hours(party.start_time, start_ampm, true);
 
   const height = (end - start) * 2;
   const top = start * 2;
@@ -272,11 +272,10 @@ export const generateHeader = (party: party_return_schema_type): ReactNode => {
   );
 };
 
-export const GetTimeWithAMPM = (time: number, ampm: string) => {
-  let new_ampm = ampm;
-  new_ampm = (time >= 12 && ampm === "AM") || time === 0 ? "PM" : "AM";
-
-  return new_ampm;
+export const GetTimeWithAMPM = (time: number) => {
+  if (time === 0 || time === 24) return "AM";
+  if (time === 12) return "PM";
+  return time < 12 ? "AM" : "PM";
 };
 
 export const GenerateTimeSlots = (
@@ -284,6 +283,11 @@ export const GenerateTimeSlots = (
   party: party_return_schema_type
 ) => {
   const blocks = Array.from(userSelectBlock);
+  const party_start_time = ConverTo24Hours(
+    party.start_time,
+    party.start_ampm,
+    true
+  );
 
   const raw_timeSlots = blocks.map((block) => {
     const [row, col] = block.split("-").map((v) => parseInt(v));
@@ -306,19 +310,20 @@ export const GenerateTimeSlots = (
   for (let i = 0; i < raw_timeSlots.length; i++) {
     const cur = raw_timeSlots[i];
     if (prev.row === -1 && prev.col === -1) {
-      start_time = party.start_time + cur.col / 2;
-      start_ampm = GetTimeWithAMPM(start_time, party.start_ampm);
-      end_time = party.start_time + (cur.col + 1) / 2;
-      end_ampm = GetTimeWithAMPM(end_time, party.start_ampm);
+      start_time = party_start_time + cur.col / 2;
+      start_ampm = GetTimeWithAMPM(start_time);
+      end_time = party_start_time + (cur.col + 1) / 2;
+      end_ampm = GetTimeWithAMPM(end_time);
       prev = cur;
     } else if (cur.row === prev.row && cur.col === prev.col + 1) {
-      end_time = party.start_time + (cur.col + 1) / 2;
-      end_ampm = GetTimeWithAMPM(end_time, party.start_ampm);
+      end_time = party_start_time + (cur.col + 1) / 2;
+      end_ampm = GetTimeWithAMPM(end_time);
       prev = cur;
     } else {
       // change to 12 hours format
       if (start_time >= 12) start_time -= 12;
-      if (end_time >= 12) end_time -= 12;
+      if (end_time === 24) end_time = 0;
+      else if (end_time >= 12) end_time -= 12;
 
       timeSlots.push({
         date: party.date[prev.row],
@@ -328,10 +333,10 @@ export const GenerateTimeSlots = (
         end_ampm: end_ampm === "AM" ? "AM" : "PM",
       });
 
-      start_time = party.start_time + cur.col / 2;
-      start_ampm = GetTimeWithAMPM(start_time, party.start_ampm);
-      end_time = party.start_time + (cur.col + 1) / 2;
-      end_ampm = GetTimeWithAMPM(end_time, party.start_ampm);
+      start_time = party_start_time + cur.col / 2;
+      start_ampm = GetTimeWithAMPM(start_time);
+      end_time = party_start_time + (cur.col + 1) / 2;
+      end_ampm = GetTimeWithAMPM(end_time);
       prev = cur;
     }
   }
@@ -340,7 +345,8 @@ export const GenerateTimeSlots = (
   if (start_time !== -1 && end_time !== -1) {
     // change to 12 hours format
     if (start_time >= 12) start_time -= 12;
-    if (end_time >= 12) end_time -= 12;
+    if (end_time === 24) end_time = 0;
+    else if (end_time >= 12) end_time -= 12;
 
     timeSlots.push({
       date: party.date[raw_timeSlots[raw_timeSlots.length - 1].row],
