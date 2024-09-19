@@ -20,7 +20,7 @@ export default async function SettingPage() {
   const isLogin = await CheckAuth(token);
 
   const userinfo: userinfo_fetch_return_type = await GetUserInfo(token);
-  const id: number = userinfo.data?.id ? userinfo.data.id : -1;
+  const id: string = userinfo.data?.id ? userinfo.data.id : "-1";
   const nickname: string = userinfo.data?.nickname
     ? userinfo.data.nickname
     : "";
