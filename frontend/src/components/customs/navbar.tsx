@@ -33,7 +33,7 @@ export const Navbar = ({ isLogin, HasFixed }: NavbarProps) => {
   const router = useRouter();
 
   return (
-    <div className={`w-full ${HasFixed ? "fixed" : ""} backdrop-blur-sm`}>
+    <div className={`w-full ${HasFixed ? "fixed" : ""} backdrop-blur-sm z-10`}>
       <div className="flex justify-between p-5">
         <div className="flex ml-3 md:hidden">
           <MenuBar side="left" isLogin={isLogin} />
