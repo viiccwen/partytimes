@@ -12,6 +12,7 @@ interface InspectPartyContainerProps {
   nickname: string;
   userid: number;
   scheduled_time: decision_schema_type | null;
+  isLogin: boolean;
 }
 
 export const InspectPartyContainer = ({
@@ -21,6 +22,7 @@ export const InspectPartyContainer = ({
   nickname,
   userid,
   scheduled_time,
+  isLogin
 }: InspectPartyContainerProps) => {
   const { getTimeSlotBlocks, getUserVoteblocks, getJoinList } = useVoteBlockStore();
   const vote_blocks = getTimeSlotBlocks(votes, total_hours, party);
@@ -39,6 +41,7 @@ export const InspectPartyContainer = ({
         userid={userid}
         has_scheduled={has_scheduled}
         scheduled_time={scheduled_time}
+        isLogin={isLogin}
       />
       <PartyJoinCard className="col-span-2 flex-initial w-full md:w-1/3" allvoteblocks={vote_blocks} joinList={join_list} />
     </>
