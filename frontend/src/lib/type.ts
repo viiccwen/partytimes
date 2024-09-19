@@ -2,6 +2,7 @@ import { z } from "zod";
 import {
   ampm,
   decision_schema,
+  feedback_schema,
   guest_schema,
   login_schema,
   party_create_schema,
@@ -68,3 +69,5 @@ export type get_partylist_fetch_return_type = general_fetch_return_type & {
 export type get_votetimes_fetch_return_type = general_fetch_return_type & {
   data?: votes_schema_type[];
 };
+
+export type feedback_schema_type = z.infer<typeof feedback_schema>;
