@@ -13,6 +13,7 @@ export default async function Home() {
     ? cookie.get("token")?.value
     : undefined;
   const isLogin = await CheckAuth(token);
+  
   return (
     <>
       <Navbar isLogin={isLogin} HasFixed={true} />
