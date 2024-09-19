@@ -98,3 +98,12 @@ export const votes_schema = z.object({
   partyid: z.string(),
   timeslots: z.array(timeslots_return_schema),
 });
+
+// todo: add error message to type
+export const feedback_schema = z.object({
+  name: z.string(),
+  email: z.string().email("請輸入正確的email格式"),
+  type: z.enum(["feedback", "great", "bug"]),
+  title: z.string().max(30, "標題最多30字"),
+  content: z.string().min(1, "請輸入內容"),
+});
