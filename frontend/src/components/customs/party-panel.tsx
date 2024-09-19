@@ -19,7 +19,7 @@ import { toast } from "sonner";
 
 interface PartyPanelProps {
   token: string;
-  id: number;
+  id: string;
   email: string;
   nickname: string;
   parties: party_return_schema_type[];
