@@ -12,13 +12,14 @@ interface DeletePartyButtonProps {
   partyid: string;
   classname: string;
   label: string;
+  isConfirming: boolean;
 }
 export const DeletePartyButton = ({
   partyid,
   classname,
   label,
+  isConfirming
 }: DeletePartyButtonProps) => {
-  const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
   const { setOpen } = party_table_store();
 
@@ -41,7 +42,7 @@ export const DeletePartyButton = ({
   };
 
   return (
-    <Button className={classname} onClick={HandleClick} disabled={isDeleting}>
+    <Button className={classname} onClick={HandleClick} disabled={isDeleting || isConfirming}>
       {isDeleting ? "刪除中..." : label}
     </Button>
   );
