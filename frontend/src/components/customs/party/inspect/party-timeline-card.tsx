@@ -21,6 +21,7 @@ interface PartyTimelineCardProps {
   userid: number;
   has_scheduled: boolean;
   scheduled_time: decision_schema_type | null;
+  isLogin: boolean;
 }
 
 export const PartyTimelineCard = ({
@@ -32,6 +33,7 @@ export const PartyTimelineCard = ({
   userid,
   has_scheduled,
   scheduled_time,
+  isLogin
 }: PartyTimelineCardProps) => {
   const [userSelectBlock, setUserSelectBlock] =
     useState<Set<string>>(user_votes);
@@ -70,7 +72,7 @@ export const PartyTimelineCard = ({
     <>
       <Card className={className}>
         <CardContent>
-          <PartyHeader className="mt-5" party={party} />
+          <PartyHeader className="mt-5" party={party} isLogin={isLogin} />
           <Separator className="h-1 my-3" />
           <PartyTimelineHeader
             className="mt-5"
