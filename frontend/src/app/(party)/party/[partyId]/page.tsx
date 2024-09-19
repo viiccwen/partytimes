@@ -34,7 +34,7 @@ export default async function PartyPage({
     ? userinfo.data.nickname
     : "";
 
-  const userid: number = userinfo.data?.id ? userinfo.data.id : -1;
+  const userid: string = userinfo.data?.id ? userinfo.data.id : "-1";
 
   const total_hours = CalculateTotalHours(party);
   const scheduled_time: decision_schema_type | null = party.decision;
