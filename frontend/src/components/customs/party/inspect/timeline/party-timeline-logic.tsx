@@ -21,7 +21,7 @@ interface PartyTimelineLogicProps {
   setIsConfirmClicked: Dispatch<SetStateAction<boolean>>;
   setIsDeleteClicked: Dispatch<SetStateAction<boolean>>;
   setIsScheduledClicked: Dispatch<SetStateAction<boolean>>;
-  userid: number;
+  userid: string;
 }
 
 export const PartyTimelineLogic = ({
@@ -152,15 +152,16 @@ export const PartyTimelineLogic = ({
   };
 
   const HandleDeleteButton = useCallback(async () => {
-    let delete_userid: number;
-    if (clicked_user.userId === "" && userid === -1) {
+    if (clicked_user.userId === "" && userid === "-1") {
       toast.error("請先選擇使用者!");
       return;
     }
 
     setIsDeleteClicked(true);
 
-    const res = await DeleteVote(party.partyid, clicked_user.userId);
+    let res;
+    if(userid !== "-1") res = await DeleteVote(party.partyid, userid);
+    else res = await DeleteVote(party.partyid, clicked_user.userId);
 
     if (!res.correct) toast.error(res.error);
     else {

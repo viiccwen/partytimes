@@ -33,7 +33,7 @@ export const guest_schema = z.object({
 });
 
 export const user_info_schema = z.object({
-  id: z.number(),
+  id: z.string(),
   nickname: z.string(),
   email: z.string(),
 })
