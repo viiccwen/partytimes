@@ -18,7 +18,7 @@ interface PartyTimelineCardProps {
   allvoteblocks: block_type[][][];
   user_votes: Set<string>;
   VoteNumber: number;
-  userid: number;
+  userid: string;
   has_scheduled: boolean;
   scheduled_time: decision_schema_type | null;
   isLogin: boolean;
