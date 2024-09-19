@@ -27,7 +27,7 @@ const links = [
   },
   {
     name: "註冊",
-    url: "/register",
+    url: "/login",
     protected: false,
     only_guest: true,
   },
