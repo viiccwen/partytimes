@@ -9,13 +9,16 @@ import { cn } from "@/lib/utils";
 import { CalendarCheck2 } from "lucide-react";
 import moment from "moment";
 
-export const ConverTo24Hours = (time: number, ampm: string, isStart: boolean) => {
+export const ConverTo24Hours = (
+  time: number,
+  ampm: string,
+  isStart: boolean
+) => {
   let return_time: number = time === 12 ? 0 : time;
 
   if (return_time === 0 && ampm == "AM" && isStart) return_time = 0;
   else if (return_time === 0 && ampm == "AM" && !isStart) return_time = 24;
-  else
-    return_time = (ampm === "PM") ? return_time + 12 : return_time;
+  else return_time = ampm === "PM" ? return_time + 12 : return_time;
 
   return return_time;
 };
@@ -23,18 +26,20 @@ export const ConverTo24Hours = (time: number, ampm: string, isStart: boolean) =>
 export const CalculateTotalHours = (
   party: party_return_schema_type
 ): number => {
-  let start_time: number = ConverTo24Hours(party.start_time, party.start_ampm, true);
+  let start_time: number = ConverTo24Hours(
+    party.start_time,
+    party.start_ampm,
+    true
+  );
   let end_time: number = ConverTo24Hours(party.end_time, party.end_ampm, false);
   return end_time - start_time;
 };
 
 export const formatTime = (hour: number, ampm: string): string => {
-
-  if(hour === 0 || hour == 24) return "12 AM";
-  if(hour === 12) return "12 PM";
-  if(hour < 12 && ampm === "AM") return `${hour} AM`;
-  if(hour < 12 && ampm === "PM") return `${hour} PM`;
-  if(hour > 12 && ampm === "AM") return `${hour - 12} PM`;
+  if (hour === 0 || hour == 24) return "12 AM";
+  if (hour === 12) return "12 PM";
+  if (hour < 12) return `${hour} AM`;
+  if (hour > 12) return `${hour - 12} PM`;
   return "";
 };
 
@@ -163,15 +168,18 @@ export const generateGridCells = (
 
   const renderRow = (row: number) => {
     const hour = Math.floor(row / 2);
-    const start_time = ConverTo24Hours(party.start_time, party.start_ampm, true);
+    const start_time = ConverTo24Hours(
+      party.start_time,
+      party.start_ampm,
+      true
+    );
+
     const time =
-      row % 2 === 0
-        ? formatTime(start_time + hour, party.start_ampm)
-        : "";
+      row % 2 === 0 ? formatTime(start_time + hour, party.start_ampm) : "";
 
     return (
       <div key={row} className="flex">
-        <div className="text-sm flex justify-start items-center w-[50px] text-slate-600 select-none">
+        <div className="text-sm flex justify-start items-center w-[50px] text-slate-600 dark:text-slate-100 select-none">
           {time}
         </div>
         <div
@@ -209,7 +217,8 @@ export const GenerateScheduledBlock = (
   const start_ampm = scheduled_time.start_ampm;
   const end_ampm = scheduled_time.end_ampm;
 
-  const start = ConverTo24Hours(start_time, start_ampm, true) - party.start_time;
+  const start =
+    ConverTo24Hours(start_time, start_ampm, true) - party.start_time;
   const end = ConverTo24Hours(end_time, end_ampm, false) - party.start_time;
 
   const height = (end - start) * 2;
