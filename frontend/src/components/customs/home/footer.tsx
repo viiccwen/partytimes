@@ -14,31 +14,31 @@ const linkblocks_title = [
 const linkblocks = [
   [
     {
-      link: "#",
+      link: "/logs",
       text: "更新紀錄",
     },
     {
-      link: "#",
+      link: "/feedback",
       text: "意見回饋",
     },
   ],
   [
     {
-      link: "#",
+      link: "/about",
       text: "關於產品",
     },
     {
-      link: "#",
+      link: "https://bento.me/vicwen",
       text: "關於作者",
     },
   ],
   [
     {
-      link: "#",
+      link: "https://github.com/viiccwen",
       text: "GitHub",
     },
     {
-      link: "#",
+      link: "https://discordapp.com/users/751411358502879242",
       text: "Discord",
     },
   ],
@@ -56,10 +56,10 @@ const linkblocks = [
 
 export const Footer = () => {
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center mb-[100px]">
       <div className="w-[1000px]">
         <div className={cn("flex flex-col mt-[200px] mx-5 justify-between", "md:flex-row")}>
-          <div className={cn("flex flex-row justify-evenly items-center", "md:flex-col md:h-[300px] md:items-start")}>
+          <div className={cn("grid grid-cols-2 justify-evenly items-center", "md:flex md:flex-col md:h-[300px] md:items-start")}>
             <Image
               src="/PartyTimes-logo.png"
               alt="logo"
@@ -98,6 +98,7 @@ const LinkBlock = ({ title, linkblocks }: LinkBlockProp) => {
         <Link
         key={`linkblock-${index}`}
           href={linkblock.link}
+          target="_blank"
           className="text-slate-200 transition-all duration-300 hover:text-white"
         >
           {linkblock.text}
