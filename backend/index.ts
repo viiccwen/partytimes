@@ -4,6 +4,7 @@ import user_router from "./routers/user-routers";
 import vote_router from "./routers/vote-routers";
 import schedule_router from "./routers/schedule-routers";
 import oauth_router from "./routers/oauth-routers";
+import email_router from "./routers/mail-routers";
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -29,6 +30,7 @@ app.use("/api", party_router);
 app.use("/api", vote_router);
 app.use("/api", schedule_router);
 app.use("/api", oauth_router);
+app.use("/api", email_router);
 
 app.listen(API_PORT, () => {
   console.log(`Server is running on port ${API_PORT}`);
