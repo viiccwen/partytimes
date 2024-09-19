@@ -1,3 +1,4 @@
+import { ConverTo24Hours } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
 import { party_return_schema_type, votes_schema_type } from "@/lib/type";
 import { create } from "zustand";
 
@@ -76,24 +77,18 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
       () => Array.from({ length: total_hours * 2 }, () => [])
     );
 
+    const party_start_time = ConverTo24Hours(party.start_time, party.start_ampm, true);
+
     votes.forEach((vote: votes_schema_type) => {
       vote.timeslots.forEach((timeslot) => {
         const date = timeslot.date;
         const row = party.date.findIndex((v) => v === date);
 
-        const start_time = timeslot.start_time;
-        const end_time = timeslot.end_time;
-        const start_ampm = timeslot.start_ampm;
-        const end_ampm = timeslot.end_ampm;
+        const start_time = ConverTo24Hours(timeslot.start_time, timeslot.start_ampm, true);
+        const end_time = ConverTo24Hours(timeslot.end_time, timeslot.end_ampm, false);
 
-        const start =
-          (start_time === 12 ? 0 : start_time) +
-          (start_ampm === "PM" ? 12 : 0) -
-          party.start_time;
-        const end =
-          (end_time === 12 ? 0 : end_time) +
-          (end_ampm === "PM" ? 12 : 0) -
-          party.start_time;
+        const start = start_time - party_start_time;
+        const end = end_time - party_start_time;
 
         for (let i = start; i < end; i += 0.5) {
           const col = i * 2;

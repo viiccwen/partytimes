@@ -38,9 +38,9 @@ model Party {
   // range of time of the party
   date       String[]
   start_time Float
-  start_ampm Time     @default(AM)
+  start_ampm AMPM     @default(AM)
   end_time   Float
-  end_ampm   Time     @default(PM)
+  end_ampm   AMPM     @default(PM)
 
   votetimes Votetime[]
 
@@ -68,9 +68,9 @@ model TimeSlot {
   id         Int    @id @default(autoincrement())
   date       String
   start_time Float
-  start_ampm Time   @default(AM)
+  start_ampm AMPM   @default(AM)
   end_time   Float
-  end_ampm   Time   @default(PM)
+  end_ampm   AMPM   @default(PM)
 
   votetime   Votetime @relation(fields: [votetimeId], references: [id], onDelete: Cascade)
   votetimeId Int
@@ -80,9 +80,9 @@ model Decision {
   id         Int    @id @default(autoincrement())
   date       String
   start_time Float
-  start_ampm Time   @default(AM)
+  start_ampm AMPM   @default(AM)
   end_time   Float
-  end_ampm   Time   @default(PM)
+  end_ampm   AMPM   @default(PM)
 
   party   Party  @relation(fields: [partyid], references: [partyid], onDelete: Cascade)
   partyid String @unique
@@ -94,7 +94,7 @@ enum Plan {
   GUEST
 }
 
-enum Time {
+enum AMPM {
   AM
   PM
 }
