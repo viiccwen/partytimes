@@ -19,6 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { party_edit_schema } from "@/lib/schema";
 import { toast } from "sonner";
 import { party_table_store } from "./party-table";
+import { useState } from "react";
 
 interface EditButtonProps {
   partyid: string;
@@ -41,8 +42,10 @@ export const EditButton = ({
     resolver: zodResolver(party_edit_schema),
   });
   const { open, setOpen } = party_table_store();
+  const [isConfirming, setIsConfirming] = useState<boolean>(false);
 
   const onSubmit = async (formdata: party_edit_schema_type) => {
+    setIsConfirming(true);
     const response = await UpdateParty(formdata, partyid);
 
     if (response.correct) {
@@ -99,8 +102,9 @@ export const EditButton = ({
               partyid={partyid}
               classname="w-full"
               label="刪除派對"
+              isConfirming={isConfirming}
             />
-            <EditPartyButton classname="w-full" label="確認" />
+            <EditPartyButton classname="w-full" label="確認" isConfirming={isConfirming} />
           </div>
         </form>
       </DialogContent>
