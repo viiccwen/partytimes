@@ -14,7 +14,7 @@ import { BackButton } from "../back-button";
 import { ModeToggle } from "../mode-toggle";
 
 interface SettingCardProps {
-  id: number;
+  id: string;
   email: string;
   nickname: string;
 }
