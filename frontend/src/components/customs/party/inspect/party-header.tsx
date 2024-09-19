@@ -12,7 +12,7 @@ export const PartyHeader = ({ party, className }: PartyHeaderProps) => {
     <div className={className}>
       <div className="flex justify-between items-center">
         <p className="text-lg md:text-2xl font-bold md:hidden">{party.title.length > 14 ? party.title.substring(0, 14) + "..." : party.title}</p>
-        <p className="text-xl md:text-2xl font-bold hidden md:block">{party.description}</p>
+        <p className="text-xl md:text-2xl font-bold hidden md:block">{party.title}</p>
         <div className="flex gap-2">
           <ShareURLButton />
           <EditButton
