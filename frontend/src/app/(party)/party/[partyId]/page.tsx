@@ -51,6 +51,7 @@ export default async function PartyPage({
           nickname={nickname}
           userid={userid}
           scheduled_time={scheduled_time}
+          isLogin={isLogin}
         />
       </div>
     </div>
