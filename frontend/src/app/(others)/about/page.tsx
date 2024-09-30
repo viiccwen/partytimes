@@ -2,8 +2,13 @@ import { Auth } from "@/actions/user-actions";
 import { Navbar } from "@/components/customs/navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "about",
+};
 
 export default async function AboutPage() {
   const token: string | undefined = cookies().get("token")?.value;
