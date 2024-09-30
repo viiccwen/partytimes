@@ -9,8 +9,8 @@ interface InspectPartyContainerProps {
   party: party_return_schema_type;
   votes: votes_schema_type[];
   total_hours: number;
-  nickname: string;
-  userid: string;
+  nickname: string | undefined;
+  userid: string | undefined;
   scheduled_time: decision_schema_type | null;
   isLogin: boolean;
 }
