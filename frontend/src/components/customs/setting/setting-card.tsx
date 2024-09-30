@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -18,7 +16,7 @@ interface SettingCardProps {
   nickname: string;
 }
 
-export const SettingCard = ({ nickname, email }: SettingCardProps) => {
+export const SettingCard = async ({ nickname, email }: SettingCardProps) => {
   return (
     <Card>
       <CardHeader>

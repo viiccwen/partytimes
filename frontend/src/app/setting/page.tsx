@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 
 export default async function SettingPage() {
   const token: string | undefined = cookies().get("token")?.value;
-  
   const { correct: auth, data: user, error } = await Auth(token);
   if (!auth || user === undefined) redirect("/login");
 

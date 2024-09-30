@@ -26,12 +26,8 @@ export default async function ProfilePage() {
     <div className="min-h-screen">
       <Toaster richColors />
       <Navbar isLogin={auth} HasFixed={false} />
-      <div className="m-7">
+      <div className="md:m-7 mt-5">
         <PartyPanel
-          token={token}
-          id={user?.id}
-          nickname={user?.nickname}
-          email={user?.email}
           parties={party.data.party}
         />
       </div>
