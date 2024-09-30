@@ -1,13 +1,15 @@
-import { Auth } from "@/actions/user-actions";
+import Link from "next/link";
+import Image from "next/image";
+import { cookies } from "next/headers";
+
 import { DescriptionBlock } from "@/components/customs/home/description-block";
 import { Footer } from "@/components/customs/home/footer";
 import { Navbar } from "@/components/customs/navbar";
+
+import { cn } from "@/lib/utils";
 import { ClubLists } from "@/lib/coop-clublists";
 import { DescriptionBlockLists } from "@/lib/description-blocklists";
-import { cn } from "@/lib/utils";
-import { cookies } from "next/headers";
-import Image from "next/image";
-import Link from "next/link";
+import { Auth } from "@/actions/user-actions";
 
 export default async function Home() {
   const token: string | undefined = cookies().get("token")?.value;
@@ -27,7 +29,7 @@ export default async function Home() {
               讓你輕鬆揪團、輕鬆決定會議時間
             </div>
             <div className="flex gap-5">
-              <Link href="/party/waefaw">
+              <Link href="/party/0Gf7emMo">
                 <button
                   className={cn(
                     "bg-white text-black px-4 py-2 rounded-full mt-10 transition-all duration-300",

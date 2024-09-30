@@ -3,13 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-
-import { Dispatch, SetStateAction } from "react";
+import { CreatePartyStore } from "@/stores/create-party-store";
 
 const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-const today = new Date().getDate();
 
 const getDaysInMonth = (month: number, year: number) => {
   return new Date(year, month + 1, 0).getDate();
@@ -39,29 +37,19 @@ const CheckValidDate = ({
   );
 };
 
-interface DayPickerProps {
-  selectedDate: string[];
-  setSelectedDate: Dispatch<SetStateAction<string[]>>;
-}
-
-export const DayPicker = ({
-  selectedDate,
-  setSelectedDate,
-}: DayPickerProps) => {
+export const DayPicker = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [daysArray, setDaysArray] = useState<number[]>([]);
+  const { selectedDate, setSelectedDate } = CreatePartyStore((state) => state);
 
-  useEffect(() => {
+  const daysArray = useMemo(() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const firstDay = getFirstDayOfMonth(month, year);
     const daysInMonth = getDaysInMonth(month, year);
 
-    const daysArray = Array(firstDay)
+    return Array(firstDay)
       .fill(null)
       .concat(Array.from({ length: daysInMonth }, (_, i) => i + 1));
-
-    setDaysArray(daysArray);
   }, [currentDate]);
 
   const formatDate = (year: number, month: number, day: number): string => {
@@ -70,25 +58,31 @@ export const DayPicker = ({
     return `${year}-${formattedMonth}-${formattedDay}`;
   };
 
-  const HandleClick = (value: string) => {
-    if (selectedDate?.length === 7 && !selectedDate.includes(value)) {
-      toast.error("最多選擇 7 天!");
-      return;
-    }
-
-    setSelectedDate((prev) => {
-      if (prev === null) {
-        return [value];
-      } else {
-        if (prev.includes(value)) {
-          return prev.filter((date) => date !== value);
-        } else {
-          return [...prev, value];
-        }
+  const HandleClick = useCallback(
+    (value: string) => {
+      if (selectedDate?.length === 7 && !selectedDate.includes(value)) {
+        toast.error("最多選擇 7 天!");
+        return;
       }
-    });
+
+      let updatedSelectedDate: string[];
+
+      if (selectedDate.includes(value))
+        updatedSelectedDate = selectedDate.filter((date) => date !== value);
+      else updatedSelectedDate = [...selectedDate, value];
+
+      setSelectedDate(updatedSelectedDate);
+    },
+    [selectedDate, currentDate]
+  );
+
+  const handleMonthChange = (offset: number) => {
+    setCurrentDate(
+      (prevDate) =>
+        new Date(prevDate.getFullYear(), prevDate.getMonth() + offset, 1)
+    );
   };
-  
+
   return (
     <div className="w-full">
       <div className="flex justify-around items-center mb-10">
@@ -98,11 +92,7 @@ export const DayPicker = ({
           <Button
             variant="outline"
             size="icon"
-            onClick={() =>
-              setCurrentDate(
-                new Date(currentDate.setMonth(currentDate.getMonth() - 1))
-              )
-            }
+            onClick={() => handleMonthChange(-1)}
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
@@ -110,18 +100,14 @@ export const DayPicker = ({
           <div className="w-5 h-5 mr-5"></div>
         )}
 
-        <div className=" font-bold">
+        <div className="font-bold">
           {currentDate.toLocaleString("default", { month: "long" })}{" "}
           {currentDate.getFullYear()}
         </div>
         <Button
           variant="outline"
           size="icon"
-          onClick={() =>
-            setCurrentDate(
-              new Date(currentDate.setMonth(currentDate.getMonth() + 1))
-            )
-          }
+          onClick={() => handleMonthChange(1)}
         >
           <ArrowRight className="w-4 h-4" />
         </Button>
@@ -169,7 +155,10 @@ export const DayPicker = ({
               </Button>
             </div>
           ) : (
-            <div key={`days-hidden-${index}`} className="w-[40px] h-[40px]"></div>
+            <div
+              key={`days-hidden-${index}`}
+              className="w-[40px] h-[40px]"
+            ></div>
           )
         )}
       </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ModeToggle } from "./mode-toggle";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { MenuBar } from "./menubar";
@@ -64,7 +63,6 @@ export const Navbar = ({ isLogin, HasFixed }: NavbarProps) => {
                 )
             )}
           </div>
-          {/* <ModeToggle /> */}
         </div>
       </div>
     </div>
