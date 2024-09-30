@@ -17,7 +17,6 @@ import { DeleteAccount } from "../../../actions/user-actions";
 import { toast } from "sonner";
 
 export const DeleteAccountButton = () => {
-
     const handleDeleteAccount = async () => {
         const response = await DeleteAccount();
 
