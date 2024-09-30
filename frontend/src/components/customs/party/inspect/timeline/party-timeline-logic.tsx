@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useCallback } from "react";
 import { toast } from "sonner";
 import { CreateVote, DeleteVote } from "@/actions/vote-actions";
 import { CreateSchedule, DeleteSchedule } from "@/actions/schedule-action";
-import { CheckAuth } from "@/actions/user-actions";
+import { Auth } from "@/actions/user-actions";
 import { GenerateTimeSlots } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
 import { useRouter } from "next/navigation";
 import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
@@ -21,7 +21,7 @@ interface PartyTimelineLogicProps {
   setIsConfirmClicked: Dispatch<SetStateAction<boolean>>;
   setIsDeleteClicked: Dispatch<SetStateAction<boolean>>;
   setIsScheduledClicked: Dispatch<SetStateAction<boolean>>;
-  userid: string;
+  userid: string | undefined;
 }
 
 export const PartyTimelineLogic = ({
@@ -64,7 +64,7 @@ export const PartyTimelineLogic = ({
     } else {
       
       const token = Cookie.get("token");
-      const isAuth = await CheckAuth(token);
+      const isAuth = await Auth(token);
       const timeslots = GenerateTimeSlots(userSelectBlock, party);
 
       if (!isAuth) {
@@ -152,7 +152,7 @@ export const PartyTimelineLogic = ({
   };
 
   const HandleDeleteButton = useCallback(async () => {
-    if (clicked_user.userId === "" && userid === "-1") {
+    if (clicked_user.userId === "" && userid === undefined) {
       toast.error("請先選擇使用者!");
       return;
     }
@@ -160,7 +160,7 @@ export const PartyTimelineLogic = ({
     setIsDeleteClicked(true);
 
     let res;
-    if(userid !== "-1") res = await DeleteVote(party.partyid, userid);
+    if(userid !== undefined) res = await DeleteVote(party.partyid, userid);
     else res = await DeleteVote(party.partyid, clicked_user.userId);
 
     if (!res.correct) toast.error(res.error);

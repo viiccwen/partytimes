@@ -1,4 +1,4 @@
-import { CheckAuth } from "@/actions/user-actions";
+import { Auth } from "@/actions/user-actions";
 import { Navbar } from "@/components/customs/navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -6,14 +6,12 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 
 export default async function AboutPage() {
-  const cookie = cookies();
-  const token: string | undefined = cookie.get("token")?.value
-    ? cookie.get("token")?.value
-    : undefined;
-  const isLogin = await CheckAuth(token);
+  const token: string | undefined = cookies().get("token")?.value;
+  const { correct: auth, data: user, error } = await Auth(token);
+  
   return (
     <>
-      <Navbar isLogin={isLogin} HasFixed={true} />
+      <Navbar isLogin={auth} HasFixed={true} />
       <div className="w-full h-screen flex justify-center items-center">
         <Card className={cn("p-5 w-[390px]", "md:w-[700px]")}>
           <CardContent className="flex flex-col gap-7">
