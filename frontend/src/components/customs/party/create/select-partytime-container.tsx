@@ -1,22 +1,20 @@
 "use client";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { SelectTimeP1 } from "./select-time-p1";
-import { SelectTimeP2 } from "./select-time-p2";
+import { SelectTimeP1, SelectTimeP2 } from "./select-page";
 
 import { party_create_schema } from "@/lib/schema";
 import { party_create_schema_type } from "@/lib/type";
 import { ConverTo24Hours } from "../inspect/timeline/party-timeline-helper";
 import { CreateParty } from "@/actions/party-actions";
+import { CreatePartyStore } from "@/stores/create-party-store";
 
 export const SelectPartyTimeContainer = () => {
   const router = useRouter();
-  const [selectedDate, setSelectedDate] = useState<string[]>([]);
-  const [page, setPage] = useState<number>(1);
+  const { page, selectedDate, setPage } = CreatePartyStore((state) => state);
 
   const {
     register,
@@ -34,8 +32,6 @@ export const SelectPartyTimeContainer = () => {
     }
     setPage(2);
   };
-
-  const HandlePrevClick = () => setPage(1);
 
   const onSubmit = async (formdata: party_create_schema_type) => {
     const start_time = Number(formdata.start_time);
@@ -66,17 +62,10 @@ export const SelectPartyTimeContainer = () => {
   };
 
   if (page === 1) {
-    return (
-      <SelectTimeP1
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
-        HandleNextClick={HandleNextClick}
-      />
-    );
+    return <SelectTimeP1 HandleNextClick={HandleNextClick} />;
   } else if (page === 2) {
     return (
       <SelectTimeP2
-        HandlePrevClick={HandlePrevClick}
         register={register}
         control={control}
         errors={errors}

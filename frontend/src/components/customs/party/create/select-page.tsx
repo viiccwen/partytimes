@@ -1,11 +1,36 @@
 'use client';
-
 import { Button } from "@/components/ui/button";
-import { CircleArrowLeft, CirclePlus } from "lucide-react";
+import { CircleArrowRight, CircleArrowLeft, CirclePlus } from "lucide-react";
 import { CreatePartyCard } from "./create-party-card";
+import { SelectPartyTimeTable } from "./select-partytime-table";
+import { CreatePartyStore } from "@/stores/create-party-store";
+
+interface SelectTimeP1Props {
+  HandleNextClick: () => void;
+}
+
+export const SelectTimeP1 = ({
+  HandleNextClick,
+}: SelectTimeP1Props) => {
+  return (
+    <div className="mt-10 mx-10 md:mx-20">
+      <div className="flex justify-between items-center">
+        <p className="text-2xl font-bold text-white">創建派對 🎉</p>
+        <Button variant="outline" onClick={HandleNextClick}>
+          下一步
+          <CircleArrowRight className="w-4 h-4 ml-4" />
+        </Button>
+      </div>
+
+      <div className="mt-7">
+        <SelectPartyTimeTable />
+      </div>
+    </div>
+  );
+};
+
 
 interface SelectTimeP2Props {
-    HandlePrevClick: () => void;
     register: any;
     control: any;
     errors: any;
@@ -14,13 +39,13 @@ interface SelectTimeP2Props {
 }
 
 export const SelectTimeP2 = ({
-    HandlePrevClick,
     register,
     control,
     errors,
     handleSubmit,
     onSubmit,
 }: SelectTimeP2Props) => {
+  const { setPage } = CreatePartyStore((state) => state);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mt-10 mx-10 md:mx-20">
@@ -29,7 +54,7 @@ export const SelectTimeP2 = ({
             創建派對 🎉
           </p>
           <div className=" space-x-2">
-            <Button variant="outline" onClick={HandlePrevClick}>
+            <Button variant="outline" onClick={() => setPage(1)}>
               <div className="flex flex-col md:flex-row items-center">
                 <span className="hidden md:block">上一步</span>
                 <CircleArrowLeft className="w-4 h-4 mt-2 md:mt-0 md:ml-4" />
