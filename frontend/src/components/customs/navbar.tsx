@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ModeToggle } from "./mode-toggle";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { MenuBar } from "./menubar";
@@ -11,16 +10,19 @@ const links = [
     name: "創建",
     url: "/create",
     protected: true,
+    cache: true,
   },
   {
     name: "主頁",
     url: "/profile",
     protected: true,
+    cache: false,
   },
   {
     name: "登入",
     url: "/login",
     protected: false,
+    cache: true,
   },
 ];
 
@@ -59,12 +61,18 @@ export const Navbar = ({ isLogin, HasFixed }: NavbarProps) => {
                     key={index}
                     className="text-white bg-purple-600 px-4 py-2 rounded-full mr-10 transition duration-300 ease-in-out hover:text-purple-300 hover:shadow-lg"
                   >
-                    <Link href={ele.url}>{ele.name}</Link>
+                    {
+                      ele.cache ? (
+                        <Link href={ele.url}>{ele.name}</Link>
+                      ) : (
+                        <a href={ele.url}>{ele.name}</a>
+                        
+                      )
+                    }
                   </button>
                 )
             )}
           </div>
-          {/* <ModeToggle /> */}
         </div>
       </div>
     </div>

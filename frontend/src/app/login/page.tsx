@@ -2,25 +2,24 @@ import { Navbar } from "@/components/customs/navbar";
 import { LoginForm } from "@/components/customs/user/login-form";
 import { Toaster } from "sonner";
 import { Metadata } from "next";
-import { CheckAuth } from "@/actions/user-actions";
+import { Auth } from "@/actions/user-actions";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Login",
 };
 
 export default async function LoginPage() {
-  const cookie = cookies();
-  const token: string | undefined = cookie.get("token")?.value
-    ? cookie.get("token")?.value
-    : undefined;
+  const token: string | undefined = cookies().get("token")?.value;
+  const { correct: auth, data: user, error } = await Auth(token);
 
-  const isLogin = await CheckAuth(token);
+  if(auth) redirect("profile");
 
   return (
     <div className="h-screen">
       <Toaster />
-      <Navbar isLogin={isLogin} HasFixed={false} />
+      <Navbar isLogin={auth} HasFixed={false} />
       <div className="flex mt-[150px] justify-center items-center">
         <LoginForm />
       </div>

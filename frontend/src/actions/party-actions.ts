@@ -83,7 +83,7 @@ export const GetPartyList =
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${token}`,
-        },
+        }
       });
 
       if (response.ok) {

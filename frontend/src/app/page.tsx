@@ -1,22 +1,23 @@
-import { CheckAuth } from "@/actions/user-actions";
+import Link from "next/link";
+import Image from "next/image";
+import { cookies } from "next/headers";
+
 import { DescriptionBlock } from "@/components/customs/home/description-block";
 import { Footer } from "@/components/customs/home/footer";
 import { Navbar } from "@/components/customs/navbar";
+
 import { cn } from "@/lib/utils";
-import { cookies } from "next/headers";
-import Image from "next/image";
-import Link from "next/link";
+import { ClubLists } from "@/lib/coop-clublists";
+import { DescriptionBlockLists } from "@/lib/description-blocklists";
+import { Auth } from "@/actions/user-actions";
 
 export default async function Home() {
-  const cookie = cookies();
-  const token: string | undefined = cookie.get("token")?.value
-    ? cookie.get("token")?.value
-    : undefined;
-  const isLogin = await CheckAuth(token);
-  
+  const token: string | undefined = cookies().get("token")?.value;
+  const { correct: auth, data: user, error } = await Auth(token);
+
   return (
     <>
-      <Navbar isLogin={isLogin} HasFixed={true} />
+      <Navbar isLogin={auth} HasFixed={true} />
       <div className="flex flex-col">
         <div className="w-full min-h-screen">
           <div className="flex flex-col items-center mt-[200px] md:mt-[300px]">
@@ -27,84 +28,63 @@ export default async function Home() {
             <div className="text-white text-lg mt-5">
               讓你輕鬆揪團、輕鬆決定會議時間
             </div>
-            <Link href="/login">
-              <button
-                className={cn(
-                  "bg-white text-black px-6 py-2 rounded-full mt-10 transition-all duration-300",
-                  "hover:bg-gray-100 hover:text-black hover:shadow-lg"
-                )}
-              >
-                開始使用
-              </button>
-            </Link>
+            <div className="flex gap-5">
+              <Link href="/party/0Gf7emMo">
+                <button
+                  className={cn(
+                    "bg-white text-black px-4 py-2 rounded-full mt-10 transition-all duration-300",
+                    "hover:bg-gray-100 hover:text-black hover:shadow-lg"
+                  )}
+                >
+                  派對頁面 🎉
+                </button>
+              </Link>
+              <Link href="/login">
+                <button
+                  className={cn(
+                    "bg-white text-black px-4 py-2 rounded-full mt-10 transition-all duration-300",
+                    "hover:bg-gray-100 hover:text-black hover:shadow-lg"
+                  )}
+                >
+                  開始使用 🤩
+                </button>
+              </Link>
+            </div>
           </div>
 
           <div className="flex flex-col items-center mt-[100px] gap-5">
             <div className="text-slate-100 font-bold text-lg mt-5">
               還有誰在使用...？
             </div>
-            {/* <div className="text-white">前期籌備中，歡迎各方社團、社群使用</div> */}
-            <div className="w-full bg-white/50 backdrop-blur-lg">
-              <div className="flex justify-center p-3">
-                <Link href="https://www.instagram.com/ntustcsie/">
-                  <Image
-                    src="/CSIE_logo.png"
-                    width={80}
-                    height={80}
-                    alt="csie logo"
-                    className=" transition-all duration-300 hover:shadow-lg"
-                  />
-                </Link>
+            <div className="w-full bg-white/75 backdrop-blur-lg">
+              <div className="flex justify-center p-3 gap-5">
+                {ClubLists.map((club, index) => (
+                  <Link
+                    key={`clublists-${index}`}
+                    href="https://www.instagram.com/ntustcsie/"
+                  >
+                    <Image
+                      src={club.image}
+                      width={club.width}
+                      height={club.height}
+                      alt={club.alt}
+                      className="transition-all duration-300 hover:shadow-lg"
+                    />
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
-
-          <DescriptionBlock
-            className="mt-[500px]"
-            title="學生的揪團神器"
-            description="學生專屬的揪團神器，讓你輕鬆揪團、輕鬆決定會議時間"
-            images={[
-              {
-                src: "/homepage/1.png",
-                className: "w-[300px] h-[300px] md:w-[400px] md:h-[428px]",
-              },
-              {
-                src: "/homepage/2.png",
-                className:
-                  " absolute w-[200px] h-[348px] top-[130px] left-[160px] md:w-[200px] md:h-[348px] md:top-[200px] md:left-[260px]",
-              },
-            ]}
-            reverse={false}
-          />
-          <DescriptionBlock
-            className="mt-[200px]"
-            title="決定會議超方便"
-            description="無須登入，輕鬆決定會議時間"
-            images={[
-              {
-                src: "/homepage/3.png",
-                className: "w-[360px] h-[340px] md:w-[500px] md:h-[480px]",
-              },
-            ]}
-            reverse={true}
-          />
-          <DescriptionBlock
-            className="mt-[200px]"
-            title="視覺化投票時段"
-            description="幫助你選出最佳的會議時間"
-            images={[
-              {
-                src: "/homepage/4.png",
-                className: "w-[300px] h-[200px] md:w-[600px] md:h-[400px]",
-              },
-              {
-                src: "/homepage/5.png",
-                className:
-                  " absolute w-[300px] h-[200px] md:w-[400px] md:h-[300px] top-[100px] left-[40px] md:top-[200px] md:left-[280px]",
-              },
-            ]}
-            reverse={false}
-          />
+          {DescriptionBlockLists.map((descriptionBlock, index) => (
+            <DescriptionBlock
+              className={descriptionBlock.className}
+              key={`description-block-${index}`}
+              title={descriptionBlock.title}
+              description={descriptionBlock.description}
+              images={descriptionBlock.image}
+              reverse={descriptionBlock.reverse}
+            />
+          ))}
           <Footer />
         </div>
       </div>

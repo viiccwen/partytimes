@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -14,12 +12,11 @@ import { BackButton } from "../back-button";
 import { ModeToggle } from "../mode-toggle";
 
 interface SettingCardProps {
-  id: string;
   email: string;
   nickname: string;
 }
 
-export const SettingCard = ({ id, nickname, email }: SettingCardProps) => {
+export const SettingCard = async ({ nickname, email }: SettingCardProps) => {
   return (
     <Card>
       <CardHeader>

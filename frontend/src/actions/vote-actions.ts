@@ -83,7 +83,7 @@ export const GetVoteTimes = async (
 
 export const DeleteVote = async (
   partyid: string,
-  userid: string
+  userid: string | undefined
 ): Promise<general_fetch_return_type> => {
   try {
     let token = Cookie.get("token");
