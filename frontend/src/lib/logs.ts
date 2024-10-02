@@ -1,5 +1,10 @@
 export const log_list = [
   {
+    date: "2024/10/02",
+    title: "修復 Bug",
+    content: "修復派對登記方格",
+  },
+  {
     date: "2024/09/30",
     title: "更新主頁 & 優化功能",
     content: "在主頁增加demo連結、優化各頁面載入速度",

@@ -67,7 +67,7 @@ export const PartyTimelineLogic = ({
       const isAuth = await Auth(token);
       const timeslots = GenerateTimeSlots(userSelectBlock, party);
 
-      if (!isAuth) {
+      if (!isAuth.correct) {
         if(clicked_user.userId === "") {
           // show guest dialog & create vote by new guest user
           setTimeslots(timeslots);

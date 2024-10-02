@@ -47,16 +47,16 @@ export const generateGridCells = (
   party: party_return_schema_type,
   total_half_hours: number,
   VoteNumber: number,
-  HandleClickTimeBlock: (row: number, col: number, isDragging: boolean) => void,
   userSelectBlock: Set<string>,
   isEditing: boolean,
   isScheduling: boolean,
   AllvoteBlocks: block_type[][][],
-  updateCurPointsPosition: (row: number, col: number) => void,
-  updateIsMouseDown: (isMouseDown: boolean) => void,
   cur_points_userid: string,
   clicked_user: clicked_user_type,
   TouchedBlock: string | null,
+  HandleClickTimeBlock: (row: number, col: number, isDragging: boolean) => void,
+  updateCurPointsPosition: (row: number, col: number) => void,
+  updateIsMouseDown: (isMouseDown: boolean) => void,
   updateTouchedBlock: Dispatch<SetStateAction<string | null>>
 ): React.ReactElement => {
   if (!party || !party.date) return <></>;

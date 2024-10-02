@@ -3,9 +3,7 @@ import {
   Dispatch,
   SetStateAction,
   useCallback,
-  useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import {
@@ -78,26 +76,25 @@ export const TimeLineComponent = ({
   );
 
   return useMemo(() => {
-    const total_hours = CalculateTotalHours(party);
-    const total_half_hours = total_hours * 2;
-    const header = generateHeader(party);
+    const total_half_hours = CalculateTotalHours(party) * 2;
     const gridCells = generateGridCells(
       party,
       total_half_hours,
       VoteNumber,
-      handleClickTimeBlock,
       userSelectBlock,
       isEditing,
       isScheduling,
       allvoteblocks,
-      updateCurPointsPosition,
-      updateIsMouseDown,
       cur_points_userid,
       clicked_user,
       TouchedBlock,
+      handleClickTimeBlock,
+      updateCurPointsPosition,
+      updateIsMouseDown,
       setTouchedBlock
     );
 
+    const header = generateHeader(party);
     const scheduledBlock = GenerateScheduledBlock(party, scheduled_time);
 
     const container = (
