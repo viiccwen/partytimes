@@ -43,8 +43,6 @@ export const TimeLineComponent = ({
   scheduled_time,
 }: TimeLineComponentProps) => {
   const [TouchedBlock, setTouchedBlock] = useState<string | null>(null);
-  const block_ref = useRef<HTMLDivElement>(null);
-  const [block_width, setBlockWidth] = useState<number>(0);
   const {
     clicked_user,
     cur_points_userid,
@@ -79,14 +77,6 @@ export const TimeLineComponent = ({
     [isEditing, isScheduling, isMouseDown, updateIsBounced]
   );
 
-  useEffect(() => {
-    const blockElement = block_ref.current;
-    if(blockElement) {
-      setBlockWidth(Math.floor(blockElement.clientWidth / 1.5));
-    }
-    
-  }, []);
-
   return useMemo(() => {
     const total_hours = CalculateTotalHours(party);
     const total_half_hours = total_hours * 2;
@@ -105,15 +95,10 @@ export const TimeLineComponent = ({
       cur_points_userid,
       clicked_user,
       TouchedBlock,
-      setTouchedBlock,
-      block_ref
+      setTouchedBlock
     );
 
-    const scheduledBlock = GenerateScheduledBlock(
-      party,
-      scheduled_time,
-      block_width
-    );
+    const scheduledBlock = GenerateScheduledBlock(party, scheduled_time);
 
     const container = (
       <div>
@@ -133,7 +118,6 @@ export const TimeLineComponent = ({
     TouchedBlock,
     VoteNumber,
     allvoteblocks,
-    block_width,
     isEditing,
     isScheduling,
     scheduled_time,
