@@ -86,14 +86,6 @@ export const handleGitHubOAuthCallback = async (req: any, res: any) => {
   }
 };
 
-export const CheckAuth = async (req: any, res: any) => {
-  if (req.user) {
-    res.status(200).json({ message: "你已登入" });
-  } else {
-    res.status(401).json({ message: "你尚未登入" });
-  }
-};
-
 export const DeleteAccount = async (req: any, res: any) => {
   try {
     if (!req.user) throw new Error("你尚未登入");
@@ -112,7 +104,7 @@ export const DeleteAccount = async (req: any, res: any) => {
   }
 };
 
-export const GetUserInfo = async (req: any, res: any) => {
+export const CheckAuth = async (req: any, res: any) => {
   try {
     if (!req.user) throw new Error("你尚未登入");
 

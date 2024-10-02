@@ -14,7 +14,10 @@ import {
 } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
 import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
 import { decision_schema_type, party_return_schema_type } from "@/lib/type";
-import { ToggleBlockSchedule, ToggleBlockSelection } from "@/lib/block-selection-helper";
+import {
+  ToggleBlockSchedule,
+  ToggleBlockSelection,
+} from "@/lib/block-selection-helper";
 
 interface TimeLineComponentProps {
   party: party_return_schema_type;
@@ -38,11 +41,6 @@ export const TimeLineComponent = ({
   scheduled_time,
 }: TimeLineComponentProps) => {
   const [TouchedBlock, setTouchedBlock] = useState<string | null>(null);
-  const blockElement = document.getElementsByClassName("block").item(0);
-  const block_width = blockElement
-    ? parseFloat(blockElement.clientWidth.toString()) / 1.5
-    : 0;
-
   const {
     clicked_user,
     cur_points_userid,
@@ -52,23 +50,15 @@ export const TimeLineComponent = ({
     updateIsBounced,
   } = useVoteBlockStore();
 
-  const HandleClickTimeBlock = useCallback(
+  const handleClickTimeBlock = useCallback(
     (row: number, col: number) => {
       if (!isEditing && !isScheduling) {
-        updateIsBounced(true);
-
-        setTimeout(() => {
-          updateIsBounced(false);
-        }, 150);
-
-        setTimeout(() => {
-          updateIsBounced(true);
-        }, 300);
-
-        setTimeout(() => {
-          updateIsBounced(false);
-        }, 450);
-
+        const bounceTimings = [150, 300, 450, 600];
+        bounceTimings.forEach((time, index) => {
+          setTimeout(() => {
+            updateIsBounced(index % 2 === 0);
+          }, time);
+        });
         return;
       }
 
@@ -86,36 +76,31 @@ export const TimeLineComponent = ({
   );
 
   return useMemo(() => {
-    const total_hours = CalculateTotalHours(party);
-    const total_half_hours = total_hours * 2;
-    const header = generateHeader(party);
+    const total_half_hours = CalculateTotalHours(party) * 2;
     const gridCells = generateGridCells(
       party,
       total_half_hours,
       VoteNumber,
-      HandleClickTimeBlock,
       userSelectBlock,
       isEditing,
       isScheduling,
       allvoteblocks,
-      updateCurPointsPosition,
-      updateIsMouseDown,
       cur_points_userid,
       clicked_user,
       TouchedBlock,
+      handleClickTimeBlock,
+      updateCurPointsPosition,
+      updateIsMouseDown,
       setTouchedBlock
     );
 
-    const scheduledBlock = GenerateScheduledBlock(
-      party,
-      scheduled_time,
-      block_width
-    );
+    const header = generateHeader(party);
+    const scheduledBlock = GenerateScheduledBlock(party, scheduled_time);
 
     const container = (
       <div>
         {header}
-        {scheduledBlock !== null && scheduledBlock}
+        {scheduledBlock}
         {gridCells}
       </div>
     );
@@ -123,14 +108,13 @@ export const TimeLineComponent = ({
     return container;
   }, [
     party,
-    HandleClickTimeBlock,
+    handleClickTimeBlock,
     userSelectBlock,
     cur_points_userid,
     clicked_user,
     TouchedBlock,
     VoteNumber,
     allvoteblocks,
-    block_width,
     isEditing,
     isScheduling,
     scheduled_time,

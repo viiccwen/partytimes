@@ -47,7 +47,7 @@ type party_inspect_type = {
   ) => block_type[][][];
   getUserVoteblocks: (
     vote_blocks: block_type[][][],
-    nickname: string
+    nickname: string | undefined
   ) => Set<string>;
   getJoinList: (votes: votes_schema_type[]) => Array<joinlist_type>;
 };
@@ -104,7 +104,7 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
     return blocks;
   },
   getUserVoteblocks(vote_blocks, nickname) {
-    if (!nickname) return new Set<string>();
+    if (nickname == undefined) return new Set<string>();
     let userVoteBlocks: Set<string> = new Set();
 
     vote_blocks.forEach((blocks, row) => {

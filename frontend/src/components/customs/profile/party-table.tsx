@@ -8,7 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import useSWR from "swr";
 import moment from "moment";
 
 import { party_return_schema_type } from "@/lib/type";
@@ -16,11 +15,9 @@ import { Clock, Text } from "lucide-react";
 import { create } from "zustand";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
-import { GetPartyList } from "@/actions/party-actions";
 
 interface PartyTableProps {
   party: party_return_schema_type[];
-  token: string;
 }
 
 type PartyTableStore = {
@@ -41,15 +38,13 @@ type time_type = {
   end_ampm: "AM" | "PM";
 };
 
-export const PartyTable = ({ party, token }: PartyTableProps) => {
+export const PartyTable = ({ party }: PartyTableProps) => {
   const formatDate = (date: string) => {
     const momentDate = moment(date, moment.ISO_8601, true);
     const [year, month, day] = momentDate.format("YYYY/MM/DD").split("/");
 
     return `${year}/${month}/${day}`;
   };
-
-  
 
   const formatTime = (timeslot: time_type): string => {
     const formatHour = (hour: number) =>
@@ -68,9 +63,9 @@ export const PartyTable = ({ party, token }: PartyTableProps) => {
       <CardContent>
         {party.map((content: party_return_schema_type, index: number) => (
           <Link href={`/party/${content.partyid}`} key={index}>
-            <button className="flex w-full h-[150px] gap-5 border-2 rounded-lg p-5 my-5 transition duration-300 ease-in-out shadow-md hover:text-white hover:bg-purple-400">
+            <button className="flex w-full min-h-[150px] gap-5 border-2 rounded-lg p-5 my-5 transition duration-300 ease-in-out shadow-md hover:text-white hover:bg-purple-400">
               <div className="flex h-full">
-                <div className="flex gap-3 items-center text-sm w-[90px] md:text-base">
+                <div className="flex gap-3 items-center text-sm min-w-[90px] md:text-base">
                   {content.status
                     ? formatDate(content.decision.date)
                     : "未計畫"}
@@ -80,19 +75,35 @@ export const PartyTable = ({ party, token }: PartyTableProps) => {
                   className="h-full mx-5 hidden md:block"
                 />
                 <div className="flex flex-col items-start gap-3">
-                  <div className="text-sm md:text-lg mb-3 font-bold md:hidden">
-                    {content.title.length > 13 ? content.title.substring(0, 13) + "..." : content.title}
+                  <div className="text-sm text-start md:text-lg mb-3 font-bold md:hidden">
+                    {content.title.length > 15
+                      ? content.title.substring(0, 15) + "..."
+                      : content.title}
                   </div>
                   <div className="text-sm md:text-lg mb-3 font-bold hidden md:block">
                     {content.title}
                   </div>
 
-                  <div className="text-xs md:text-base flex items-center gap-2">
+                  <div className="text-xs md:text-base flex gap-2 md:hidden">
                     {content.description ? (
-                      <>
-                        <Text size={16} />
-                        {content.description}
-                      </>
+                      <div className="flex gap-3">
+                        <Text className="mt-[1px]" size={12} />
+                        <p className="text-start">
+                          {content.description.length > 16
+                            ? content.description.substring(0, 16) + "..."
+                            : content.description}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="h-[16px]" />
+                    )}
+                  </div>
+                  <div className="text-xs md:text-base hidden gap-2 md:flex">
+                    {content.description ? (
+                      <div className="flex gap-3">
+                        <Text className="mt-[3px]" size={16} />
+                        <p className="text-start">{content.description}</p>
+                      </div>
                     ) : (
                       <div className="h-[16px]" />
                     )}

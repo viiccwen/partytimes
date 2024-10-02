@@ -47,16 +47,16 @@ export const generateGridCells = (
   party: party_return_schema_type,
   total_half_hours: number,
   VoteNumber: number,
-  HandleClickTimeBlock: (row: number, col: number, isDragging: boolean) => void,
   userSelectBlock: Set<string>,
   isEditing: boolean,
   isScheduling: boolean,
   AllvoteBlocks: block_type[][][],
-  updateCurPointsPosition: (row: number, col: number) => void,
-  updateIsMouseDown: (isMouseDown: boolean) => void,
   cur_points_userid: string,
   clicked_user: clicked_user_type,
   TouchedBlock: string | null,
+  HandleClickTimeBlock: (row: number, col: number, isDragging: boolean) => void,
+  updateCurPointsPosition: (row: number, col: number) => void,
+  updateIsMouseDown: (isMouseDown: boolean) => void,
   updateTouchedBlock: Dispatch<SetStateAction<string | null>>
 ): React.ReactElement => {
   if (!party || !party.date) return <></>;
@@ -206,7 +206,6 @@ export const generateGridCells = (
 export const GenerateScheduledBlock = (
   party: party_return_schema_type,
   scheduled_time: decision_schema_type | null,
-  block_width: number
 ) => {
   if (scheduled_time === null) return null;
 
@@ -218,8 +217,8 @@ export const GenerateScheduledBlock = (
   const end_ampm = scheduled_time.end_ampm;
 
   const start =
-    ConverTo24Hours(start_time, start_ampm, true) - ConverTo24Hours(party.start_time, start_ampm, true);
-  const end = ConverTo24Hours(end_time, end_ampm, false) - ConverTo24Hours(party.start_time, start_ampm, true);
+    ConverTo24Hours(start_time, start_ampm, true) - ConverTo24Hours(party.start_time, party.start_ampm, true);
+  const end = ConverTo24Hours(end_time, end_ampm, false) - ConverTo24Hours(party.start_time, party.start_ampm, true);
 
   const height = (end - start) * 2;
   const top = start * 2;
@@ -230,8 +229,9 @@ export const GenerateScheduledBlock = (
         className="hover:cursor-pointer absolute z-10 bg-orange-400 rounded-lg h-full flex justify-center items-center text-white"
         style={{
           top: `${top * 1.5}rem`,
-          left: `calc(40px + (100% - 40px) * ${row} / ${party.date.length} + (100% - 40px) / ${party.date.length} / 5)`,
-          width: `${block_width}px`,
+          left: `calc(40px + ((100% - 40px) * ${row} / ${party.date.length}) + 30px)`,
+          width: `calc((100% - 40px) / ${party.date.length} - 40px)`,
+          maxWidth: `calc(100% / ${party.date.length} - 8px)`,
           height: `${height * 24}px`,
         }}
       >
