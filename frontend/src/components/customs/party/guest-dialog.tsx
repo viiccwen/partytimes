@@ -39,7 +39,7 @@ export const GuestDialog = ({ partyid }: guest_dialog_props) => {
     resolver: zodResolver(guest_schema),
   });
 
-  const { timeslots, open: Open, setOpen } = useGuestVoteStore(
+  const { timeslots, open, setOpen } = useGuestVoteStore(
     (state) => state
   );
   const { updateIsEditing } = useVoteBlockStore((state) => state);
@@ -64,7 +64,7 @@ export const GuestDialog = ({ partyid }: guest_dialog_props) => {
   };
 
   return (
-    <AlertDialog open={Open}>
+    <AlertDialog open={open}>
       <AlertDialogTrigger hidden></AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

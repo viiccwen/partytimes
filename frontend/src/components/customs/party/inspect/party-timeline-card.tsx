@@ -10,7 +10,7 @@ import { PartyTimelineLogic } from "./timeline/party-timeline-logic";
 import { TimeLineComponent } from "./timeline/timeline-component";
 
 import { block_type } from "@/stores/inspect-party-store";
-import { decision_schema_type, party_return_schema_type, user_info_schema_type } from "@/lib/type";
+import { party_return_schema_type, user_info_schema_type } from "@/lib/type";
 
 interface PartyTimelineCardProps {
   className?: string;
