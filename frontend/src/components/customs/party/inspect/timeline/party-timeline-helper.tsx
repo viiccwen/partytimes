@@ -57,8 +57,7 @@ export const generateGridCells = (
   cur_points_userid: string,
   clicked_user: clicked_user_type,
   TouchedBlock: string | null,
-  updateTouchedBlock: Dispatch<SetStateAction<string | null>>,
-  block_ref: React.RefObject<HTMLDivElement>
+  updateTouchedBlock: Dispatch<SetStateAction<string | null>>
 ): React.ReactElement => {
   if (!party || !party.date) return <></>;
 
@@ -115,7 +114,6 @@ export const generateGridCells = (
       <div
         key={block_key}
         id={block_key}
-        ref={block_ref}
         className={cn(
           "block touch-none border-r-[1px] border-slate-400 h-[24px] col-auto hover:border-[1px] md:hover:border-dashed",
           editingAppearance,
@@ -208,7 +206,6 @@ export const generateGridCells = (
 export const GenerateScheduledBlock = (
   party: party_return_schema_type,
   scheduled_time: decision_schema_type | null,
-  block_width: number
 ) => {
   if (scheduled_time === null) return null;
 
@@ -224,7 +221,6 @@ export const GenerateScheduledBlock = (
   const end = ConverTo24Hours(end_time, end_ampm, false) - ConverTo24Hours(party.start_time, party.start_ampm, true);
 
   const height = (end - start) * 2;
-  console.log(start);
   const top = start * 2;
 
   return (
@@ -233,8 +229,9 @@ export const GenerateScheduledBlock = (
         className="hover:cursor-pointer absolute z-10 bg-orange-400 rounded-lg h-full flex justify-center items-center text-white"
         style={{
           top: `${top * 1.5}rem`,
-          left: `calc(40px + (100% - 40px) * ${row} / ${party.date.length} + (100% - 40px) / ${party.date.length} / 5)`,
-          width: `${block_width}px`,
+          left: `calc(40px + ((100% - 40px) * ${row} / ${party.date.length}) + 30px)`,
+          width: `calc((100% - 40px) / ${party.date.length} - 40px)`,
+          maxWidth: `calc(100% / ${party.date.length} - 8px)`,
           height: `${height * 24}px`,
         }}
       >
