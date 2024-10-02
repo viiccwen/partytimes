@@ -24,9 +24,6 @@ export default async function PartyPage({
   const votes = await GetVoteTimes(party.partyid);
   if (!votes.data) redirect("/error");
 
-  const total_hours = CalculateTotalHours(party);
-  const scheduled_time: decision_schema_type | null = party.decision;
-
   return (
     <div className="min-h-screen">
       <Toaster richColors />
@@ -34,12 +31,8 @@ export default async function PartyPage({
       <div className="flex flex-col gap-6 md:mx-7 md:flex-row mb-[100px]">
         <InspectPartyContainer
           party={party}
+          user={user}
           votes={votes.data}
-          total_hours={total_hours}
-          nickname={user?.nickname}
-          userid={user?.id}
-          scheduled_time={scheduled_time}
-          isLogin={auth}
         />
       </div>
     </div>

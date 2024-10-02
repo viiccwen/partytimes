@@ -57,7 +57,8 @@ export const generateGridCells = (
   cur_points_userid: string,
   clicked_user: clicked_user_type,
   TouchedBlock: string | null,
-  updateTouchedBlock: Dispatch<SetStateAction<string | null>>
+  updateTouchedBlock: Dispatch<SetStateAction<string | null>>,
+  block_ref: React.RefObject<HTMLDivElement>
 ): React.ReactElement => {
   if (!party || !party.date) return <></>;
 
@@ -114,6 +115,7 @@ export const generateGridCells = (
       <div
         key={block_key}
         id={block_key}
+        ref={block_ref}
         className={cn(
           "block touch-none border-r-[1px] border-slate-400 h-[24px] col-auto hover:border-[1px] md:hover:border-dashed",
           editingAppearance,
@@ -218,10 +220,11 @@ export const GenerateScheduledBlock = (
   const end_ampm = scheduled_time.end_ampm;
 
   const start =
-    ConverTo24Hours(start_time, start_ampm, true) - ConverTo24Hours(party.start_time, start_ampm, true);
-  const end = ConverTo24Hours(end_time, end_ampm, false) - ConverTo24Hours(party.start_time, start_ampm, true);
+    ConverTo24Hours(start_time, start_ampm, true) - ConverTo24Hours(party.start_time, party.start_ampm, true);
+  const end = ConverTo24Hours(end_time, end_ampm, false) - ConverTo24Hours(party.start_time, party.start_ampm, true);
 
   const height = (end - start) * 2;
+  console.log(start);
   const top = start * 2;
 
   return (
