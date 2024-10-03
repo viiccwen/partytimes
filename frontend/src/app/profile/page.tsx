@@ -1,4 +1,4 @@
-import { Auth } from "@/actions/user-actions";
+import { Auth, VerifyAuth } from "@/actions/user-actions";
 import { Navbar } from "@/components/customs/navbar";
 import { PartyPanel } from "@/components/customs/party-panel";
 import { cookies } from "next/headers";
@@ -13,22 +13,19 @@ export const metadata: Metadata = {
 };
 
 export default async function ProfilePage() {
-  const Cookies = cookies();
-  const token: string | undefined = Cookies.get("token")?.value;
+  const { isAuth, user } = await VerifyAuth(true);
   
-  const { correct: auth, data: user, error } = await Auth(token);
-  if (!auth || token === undefined) redirect("/login");
-
-  const party = await GetPartyList(token);
-  if (!party.correct || !party.data) redirect("/error");
+  const token: string | undefined = cookies().get("token")?.value;
+  const {correct, data, error} = await GetPartyList(token);
+  if (!correct || !data) redirect("/error");
 
   return (
     <div className="min-h-screen">
       <Toaster richColors />
-      <Navbar isLogin={auth} HasFixed={false} />
+      <Navbar isLogin={isAuth} HasFixed={false} />
       <div className="md:m-7 mt-5">
         <PartyPanel
-          parties={party.data.party}
+          parties={data.party}
         />
       </div>
     </div>

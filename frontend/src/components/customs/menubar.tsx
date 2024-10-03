@@ -18,35 +18,30 @@ const links = [
     url: "/create",
     protected: true,
     only_guest: false,
-    cache: true,
   },
   {
     name: "個人主頁",
     url: "/profile",
     protected: true,
     only_guest: false,
-    cache: false,
   },
   {
     name: "登入",
     url: "/login",
     protected: false,
     only_guest: true,
-    cache: true,
   },
   {
     name: "回饋",
     url: "/feedback",
     protected: false,
     only_guest: false,
-    cache: true,
   },
   {
     name: "關於",
     url: "/about",
     protected: false,
     only_guest: false,
-    cache: true,
   },
 ];
 
@@ -76,8 +71,7 @@ export const MenuBar = ({
         <div className="flex flex-col gap-10">
           {links.map(
             (ele) =>
-              (ele.protected === isLogin || ele.only_guest === !isLogin) &&
-              (ele.cache ? (
+              (ele.protected === isLogin || ele.only_guest === !isLogin) && (
                 <Link
                   key={ele.name}
                   href={ele.url}
@@ -85,15 +79,7 @@ export const MenuBar = ({
                 >
                   {ele.name}
                 </Link>
-              ) : (
-                <a
-                  key={ele.name}
-                  href={ele.url}
-                  className="text-lg hover:text-blue-500 transition-all duration-300"
-                >
-                  {ele.name}
-                </a>
-              ))
+              )
           )}
         </div>
       </SheetContent>

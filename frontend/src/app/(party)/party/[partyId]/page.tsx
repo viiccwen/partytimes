@@ -1,12 +1,9 @@
 import { GetParty } from "@/actions/party-actions";
-import { Auth } from "@/actions/user-actions";
+import { VerifyAuth } from "@/actions/user-actions";
 import { GetVoteTimes } from "@/actions/vote-actions";
 import { Navbar } from "@/components/customs/navbar";
 import { InspectPartyContainer } from "@/components/customs/party/inspect/inspect-party-container";
-import { CalculateTotalHours } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
-import { decision_schema_type } from "@/lib/type";
 import { Metadata } from "next";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
 
@@ -18,8 +15,7 @@ export default async function PartyPage({
   const party = await GetParty(params.partyId).then((res) => res.data?.party);
   if(!party) redirect("/error");
 
-  const token: string | undefined = cookies().get("token")?.value;
-  const { correct: auth, data: user, error } = await Auth(token);
+  const { isAuth, user } = await VerifyAuth(false);
 
   const votes = await GetVoteTimes(party.partyid);
   if (!votes.data) redirect("/error");
@@ -27,7 +23,7 @@ export default async function PartyPage({
   return (
     <div className="min-h-screen">
       <Toaster richColors />
-      <Navbar isLogin={auth} HasFixed={false} />
+      <Navbar isLogin={isAuth} HasFixed={false} />
       <div className="flex flex-col gap-6 md:mx-7 md:flex-row mb-[100px]">
         <InspectPartyContainer
           party={party}

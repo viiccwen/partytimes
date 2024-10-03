@@ -1,8 +1,7 @@
-import { Auth } from "@/actions/user-actions";
+import { VerifyAuth } from "@/actions/user-actions";
 import { Navbar } from "@/components/customs/navbar";
 import { FeedbackForm } from "@/components/customs/others/feedback-form";
 import { Metadata } from "next";
-import { cookies } from "next/headers";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
@@ -10,12 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default async function Feedback() {
-  const token: string | undefined = cookies().get("token")?.value;
-  const { correct: auth, data: user, error } = await Auth(token);
-
+  const { isAuth, user } = await VerifyAuth(false);
   return (
     <>
-      <Navbar isLogin={auth} HasFixed={true} />
+      <Navbar isLogin={isAuth} HasFixed={true} />
       <Toaster richColors />
       <FeedbackForm />
     </>

@@ -76,7 +76,7 @@ export const GetParty = async (
 };
 
 export const GetPartyList =
-  async (token: string): Promise<get_partylist_fetch_return_type> => {
+  async (token: string | undefined): Promise<get_partylist_fetch_return_type> => {
     try {
       const response = await fetch(`${API_URL}/party/list`, {
         method: "GET",

@@ -10,6 +10,7 @@ import { DeleteAccountButton } from "./delete-account-button";
 import { EditNameButton } from "./edit-name-button";
 import { BackButton } from "../back-button";
 import { ModeToggle } from "../mode-toggle";
+import { redirect } from "next/navigation";
 
 interface SettingCardProps {
   email: string;
