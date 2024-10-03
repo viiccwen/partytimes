@@ -1,3 +1,4 @@
+"use client";
 import { block_type, clicked_user_type } from "@/stores/inspect-party-store";
 import {
   decision_schema_type,
@@ -9,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { CalendarCheck2 } from "lucide-react";
 import moment from "moment";
 
-export const ConverTo24Hours = (
+export const ConvertTo24Hours = (
   time: number,
   ampm: string,
   isStart: boolean
@@ -26,16 +27,20 @@ export const ConverTo24Hours = (
 export const CalculateTotalHours = (
   party: party_return_schema_type
 ): number => {
-  let start_time: number = ConverTo24Hours(
+  let start_time: number = ConvertTo24Hours(
     party.start_time,
     party.start_ampm,
     true
   );
-  let end_time: number = ConverTo24Hours(party.end_time, party.end_ampm, false);
+  let end_time: number = ConvertTo24Hours(
+    party.end_time,
+    party.end_ampm,
+    false
+  );
   return end_time - start_time;
 };
 
-export const formatTime = (hour: number, ampm: string): string => {
+export const formatTime = (hour: number): string => {
   if (hour === 0 || hour == 24) return "12 AM";
   if (hour === 12) return "12 PM";
   if (hour < 12) return `${hour} AM`;
@@ -54,7 +59,7 @@ export const generateGridCells = (
   cur_points_userid: string,
   clicked_user: clicked_user_type,
   TouchedBlock: string | null,
-  HandleClickTimeBlock: (row: number, col: number, isDragging: boolean) => void,
+  handleClickTimeBlock: (row: number, col: number, isDragging: boolean) => void,
   updateCurPointsPosition: (row: number, col: number) => void,
   updateIsMouseDown: (isMouseDown: boolean) => void,
   updateTouchedBlock: Dispatch<SetStateAction<string | null>>
@@ -62,8 +67,6 @@ export const generateGridCells = (
   if (!party || !party.date) return <></>;
 
   const date_length = party.date.length;
-  const pointed_status = cur_points_userid !== "";
-  const clicked_status = clicked_user.userId !== "";
 
   const renderCell = (row: number, col: number) => {
     const block_key: string = `${col}-${row}`;
@@ -76,35 +79,17 @@ export const generateGridCells = (
       (block) => block.userId === clicked_user.userId
     );
 
-    const editingAppearance =
-      isEditing || isScheduling
-        ? "hover:cursor-row-resize select-none"
-        : "hover:cursor-pointer";
-    const RowborderAppearance =
-      row % 2 == 0
-        ? "border-t-[1px]"
-        : row == total_half_hours - 1
-        ? "border-b-[1px]"
-        : "";
-    const colBorderAppearance =
-      col == 0
-        ? "border-l-[1px]"
-        : col == date_length - 1
-        ? "border-r-[1px]"
-        : "";
-
-    const BlockAppearance = () => {
+    const getBlockAppearance = (): string => {
       if (!isEditing && !isScheduling) {
-        if (clicked_status) {
-          return isClicked ? "bg-blue-400" : "";
-        } else if (pointed_status) {
-          return isPointed ? "bg-blue-400" : "";
-        }
+        if (clicked_user.userId) return isClicked ? "bg-blue-400" : "";
+        if (cur_points_userid) return isPointed ? "bg-blue-400" : "";
         return isVoted ? DecideBlockColor(VoteNumber, isVoted) : "";
       } else if (isScheduling) {
-        // let all timeblock be blue, only scheduled block be orange
-        if (isSelected) return "bg-orange-400";
-        if (isVoted) return DecideBlockColor(VoteNumber, isVoted);
+        return isSelected
+          ? "bg-orange-400"
+          : isVoted
+          ? DecideBlockColor(VoteNumber, isVoted)
+          : "";
       } else {
         return isSelected ? "bg-blue-400" : "";
       }
@@ -116,15 +101,25 @@ export const generateGridCells = (
         id={block_key}
         className={cn(
           "block touch-none border-r-[1px] border-slate-400 h-[24px] col-auto hover:border-[1px] md:hover:border-dashed",
-          editingAppearance,
-          RowborderAppearance,
-          colBorderAppearance,
-          BlockAppearance()
+          row % 2 === 0
+            ? "border-t-[1px]"
+            : row === total_half_hours - 1
+            ? "border-b-[1px]"
+            : "",
+          col === 0
+            ? "border-l-[1px]"
+            : col === date_length - 1
+            ? "border-r-[1px]"
+            : "",
+          isEditing || isScheduling
+            ? "hover:cursor-row-resize select-none"
+            : "hover:cursor-pointer",
+          getBlockAppearance()
         )}
         onTouchStart={(e) => {
           e.preventDefault();
           updateIsMouseDown(true);
-          HandleClickTimeBlock(row, col, false);
+          handleClickTimeBlock(row, col, false);
           updateTouchedBlock(e.currentTarget.id);
         }}
         onTouchMove={(e) => {
@@ -139,7 +134,7 @@ export const generateGridCells = (
             if (element && block_id && block_id !== TouchedBlock) {
               const [col, row] = block_id.split("-").map(Number);
               updateCurPointsPosition(col, row);
-              HandleClickTimeBlock(row, col, true);
+              handleClickTimeBlock(row, col, true);
               updateTouchedBlock(block_id);
             }
           }
@@ -151,14 +146,14 @@ export const generateGridCells = (
         }}
         onMouseDown={() => {
           updateIsMouseDown(true);
-          HandleClickTimeBlock(row, col, false);
+          handleClickTimeBlock(row, col, false);
         }}
         onMouseUp={() => {
           updateIsMouseDown(false);
         }}
         onMouseEnter={(e) => {
           updateCurPointsPosition(col, row);
-          if (e.buttons === 1) HandleClickTimeBlock(row, col, true);
+          if (e.buttons === 1) handleClickTimeBlock(row, col, true);
         }}
         onDragStart={(e) => e.preventDefault()}
         onMouseLeave={() => updateCurPointsPosition(-1, -1)}
@@ -168,14 +163,12 @@ export const generateGridCells = (
 
   const renderRow = (row: number) => {
     const hour = Math.floor(row / 2);
-    const start_time = ConverTo24Hours(
+    const start_time = ConvertTo24Hours(
       party.start_time,
       party.start_ampm,
       true
     );
-
-    const time =
-      row % 2 === 0 ? formatTime(start_time + hour, party.start_ampm) : "";
+    const time = row % 2 === 0 ? formatTime(start_time + hour) : "";
 
     return (
       <div key={row} className="flex">
@@ -205,21 +198,21 @@ export const generateGridCells = (
 
 export const GenerateScheduledBlock = (
   party: party_return_schema_type,
-  scheduled_time: decision_schema_type | null,
+  scheduled_time: decision_schema_type | null
 ) => {
-  if (scheduled_time === null) return null;
+  if (!scheduled_time) return null;
 
   const date = scheduled_time.date;
   const row = party.date.findIndex((v) => v === date);
-  const start_time = scheduled_time.start_time;
-  const end_time = scheduled_time.end_time;
-  const start_ampm = scheduled_time.start_ampm;
-  const end_ampm = scheduled_time.end_ampm;
-
   const start =
-    ConverTo24Hours(start_time, start_ampm, true) - ConverTo24Hours(party.start_time, party.start_ampm, true);
-  const end = ConverTo24Hours(end_time, end_ampm, false) - ConverTo24Hours(party.start_time, party.start_ampm, true);
-
+    ConvertTo24Hours(
+      scheduled_time.start_time,
+      scheduled_time.start_ampm,
+      true
+    ) - ConvertTo24Hours(party.start_time, party.start_ampm, true);
+  const end =
+    ConvertTo24Hours(scheduled_time.end_time, scheduled_time.end_ampm, false) -
+    ConvertTo24Hours(party.start_time, party.start_ampm, true);
   const height = (end - start) * 2;
   const top = start * 2;
 
@@ -283,7 +276,7 @@ export const GenerateTimeSlots = (
   party: party_return_schema_type
 ) => {
   const blocks = Array.from(userSelectBlock);
-  const party_start_time = ConverTo24Hours(
+  const party_start_time = ConvertTo24Hours(
     party.start_time,
     party.start_ampm,
     true
@@ -299,13 +292,12 @@ export const GenerateTimeSlots = (
   });
 
   // merge continuous blocks into one
-
+  let timeSlots: timeslots_create_schema_type = [];
   let prev = { row: -1, col: -1 };
   let start_time: number = -1;
   let start_ampm: string = "";
   let end_time: number = -1;
   let end_ampm: string = "";
-  let timeSlots: timeslots_create_schema_type = [];
 
   for (let i = 0; i < raw_timeSlots.length; i++) {
     const cur = raw_timeSlots[i];
@@ -314,11 +306,9 @@ export const GenerateTimeSlots = (
       start_ampm = GetTimeWithAMPM(start_time);
       end_time = party_start_time + (cur.col + 1) / 2;
       end_ampm = GetTimeWithAMPM(end_time);
-      prev = cur;
     } else if (cur.row === prev.row && cur.col === prev.col + 1) {
       end_time = party_start_time + (cur.col + 1) / 2;
       end_ampm = GetTimeWithAMPM(end_time);
-      prev = cur;
     } else {
       // change to 12 hours format
       if (start_time >= 12) start_time -= 12;
@@ -337,8 +327,9 @@ export const GenerateTimeSlots = (
       start_ampm = GetTimeWithAMPM(start_time);
       end_time = party_start_time + (cur.col + 1) / 2;
       end_ampm = GetTimeWithAMPM(end_time);
-      prev = cur;
     }
+
+    prev = cur;
   }
 
   // check for last one time slot
@@ -369,6 +360,5 @@ export const DecideBlockColor: (all: number, selected: number) => string = (
   if (percentage <= 50) return "bg-blue-400";
   if (percentage <= 75) return "bg-blue-500";
   if (percentage < 100) return "bg-blue-600";
-  if (percentage == 100) return "bg-blue-700";
-  return "bg-blue-400";
+  return "bg-blue-700";
 };

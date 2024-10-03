@@ -1,6 +1,6 @@
 "use client";
 
-import { decision_schema_type, party_return_schema_type, user_info_schema_type, votes_schema_type } from "@/lib/type";
+import { party_return_schema_type, user_info_schema_type, votes_schema_type } from "@/lib/type";
 import { PartyTimelineCard } from "./party-timeline-card";
 import { PartyJoinCard } from "./party-join-card";
 import { useVoteBlockStore } from "@/stores/inspect-party-store";

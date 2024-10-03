@@ -13,7 +13,7 @@ import {
   GenerateScheduledBlock,
 } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
 import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
-import { decision_schema_type, party_return_schema_type } from "@/lib/type";
+import { party_return_schema_type } from "@/lib/type";
 import {
   ToggleBlockSchedule,
   ToggleBlockSelection,
@@ -27,20 +27,19 @@ interface TimeLineComponentProps {
   setUserSelectBlock: Dispatch<SetStateAction<Set<string>>>;
   isEditing: boolean;
   isScheduling: boolean;
-  scheduled_time: decision_schema_type | null;
 }
 
 export const TimeLineComponent = ({
   party,
   allvoteblocks,
   VoteNumber,
-  userSelectBlock,
-  setUserSelectBlock,
   isEditing,
   isScheduling,
-  scheduled_time,
+  userSelectBlock,
+  setUserSelectBlock,
 }: TimeLineComponentProps) => {
   const [TouchedBlock, setTouchedBlock] = useState<string | null>(null);
+  const scheduled_time = party.decision;
   const {
     clicked_user,
     cur_points_userid,
@@ -50,9 +49,10 @@ export const TimeLineComponent = ({
     updateIsBounced,
   } = useVoteBlockStore();
 
-  const handleClickTimeBlock = useCallback(
+  const handleClickTimeBlock = 
     (row: number, col: number) => {
       if (!isEditing && !isScheduling) {
+        // bounce animation effect
         const bounceTimings = [150, 300, 450, 600];
         bounceTimings.forEach((time, index) => {
           setTimeout(() => {
@@ -68,15 +68,21 @@ export const TimeLineComponent = ({
         setUserSelectBlock((prev) => ToggleBlockSelection(prev, block_key));
       } else if (isScheduling) {
         if (!isMouseDown) setUserSelectBlock(new Set<string>());
-
         setUserSelectBlock((prev) => ToggleBlockSchedule(prev, col, row));
       }
-    },
-    [isEditing, isScheduling, isMouseDown, updateIsBounced]
+    };
+
+  const total_half_hours = useMemo(
+    () => CalculateTotalHours(party) * 2,
+    [party]
+  );
+  const header = useMemo(() => generateHeader(party), [party]);
+  const schedule_block = useMemo(
+    () => GenerateScheduledBlock(party, scheduled_time),
+    [party, scheduled_time]
   );
 
   return useMemo(() => {
-    const total_half_hours = CalculateTotalHours(party) * 2;
     const gridCells = generateGridCells(
       party,
       total_half_hours,
@@ -94,30 +100,24 @@ export const TimeLineComponent = ({
       setTouchedBlock
     );
 
-    const header = generateHeader(party);
-    const scheduledBlock = GenerateScheduledBlock(party, scheduled_time);
-
-    const container = (
+    return (
       <div>
         {header}
-        {scheduledBlock}
+        {schedule_block}
         {gridCells}
       </div>
     );
-
-    return container;
   }, [
     party,
     handleClickTimeBlock,
     userSelectBlock,
     cur_points_userid,
     clicked_user,
-    TouchedBlock,
-    VoteNumber,
     allvoteblocks,
     isEditing,
     isScheduling,
-    scheduled_time,
+    VoteNumber,
+    TouchedBlock,
     updateCurPointsPosition,
     updateIsMouseDown,
     setTouchedBlock,

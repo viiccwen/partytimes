@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { cookies } from "next/headers";
 
 import { DescriptionBlock } from "@/components/customs/home/description-block";
 import { Footer } from "@/components/customs/home/footer";
@@ -9,15 +8,14 @@ import { Navbar } from "@/components/customs/navbar";
 import { cn } from "@/lib/utils";
 import { ClubLists } from "@/lib/coop-clublists";
 import { DescriptionBlockLists } from "@/lib/description-blocklists";
-import { Auth } from "@/actions/user-actions";
+import { VerifyAuth } from "@/actions/user-actions";
 
 export default async function Home() {
-  const token: string | undefined = cookies().get("token")?.value;
-  const { correct: auth, data: user, error } = await Auth(token);
+  const { isAuth, user } = await VerifyAuth(true);
 
   return (
     <>
-      <Navbar isLogin={auth} HasFixed={true} />
+      <Navbar isLogin={isAuth} HasFixed={true} />
       <div className="flex flex-col">
         <div className="w-full min-h-screen">
           <div className="flex flex-col items-center mt-[200px] md:mt-[300px]">
