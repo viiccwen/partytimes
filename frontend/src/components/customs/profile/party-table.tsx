@@ -8,13 +8,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import moment from "moment";
-
 import { party_return_schema_type } from "@/lib/type";
 import { Clock, Text } from "lucide-react";
 import { create } from "zustand";
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
 
 interface PartyTableProps {
   party: party_return_schema_type[];
@@ -40,8 +37,10 @@ type time_type = {
 
 export const PartyTable = ({ party }: PartyTableProps) => {
   const formatDate = (date: string) => {
-    const momentDate = moment(date, moment.ISO_8601, true);
-    const [year, month, day] = momentDate.format("YYYY/MM/DD").split("/");
+    // const momentDate = moment(date, moment.ISO_8601, true);
+    // console.log(momentDate);
+    // const [year, month, day] = momentDate.format("YYYY/MM/DD").split("/");
+    const [year, month, day] = date.split("-");
 
     return `${year}/${month}/${day}`;
   };
@@ -70,10 +69,6 @@ export const PartyTable = ({ party }: PartyTableProps) => {
                     ? formatDate(content.decision.date)
                     : "未計畫"}
                 </div>
-                <Separator
-                  orientation="vertical"
-                  className="h-full mx-5 hidden md:block"
-                />
                 <div className="flex flex-col items-start gap-3">
                   <div className="text-sm text-start md:text-lg mb-3 font-bold md:hidden">
                     {content.title.length > 15
