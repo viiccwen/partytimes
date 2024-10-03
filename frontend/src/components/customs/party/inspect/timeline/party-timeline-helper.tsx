@@ -8,7 +8,6 @@ import {
 import { Dispatch, ReactNode, SetStateAction } from "react";
 import { cn } from "@/lib/utils";
 import { CalendarCheck2 } from "lucide-react";
-import moment from "moment";
 
 export const ConvertTo24Hours = (
   time: number,
@@ -241,8 +240,9 @@ export const generateHeader = (party: party_return_schema_type): ReactNode => {
 
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const getWeekday = (dateString: string) => {
-    const date = moment(dateString, moment.ISO_8601, true);
-    return weekdays[date.day()];
+    const date = new Date(dateString);
+    // const date = moment(dateString, moment.ISO_8601, true);
+    return weekdays[date.getDay()];
   };
 
   return (

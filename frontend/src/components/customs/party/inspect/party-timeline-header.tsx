@@ -8,7 +8,6 @@ import {
   PenLine,
   Trash2,
 } from "lucide-react";
-import { useCallback } from "react";
 
 interface PartyTimelineHeaderProps {
   className?: string;
