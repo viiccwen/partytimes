@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 
 import { PartyHeader } from "./party-header";
@@ -31,10 +31,6 @@ export const PartyTimelineCard = ({
 }: PartyTimelineCardProps) => {
   const [userSelectBlock, setUserSelectBlock] =
     useState<Set<string>>(user_votes);
-  const [isConfirmClicked, setIsConfirmClicked] = useState<boolean>(false);
-  const [isDeleteClicked, setIsDeleteClicked] = useState<boolean>(false);
-  const [isScheduledClicked, setIsScheduledClicked] = useState<boolean>(false);
-  const [hydrated, setHydrated] = useState<boolean>(false);
 
   const {
     HandleCheckButton,
@@ -44,23 +40,15 @@ export const PartyTimelineCard = ({
     isEditing,
     isScheduling,
   } = PartyTimelineLogic({
-    setUserSelectBlock,
     party,
-    userSelectBlock,
-    user_votes,
-    has_scheduled: party.status,
     allvoteblocks,
-    setIsConfirmClicked,
-    setIsDeleteClicked,
-    setIsScheduledClicked,
+    user_votes,
     userid: user?.id,
+    userSelectBlock,
+    setUserSelectBlock,
   });
 
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
-
-  if (!hydrated || !allvoteblocks || allvoteblocks.length === 0) return null;
+  if (!allvoteblocks || allvoteblocks.length === 0) return null;
 
   return (
     <>
@@ -76,9 +64,6 @@ export const PartyTimelineCard = ({
             HandleCancelButton={HandleCancelButton}
             isEditing={isEditing}
             isScheduling={isScheduling}
-            isConfirmClicked={isConfirmClicked}
-            isDeleteClicked={isDeleteClicked}
-            isScheduledClicked={isScheduledClicked}
             has_scheduled={party.status}
           />
           <TimeLineComponent
@@ -89,7 +74,6 @@ export const PartyTimelineCard = ({
             setUserSelectBlock={setUserSelectBlock}
             isEditing={isEditing}
             isScheduling={isScheduling}
-            scheduled_time={party.decision}
           />
         </CardContent>
       </Card>

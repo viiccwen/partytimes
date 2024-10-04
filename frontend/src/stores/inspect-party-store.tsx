@@ -1,4 +1,4 @@
-import { ConverTo24Hours } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
+import { ConvertTo24Hours } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
 import { party_return_schema_type, votes_schema_type } from "@/lib/type";
 import { create } from "zustand";
 
@@ -31,6 +31,9 @@ type party_inspect_type = {
   isScheduling: boolean;
   isMouseDown: boolean;
   isBounced: boolean;
+  isConfirmClicked: boolean;
+  isDeleteClicked: boolean;
+  isScheduledClicked: boolean;
 
   updateCurPointsPosition: (row: number, col: number) => void;
   updateCurPointsUserid: (userid: string) => void;
@@ -39,6 +42,9 @@ type party_inspect_type = {
   updateIsScheduling: (isScheduling: boolean) => void;
   updateIsMouseDown: (isMouseDown: boolean) => void;
   updateIsBounced: (isBounced: boolean) => void;
+  updateIsConfirmClicked: (isConfirmClicked: boolean) => void;
+  updateIsDeleteClicked: (isDeleteClicked: boolean) => void;
+  updateIsScheduledClicked: (isScheduledClicked: boolean) => void;
 
   getTimeSlotBlocks: (
     votes: votes_schema_type[],
@@ -60,6 +66,9 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
   isScheduling: false,
   isMouseDown: false,
   isBounced: false,
+  isConfirmClicked: false,
+  isDeleteClicked: false,
+  isScheduledClicked: false,
 
   updateCurPointsPosition: (row, col) =>
     set({ cur_points_position: { row, col } }),
@@ -70,22 +79,37 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
   updateIsScheduling: (isScheduling) => set({ isScheduling }),
   updateIsMouseDown: (isMouseDown) => set({ isMouseDown }),
   updateIsBounced: (isBounced) => set({ isBounced }),
-  
+  updateIsConfirmClicked: (isConfirmClicked) => set({ isConfirmClicked }),
+  updateIsDeleteClicked: (isDeleteClicked) => set({ isDeleteClicked }),
+  updateIsScheduledClicked: (isScheduledClicked) => set({ isScheduledClicked }),
+
   getTimeSlotBlocks(votes, total_hours, party) {
     let blocks: block_type[][][] = Array.from(
       { length: party.date.length },
       () => Array.from({ length: total_hours * 2 }, () => [])
     );
 
-    const party_start_time = ConverTo24Hours(party.start_time, party.start_ampm, true);
+    const party_start_time = ConvertTo24Hours(
+      party.start_time,
+      party.start_ampm,
+      true
+    );
 
     votes.forEach((vote: votes_schema_type) => {
       vote.timeslots.forEach((timeslot) => {
         const date = timeslot.date;
         const row = party.date.findIndex((v) => v === date);
 
-        const start_time = ConverTo24Hours(timeslot.start_time, timeslot.start_ampm, true);
-        const end_time = ConverTo24Hours(timeslot.end_time, timeslot.end_ampm, false);
+        const start_time = ConvertTo24Hours(
+          timeslot.start_time,
+          timeslot.start_ampm,
+          true
+        );
+        const end_time = ConvertTo24Hours(
+          timeslot.end_time,
+          timeslot.end_ampm,
+          false
+        );
 
         const start = start_time - party_start_time;
         const end = end_time - party_start_time;

@@ -71,7 +71,7 @@ export const Footer = () => {
           </div>
           <div className={cn("grid grid-cols-2 items-center gap-16 mt-10", "md:flex md:h-[300px] md:flex-row md:mt-0")}>
             {linkblocks.map((linkBlock, index) => (
-              <LinkBlock title={linkblocks_title[index]} linkblocks={linkBlock} />
+              <LinkBlock key={`linkblock-${linkblocks_title[index]}-${index}`} title={linkblocks_title[index]} linkblocks={linkBlock} />
             ))}
           </div>
         </div>

@@ -6,7 +6,6 @@ import {
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const Cookie = require("js-cookie");
 
-
 export const Auth = async (
   token: string | undefined
 ): Promise<userinfo_fetch_return_type> => {
@@ -20,15 +19,14 @@ export const Auth = async (
       },
     });
 
-    if(response.ok) {
+    if (response.ok) {
       const data = await response.json();
       return { correct: true, data };
     } else {
       const data = await response.json();
       throw new Error(data.error);
     }
-  }
-  catch (error: any) {
+  } catch (error: any) {
     return { correct: false, error: error.message };
   }
 };
@@ -41,7 +39,7 @@ export const Logout = (): void => {
 export const DeleteAccount = async (): Promise<general_fetch_return_type> => {
   try {
     const token = Cookie.get("token");
-    if(!token) throw new Error("尚未登入或是登入狀況有錯誤！");
+    if (!token) throw new Error("尚未登入或是登入狀況有錯誤！");
     const response = await fetch(`${API_URL}/user/delete`, {
       method: "POST",
       headers: {
@@ -62,10 +60,12 @@ export const DeleteAccount = async (): Promise<general_fetch_return_type> => {
   }
 };
 
-export const EditName = async (nickname: string): Promise<general_fetch_return_type>  => {
+export const EditName = async (
+  nickname: string
+): Promise<general_fetch_return_type> => {
   try {
     const token = Cookie.get("token");
-    if(!token) throw new Error("尚未登入或是登入狀況有錯誤！");
+    if (!token) throw new Error("尚未登入或是登入狀況有錯誤！");
     const response = await fetch(`${API_URL}/user/update/name`, {
       method: "POST",
       headers: {
@@ -85,3 +85,4 @@ export const EditName = async (nickname: string): Promise<general_fetch_return_t
     return { correct: false, error: error.message };
   }
 };
+
