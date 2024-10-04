@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/customs/navbar";
 import { Toaster } from "sonner";
 import { Metadata } from "next";
-import { VerifyAuth } from "@/actions/user-actions";
+import { VerifyAuth } from "@/lib/verify";
 import { SelectPartyTimeContainer } from "@/components/customs/party/create/select-partytime-container";
 
 export const metadata: Metadata = {

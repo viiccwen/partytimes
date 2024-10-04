@@ -1,4 +1,4 @@
-import { VerifyAuth } from "@/actions/user-actions";
+import { VerifyAuth } from "@/lib/verify";
 import { Navbar } from "@/components/customs/navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";

@@ -2,9 +2,6 @@ import {
   general_fetch_return_type,
   userinfo_fetch_return_type,
 } from "@/lib/type";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { cache } from "react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const Cookie = require("js-cookie");
@@ -89,9 +86,3 @@ export const EditName = async (
   }
 };
 
-export const VerifyAuth = cache(async (protected_root: boolean) => {
-  const token = cookies().get("token")?.value;
-  const { correct: isAuth, data: user, error } = await Auth(token);
-  if(!isAuth && user && protected_root) redirect("/login");
-  return { isAuth, user };
-});

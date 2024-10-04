@@ -1,6 +1,6 @@
 "use client";
 
-import { EditName } from "@/actions/user-actions";
+import { EditName } from "@/lib/verify";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

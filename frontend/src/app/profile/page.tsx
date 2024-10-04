@@ -1,4 +1,4 @@
-import { VerifyAuth } from "@/actions/user-actions";
+import { VerifyAuth } from "@/lib/verify";
 import { Navbar } from "@/components/customs/navbar";
 import { PartyPanel } from "@/components/customs/party-panel";
 import { cookies } from "next/headers";
