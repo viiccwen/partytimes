@@ -8,7 +8,7 @@ import { Navbar } from "@/components/customs/navbar";
 import { cn } from "@/lib/utils";
 import { ClubLists } from "@/lib/coop-clublists";
 import { DescriptionBlockLists } from "@/lib/description-blocklists";
-import { VerifyAuth } from "@/actions/user-actions";
+import { VerifyAuth } from "@/lib/verify";
 
 export default async function Home() {
   const { isAuth, user } = await VerifyAuth(true);

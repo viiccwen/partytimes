@@ -2,7 +2,7 @@ import { Navbar } from "@/components/customs/navbar";
 import { LoginForm } from "@/components/customs/user/login-form";
 import { Toaster } from "sonner";
 import { Metadata } from "next";
-import { VerifyAuth } from "@/actions/user-actions";
+import { VerifyAuth } from "@/lib/verify";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {

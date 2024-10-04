@@ -1,5 +1,5 @@
 import { GetParty } from "@/actions/party-actions";
-import { VerifyAuth } from "@/actions/user-actions";
+import { VerifyAuth } from "@/lib/verify";
 import { GetVoteTimes } from "@/actions/vote-actions";
 import { Navbar } from "@/components/customs/navbar";
 import { InspectPartyContainer } from "@/components/customs/party/inspect/inspect-party-container";

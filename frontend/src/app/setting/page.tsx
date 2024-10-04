@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/customs/navbar";
 import { Toaster } from "sonner";
-import { VerifyAuth } from "@/actions/user-actions";
+import { VerifyAuth } from "@/lib/verify";
 import { SettingCard } from "@/components/customs/setting/setting-card";
 import { Metadata } from "next";
 

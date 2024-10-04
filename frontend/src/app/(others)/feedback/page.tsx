@@ -1,4 +1,4 @@
-import { VerifyAuth } from "@/actions/user-actions";
+import { VerifyAuth } from "@/lib/verify";
 import { Navbar } from "@/components/customs/navbar";
 import { FeedbackForm } from "@/components/customs/others/feedback-form";
 import { Metadata } from "next";
