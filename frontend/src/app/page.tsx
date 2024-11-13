@@ -19,7 +19,7 @@ export default async function Home() {
       <div className="flex flex-col">
         <div className="w-full min-h-screen">
           <div className="flex flex-col items-center mt-[200px] md:mt-[300px]">
-            <div className="text-4xl md:text-[50px] md:leading-[60px] font-bold">
+            <div className="text-4xl md:text-[50px] md:leading-[60px] font-bold title-text">
               PartyTimes 都不揪？
             </div>
             <div className="text-3xl font-bold">學生的揪團神器</div>

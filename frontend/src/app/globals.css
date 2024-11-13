@@ -67,3 +67,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+.title-text {
+  background: linear-gradient(0deg, #453ECA 0%,#2EF3B4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
