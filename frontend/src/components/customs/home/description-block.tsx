@@ -30,8 +30,8 @@ export const DescriptionBlock = ({
           )}
         >
           <div className="flex flex-col items-center justify-center gap-3 mb-10">
-            <div className="text-sky-200 text-2xl font-bold">{title}</div>
-            <div className="text-slate-100 text-lg">{description}</div>
+            <div className="text-blue-600 dark:text-blue-300 text-2xl font-bold">{title}</div>
+            <div className="text-slate-600 dark:text-slate-300 text-lg">{description}</div>
           </div>
           <div className="relative flex justify-center">
             <div>
