@@ -37,11 +37,7 @@ type time_type = {
 
 export const PartyTable = ({ party }: PartyTableProps) => {
   const formatDate = (date: string) => {
-    // const momentDate = moment(date, moment.ISO_8601, true);
-    // console.log(momentDate);
-    // const [year, month, day] = momentDate.format("YYYY/MM/DD").split("/");
     const [year, month, day] = date.split("-");
-
     return `${year}/${month}/${day}`;
   };
 
@@ -63,7 +59,7 @@ export const PartyTable = ({ party }: PartyTableProps) => {
         {party.map((content: party_return_schema_type, index: number) => (
           <Link href={`/party/${content.partyid}`} key={index}>
             <button className="flex w-full min-h-[150px] gap-5 border-2 rounded-lg p-5 my-5 transition duration-300 ease-in-out shadow-md hover:text-white hover:bg-purple-400">
-              <div className="flex h-full">
+              <div className="flex gap-5 h-full">
                 <div className="flex gap-3 items-center text-sm min-w-[90px] md:text-base">
                   {content.status
                     ? formatDate(content.decision.date)

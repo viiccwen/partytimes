@@ -19,19 +19,19 @@ export default async function Home() {
       <div className="flex flex-col">
         <div className="w-full min-h-screen">
           <div className="flex flex-col items-center mt-[200px] md:mt-[300px]">
-            <div className="text-white text-4xl md:text-[50px] md:leading-[60px] font-bold">
+            <div className="text-4xl md:text-[50px] md:leading-[60px] font-bold">
               PartyTimes 都不揪？
             </div>
-            <div className="text-white text-3xl font-bold">學生的揪團神器</div>
-            <div className="text-white text-lg mt-5">
+            <div className="text-3xl font-bold">學生的揪團神器</div>
+            <div className="text-lg mt-5">
               讓你輕鬆揪團、輕鬆決定會議時間
             </div>
             <div className="flex gap-5">
               <Link href="/party/0Gf7emMo">
                 <button
                   className={cn(
-                    "bg-white text-black px-4 py-2 rounded-full mt-10 transition-all duration-300",
-                    "hover:bg-gray-100 hover:text-black hover:shadow-lg"
+                    "bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded-full mt-10 transition-all duration-300",
+                    "hover:bg-slate-700 dark:hover:bg-slate-200 hover:shadow-lg"
                   )}
                 >
                   派對頁面 🎉
@@ -40,8 +40,8 @@ export default async function Home() {
               <Link href="/login">
                 <button
                   className={cn(
-                    "bg-white text-black px-4 py-2 rounded-full mt-10 transition-all duration-300",
-                    "hover:bg-gray-100 hover:text-black hover:shadow-lg"
+                    "bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded-full mt-10 transition-all duration-300",
+                    "hover:bg-purple-600 dark:hover:bg-purple-600 dark:hover:text-white hover:shadow-lg"
                   )}
                 >
                   開始使用 🤩
@@ -51,10 +51,10 @@ export default async function Home() {
           </div>
 
           <div className="flex flex-col items-center mt-[100px] gap-5">
-            <div className="text-slate-100 font-bold text-lg mt-5">
+            <div className="text-black dark:text-slate-100 font-bold text-lg mt-5">
               還有誰在使用...？
             </div>
-            <div className="w-full bg-white/75 backdrop-blur-lg">
+            <div className="w-full">
               <div className="flex justify-center p-3 gap-5">
                 {ClubLists.map((club, index) => (
                   <Link
