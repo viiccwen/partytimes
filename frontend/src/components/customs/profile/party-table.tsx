@@ -58,7 +58,7 @@ export const PartyTable = ({ party }: PartyTableProps) => {
       <CardContent>
         {party.map((content: party_return_schema_type, index: number) => (
           <Link href={`/party/${content.partyid}`} key={index}>
-            <button className="flex w-full min-h-[150px] gap-5 border-2 rounded-lg p-5 my-5 transition duration-300 ease-in-out shadow-md hover:text-white hover:bg-purple-400">
+            <button className="flex w-full min-h-[150px] gap-5 border-2 rounded-lg p-5 my-5 transition duration-300 ease-in-out shadow-md hover:bg-slate-100 dark:hover:bg-slate-800">
               <div className="flex gap-5 h-full">
                 <div className="flex gap-3 items-center text-sm min-w-[90px] md:text-base">
                   {content.status

@@ -93,7 +93,7 @@ interface LinkBlockProp {
 const LinkBlock = ({ title, linkblocks }: LinkBlockProp) => {
   return (
     <div className="flex flex-col gap-5">
-      <div className="font-bold text-black dark:text-white">{title}</div>
+      <div className="font-bold text-blue-600 dark:text-blue-300">{title}</div>
       {linkblocks.map((linkblock, index) => (
         <Link
         key={`linkblock-${index}`}

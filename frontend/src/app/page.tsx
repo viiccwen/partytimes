@@ -41,7 +41,7 @@ export default async function Home() {
                 <button
                   className={cn(
                     "bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded-full mt-10 transition-all duration-300",
-                    "hover:bg-purple-600 dark:hover:bg-purple-600 dark:hover:text-white hover:shadow-lg"
+                    "hover:bg-blue-600 dark:hover:bg-blue-600 dark:hover:text-white hover:shadow-lg"
                   )}
                 >
                   開始使用 🤩

@@ -59,7 +59,7 @@ export const Navbar = ({ isLogin, HasFixed }: NavbarProps) => {
                 ele.protected === isLogin && (
                   <button
                     key={index}
-                    className="text-white bg-purple-600 px-4 py-2 rounded-full mr-10 transition duration-300 ease-in-out hover:text-purple-300 hover:shadow-lg"
+                    className="text-white bg-blue-600 px-4 py-2 rounded-full mr-10 transition duration-300 ease-in-out hover:bg-blue-700 hover:shadow-lg"
                   >
                     {<Link href={ele.url}>{ele.name}</Link>}
                   </button>
