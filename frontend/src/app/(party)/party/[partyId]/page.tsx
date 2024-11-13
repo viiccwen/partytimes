@@ -13,7 +13,7 @@ export default async function PartyPage({
   params: { partyId: string };
 }) {
   const party = await GetParty(params.partyId).then((res) => res.data?.party);
-  if(!party) redirect("/error");
+  if (!party) redirect("/error");
 
   const { isAuth, user } = await VerifyAuth(false);
 
@@ -25,11 +25,7 @@ export default async function PartyPage({
       <Toaster richColors />
       <Navbar isLogin={isAuth} HasFixed={false} />
       <div className="flex flex-col gap-6 md:mx-7 md:flex-row mb-[100px]">
-        <InspectPartyContainer
-          party={party}
-          user={user}
-          votes={votes.data}
-        />
+        <InspectPartyContainer party={party} user={user} votes={votes.data} />
       </div>
     </div>
   );
