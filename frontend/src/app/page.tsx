@@ -59,7 +59,7 @@ export default async function Home() {
                 {ClubLists.map((club, index) => (
                   <Link
                     key={`clublists-${index}`}
-                    href="https://www.instagram.com/ntustcsie/"
+                    href={club.url}
                   >
                     <Image
                       src={club.image}
