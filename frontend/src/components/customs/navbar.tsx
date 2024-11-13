@@ -43,13 +43,16 @@ export const Navbar = ({ isLogin, HasFixed }: NavbarProps) => {
             alt="logo"
             width={170}
             height={50}
-            className="cursor-pointer invert"
+            className="cursor-pointer dark:invert"
             onClick={() => {
               router.push("/");
             }}
           />
         </div>
-        <div className="gap-14 md:mr-10 mr-3 flex">
+        <div className="flex ml-3 invisible">
+          <MenuBar side="left" isLogin={isLogin} />
+        </div>
+        <div className="hidden gap-14 md:mr-10 mr-3 md:flex">
           <div className="hidden md:flex">
             {links.map(
               (ele, index) =>
