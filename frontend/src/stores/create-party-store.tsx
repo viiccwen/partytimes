@@ -1,15 +1,15 @@
 import { create } from "zustand";
 
-type Type = {
-    page: number;
+type create_party_type = {
     selectedDate: string[];
-    setPage: (page: number) => void;
-    setSelectedDate: (selectedDate: string[]) => void;
-};
+    isLoading: boolean;
+    setSelectedDate: (date: string[]) => void;
+    setIsLoading: (loading: boolean) => void;
+}
 
-export const CreatePartyStore = create<Type>((set) => ({
-    page: 1,
+export const useCreatePartyStore = create<create_party_type>((set) => ({
     selectedDate: [],
-    setPage: (page: number) => set({ page }),
-    setSelectedDate: (selectedDate: string[]) => set({ selectedDate }),
-}));
+    isLoading: false,
+    setSelectedDate: (date: string[]) => set({ selectedDate: date }),
+    setIsLoading: (loading: boolean) => set({ isLoading: loading })
+}))

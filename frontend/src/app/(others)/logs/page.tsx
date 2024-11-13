@@ -12,7 +12,7 @@ export default async function LogsPage() {
   const { isAuth, user } = await VerifyAuth(false);
   return (
     <>
-      <Navbar isLogin={isAuth} HasFixed={true} />
+      <Navbar isLogin={isAuth} HasFixed={false} />
       <LogsCard log_list={log_list} />
     </>
   );
