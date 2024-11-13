@@ -2,10 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useCreatePartyStore } from "@/stores/create-party-store";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { CreatePartyStore } from "@/stores/create-party-store";
 
 const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
@@ -37,9 +37,13 @@ const CheckValidDate = ({
   );
 };
 
-export const DayPicker = () => {
+interface DayPickerProps {
+  className?: string;
+}
+
+export const DayPicker = (props : DayPickerProps) => {
+  const { selectedDate, setSelectedDate } = useCreatePartyStore();
   const [currentDate, setCurrentDate] = useState(new Date());
-  const { selectedDate, setSelectedDate } = CreatePartyStore((state) => state);
 
   const daysArray = useMemo(() => {
     const year = currentDate.getFullYear();
@@ -60,17 +64,18 @@ export const DayPicker = () => {
 
   const HandleClick = useCallback(
     (value: string) => {
+      
       if (selectedDate?.length === 7 && !selectedDate.includes(value)) {
         toast.error("最多選擇 7 天!");
         return;
       }
-
+      
       let updatedSelectedDate: string[];
-
+      
       if (selectedDate.includes(value))
         updatedSelectedDate = selectedDate.filter((date) => date !== value);
       else updatedSelectedDate = [...selectedDate, value];
-
+      
       setSelectedDate(updatedSelectedDate);
     },
     [selectedDate, currentDate]
@@ -84,7 +89,7 @@ export const DayPicker = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className={props.className}>
       <div className="flex justify-around items-center mb-10">
         {currentDate.getFullYear() > new Date().getFullYear() ||
         (currentDate.getFullYear() == new Date().getFullYear() &&

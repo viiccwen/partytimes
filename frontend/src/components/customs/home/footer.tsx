@@ -65,9 +65,9 @@ export const Footer = () => {
               alt="logo"
               width={200}
               height={100}
-              className="invert"
+              className="dark:invert"
             />
-            <div className="text-slate-300 text-sm ml-4 mt-1">© 2024 PartyTimes</div>
+            <div className="text-slate-700 dark:text-slate-300 text-sm ml-4 mt-1">© 2024 PartyTimes</div>
           </div>
           <div className={cn("grid grid-cols-2 items-center gap-16 mt-10", "md:flex md:h-[300px] md:flex-row md:mt-0")}>
             {linkblocks.map((linkBlock, index) => (
@@ -93,13 +93,13 @@ interface LinkBlockProp {
 const LinkBlock = ({ title, linkblocks }: LinkBlockProp) => {
   return (
     <div className="flex flex-col gap-5">
-      <div className="font-bold text-white">{title}</div>
+      <div className="font-bold text-blue-600 dark:text-blue-300">{title}</div>
       {linkblocks.map((linkblock, index) => (
         <Link
         key={`linkblock-${index}`}
           href={linkblock.link}
           target="_blank"
-          className="text-slate-200 transition-all duration-300 hover:text-white"
+          className="text-slate-700 hover:text-slate-500 dark:text-slate-300 transition-all duration-300 dark:hover:text-slate-200"
         >
           {linkblock.text}
         </Link>

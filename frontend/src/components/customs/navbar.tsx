@@ -43,20 +43,23 @@ export const Navbar = ({ isLogin, HasFixed }: NavbarProps) => {
             alt="logo"
             width={170}
             height={50}
-            className="cursor-pointer invert"
+            className="cursor-pointer dark:invert"
             onClick={() => {
               router.push("/");
             }}
           />
         </div>
-        <div className="gap-14 md:mr-10 mr-3 flex">
+        <div className="flex ml-3 invisible">
+          <MenuBar side="left" isLogin={isLogin} />
+        </div>
+        <div className="hidden gap-14 md:mr-10 mr-3 md:flex">
           <div className="hidden md:flex">
             {links.map(
               (ele, index) =>
                 ele.protected === isLogin && (
                   <button
                     key={index}
-                    className="text-white bg-purple-600 px-4 py-2 rounded-full mr-10 transition duration-300 ease-in-out hover:text-purple-300 hover:shadow-lg"
+                    className="text-white bg-blue-600 px-4 py-2 rounded-full mr-10 transition duration-300 ease-in-out hover:bg-blue-700 hover:shadow-lg"
                   >
                     {<Link href={ele.url}>{ele.name}</Link>}
                   </button>

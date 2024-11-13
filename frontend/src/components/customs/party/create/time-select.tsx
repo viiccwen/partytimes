@@ -10,7 +10,6 @@ import { SelectGroup } from "@radix-ui/react-select";
 import {
   Control,
   Controller,
-  FieldValues,
 } from "react-hook-form";
 import { party_create_schema_type } from "@/lib/type";
 
