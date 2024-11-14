@@ -14,6 +14,8 @@ export const metadata: Metadata = {
 
 export default async function ProfilePage() {
   const { isAuth, user } = await VerifyAuth(true);
+
+  if(!isAuth) redirect("/login");
   
   const token: string | undefined = cookies().get("token")?.value;
   const {correct, data, error} = await GetPartyList(token);
@@ -22,7 +24,7 @@ export default async function ProfilePage() {
   return (
     <div className="min-h-screen">
       <Toaster richColors />
-      <Navbar isLogin={isAuth} HasFixed={false} />
+      <Navbar isLogin={isAuth} HasFixed={false} isLoading={false} />
       <div className="md:m-7 mt-5">
         <PartyPanel
           parties={data.party}

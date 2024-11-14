@@ -12,7 +12,7 @@ export default async function Feedback() {
   const { isAuth, user } = await VerifyAuth(false);
   return (
     <>
-      <Navbar isLogin={isAuth} HasFixed={true} />
+      <Navbar isLogin={isAuth} HasFixed={true} isLoading={false} />
       <Toaster richColors />
       <FeedbackForm />
     </>
