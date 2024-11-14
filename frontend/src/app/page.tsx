@@ -18,7 +18,7 @@ export default async function Home() {
       <Navbar isLogin={isAuth} HasFixed={true} isLoading={false} />
       <div className="flex flex-col">
         <div className="w-full min-h-screen">
-          <div className="flex flex-col items-center mt-[200px] md:mt-[300px]">
+          <div className="flex flex-col items-center mt-[100px] md:mt-[150px]">
             <div className="text-4xl md:text-[50px] md:leading-[60px] font-bold title-text">
               PartyTimes 都不揪？
             </div>
