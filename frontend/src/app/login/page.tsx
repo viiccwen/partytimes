@@ -17,7 +17,7 @@ export default async function LoginPage() {
   return (
     <div className="h-screen">
       <Toaster />
-      <Navbar isLogin={isAuth} HasFixed={false} />
+      <Navbar isLogin={isAuth} HasFixed={false} isLoading={false} />
       <div className="flex mt-[150px] justify-center items-center">
         <LoginForm />
       </div>

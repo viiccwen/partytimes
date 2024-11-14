@@ -25,10 +25,11 @@ const links = [
 
 interface NavbarProps {
   isLogin: boolean;
+  isLoading: boolean;
   HasFixed: boolean;
 }
 
-export const Navbar = ({ isLogin, HasFixed }: NavbarProps) => {
+export const Navbar = ({ isLogin, isLoading, HasFixed }: NavbarProps) => {
   const router = useRouter();
 
   return (
@@ -60,6 +61,7 @@ export const Navbar = ({ isLogin, HasFixed }: NavbarProps) => {
                   <button
                     key={index}
                     className="text-white bg-blue-600 px-4 py-2 rounded-full mr-10 transition duration-300 ease-in-out hover:bg-blue-700 hover:shadow-lg"
+                    hidden={isLoading}
                   >
                     {<Link href={ele.url}>{ele.name}</Link>}
                   </button>

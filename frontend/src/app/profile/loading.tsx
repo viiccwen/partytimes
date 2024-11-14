@@ -20,7 +20,7 @@ export default function Loading() {
   return (
     <div className="min-h-screen">
       <Toaster richColors />
-      <Navbar isLogin={false} HasFixed={false} />
+      <Navbar isLogin={false} HasFixed={false} isLoading={true} />
       <div className="md:m-7 mt-5">
         <Tabs defaultValue="all" className="w-full">
           <div className="flex justify-between">

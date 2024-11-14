@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function Loading() {
   return (
     <div className="min-h-screen">
-      <Navbar isLogin={false} HasFixed={false} />
+      <Navbar isLogin={false} HasFixed={false} isLoading={true} />
       <div className="flex flex-col gap-6 md:mx-7 md:flex-row mb-[100px]">
         <Card className="col-span-4 flex-1">
           <CardContent className="p-10 flex flex-col gap-5">

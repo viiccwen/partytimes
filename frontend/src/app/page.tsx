@@ -15,7 +15,7 @@ export default async function Home() {
 
   return (
     <>
-      <Navbar isLogin={isAuth} HasFixed={true} />
+      <Navbar isLogin={isAuth} HasFixed={true} isLoading={false} />
       <div className="flex flex-col">
         <div className="w-full min-h-screen">
           <div className="flex flex-col items-center mt-[200px] md:mt-[300px]">

@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 
 export default async function AboutPage() {
   const { isAuth, user } = await VerifyAuth(false);
-  
+
   return (
     <>
-      <Navbar isLogin={isAuth} HasFixed={true} />
+      <Navbar isLogin={isAuth} HasFixed={true} isLoading={false} />
       <div className="w-full h-screen flex justify-center items-center">
         <Card className={cn("p-5 w-[390px]", "md:w-[700px]")}>
           <CardContent className="flex flex-col gap-7">
