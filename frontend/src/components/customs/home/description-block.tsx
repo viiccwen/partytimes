@@ -39,7 +39,7 @@ export const DescriptionBlock = ({
                 <Image
                   key={`image-${image.src}`}
                   className={cn(
-                    "rounded-2xl transition-all duration-300 ease-in-out hover:shadow-lg",
+                    "shadow-2xl rounded-lg",
                     image.className
                   )}
                   src={image.src}

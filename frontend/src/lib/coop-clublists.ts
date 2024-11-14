@@ -10,7 +10,14 @@ export const ClubLists = [
         image: "/NTUST_GDGC.png",
         width: 180,
         height: 80,
-        alt: "ntust gdsc logo",
+        alt: "ntust gdg on campus logo",
         url: "https://www.instagram.com/gdg.nutst/",
+    },
+    {
+        image: "/NTUST_CSRC.svg",
+        width: 80,
+        height: 80,
+        alt: "ntust csrc logo",
+        url: "https://www.instagram.com/ntust.hacking",
     },
 ]

@@ -9,6 +9,14 @@ import { cn } from "@/lib/utils";
 import { ClubLists } from "@/lib/coop-clublists";
 import { DescriptionBlockLists } from "@/lib/description-blocklists";
 import { VerifyAuth } from "@/lib/verify";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  icons: {
+    icon: "/partytimes.svg"
+  },
+  description: "PartyTimes 都不揪？｜學生的揪團神器，讓你輕鬆揪團、輕鬆決定會議時間",
+};
 
 export default async function Home() {
   const { isAuth, user } = await VerifyAuth(true);
@@ -18,7 +26,7 @@ export default async function Home() {
       <Navbar isLogin={isAuth} HasFixed={true} isLoading={false} />
       <div className="flex flex-col">
         <div className="w-full min-h-screen">
-          <div className="flex flex-col items-center mt-[200px] md:mt-[300px]">
+          <div className="flex flex-col items-center mt-[100px] md:mt-[150px]">
             <div className="text-4xl md:text-[50px] md:leading-[60px] font-bold title-text">
               PartyTimes 都不揪？
             </div>
