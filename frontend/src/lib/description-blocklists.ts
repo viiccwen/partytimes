@@ -5,8 +5,7 @@ export const DescriptionBlockLists = [
         className: "mt-[500px]",
         image: [
             {
-                src: "/homepage/party-partytimes.jpg",
-                className: "",
+                src: "/homepage/1.jpg"
             },
         ],
         reverse: false,
@@ -18,7 +17,6 @@ export const DescriptionBlockLists = [
         image: [
             {
                 src: "/homepage/2.jpg",
-                className: "w-[360px] h-[340px] md:w-[500px] md:h-[480px]",
             },
         ],
         reverse: true,
@@ -30,7 +28,6 @@ export const DescriptionBlockLists = [
         image: [
             {
                 src: "/homepage/3.jpg",
-                className: "w-[400px] h-[300px] md:w-[550px] md:h-[400px]",
             },
         ],
         reverse: false,

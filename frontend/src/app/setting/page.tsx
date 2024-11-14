@@ -4,8 +4,6 @@ import { VerifyAuth } from "@/lib/verify";
 import { SettingCard } from "@/components/customs/setting/setting-card";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export const metadata: Metadata = {
   title: "Setting",
