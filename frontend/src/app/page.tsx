@@ -9,6 +9,14 @@ import { cn } from "@/lib/utils";
 import { ClubLists } from "@/lib/coop-clublists";
 import { DescriptionBlockLists } from "@/lib/description-blocklists";
 import { VerifyAuth } from "@/lib/verify";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  icons: {
+    icon: "/partytimes.svg"
+  },
+  description: "PartyTimes 都不揪？｜學生的揪團神器，讓你輕鬆揪團、輕鬆決定會議時間",
+};
 
 export default async function Home() {
   const { isAuth, user } = await VerifyAuth(true);
