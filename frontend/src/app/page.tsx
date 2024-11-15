@@ -9,14 +9,6 @@ import { cn } from "@/lib/utils";
 import { ClubLists } from "@/lib/coop-clublists";
 import { DescriptionBlockLists } from "@/lib/description-blocklists";
 import { VerifyAuth } from "@/lib/verify";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  icons: {
-    icon: "/partytimes.svg"
-  },
-  description: "PartyTimes 都不揪？｜學生的揪團神器，讓你輕鬆揪團、輕鬆決定會議時間",
-};
 
 export default async function Home() {
   const { isAuth, user } = await VerifyAuth(true);
@@ -31,9 +23,7 @@ export default async function Home() {
               PartyTimes 都不揪？
             </div>
             <div className="text-3xl font-bold">學生的揪團神器</div>
-            <div className="text-lg mt-5">
-              讓你輕鬆揪團、輕鬆決定會議時間
-            </div>
+            <div className="text-lg mt-5">讓你輕鬆揪團、輕鬆決定會議時間</div>
             <div className="flex gap-5">
               <Link href="/party/0Gf7emMo">
                 <button
@@ -65,10 +55,7 @@ export default async function Home() {
             <div className="w-full">
               <div className="flex justify-center p-3 gap-5">
                 {ClubLists.map((club, index) => (
-                  <Link
-                    key={`clublists-${index}`}
-                    href={club.url}
-                  >
+                  <Link key={`clublists-${index}`} href={club.url}>
                     <Image
                       src={club.image}
                       width={club.width}
