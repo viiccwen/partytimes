@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     default: "PartyTimes 都不揪？",
   },
   icons: {
-    icon: "/favicon.svg",
+    icon: "/icon.svg",
   },
   description: "學生的揪團神器：讓你輕鬆揪團、輕鬆決定會議時間",
 };
