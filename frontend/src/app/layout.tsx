@@ -10,7 +10,10 @@ export const metadata: Metadata = {
     template: "%s - PartyTimes 都不揪？",
     default: "PartyTimes 都不揪？",
   },
-  description: "都不揪？｜揪團揪餐好簡單，盡在PartyTimes",
+  icons: {
+    icon: "/favicon.svg",
+  },
+  description: "學生的揪團神器：讓你輕鬆揪團、輕鬆決定會議時間",
 };
 
 export default function RootLayout({
