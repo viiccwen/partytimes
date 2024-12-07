@@ -25,16 +25,17 @@ export const EditNameButton = ({ value }: EditNameButtonProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
 
+  // todo: change it into form action
   const handleClick = async () => {
-    const response = await EditName(name);
-    setOpen(false);
-
-    if (response.correct) {
-      toast.success("成功更改名稱！");
-      router.refresh();
-    } else {
-      toast.error(response.error);
-    }
+    toast.promise(EditName(name), {
+      loading: "更改中...",
+      success: () => {
+        setOpen(false);
+        router.refresh();
+        return "成功更改名稱！";
+      },
+      error: (res) => res.error,
+    });
   };
 
   return (

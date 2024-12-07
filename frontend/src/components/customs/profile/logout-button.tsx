@@ -1,3 +1,4 @@
+'use client';
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -13,8 +14,8 @@ export const LogOutButton = () => {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="outline" size="icon">
-            <LogOut className="h-4 w-4" onClick={Logout} />
+          <Button variant="outline" size="icon" onClick={Logout}>
+            <LogOut className="h-4 w-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>

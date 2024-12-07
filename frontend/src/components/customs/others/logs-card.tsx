@@ -12,7 +12,7 @@ interface LogsCardProps {
 
 export const LogsCard = ({ log_list }: LogsCardProps) => {
   return (
-    <div className="w-full h-screen flex justify-center items-center">
+    <div className="w-full h-screen flex justify-center items-center mb-[50px]">
       <Card className="p-5 w-[390px] md:w-[700px]">
         <CardContent className="flex flex-col gap-7">
           <h1 className=" font-bold text-2xl">更新紀錄</h1>

@@ -1,5 +1,10 @@
 export const log_list = [
   {
+    date: "2024/12/08",
+    title: "增加互動性元件",
+    content: "按下按鈕等待時，會出現動畫",
+  },
+  {
     date: "2024/11/13",
     title: "更換主題 & 優化等待畫面",
     content: "更換網站主題、優化等待畫面",

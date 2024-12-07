@@ -15,6 +15,7 @@ import { party_create_schema_type } from "@/lib/type";
 import { CreateParty } from "@/actions/party-actions";
 import { useCreatePartyStore } from "@/stores/create-party-store";
 import { ConvertTo24Hours } from "../inspect/timeline/party-timeline-helper";
+import { Delay } from "@/lib/utils";
 
 interface CreatePartyFormProps {
   className?: string;
@@ -22,7 +23,8 @@ interface CreatePartyFormProps {
 
 export const CreatePartyForm = ({ className }: CreatePartyFormProps) => {
   const router = useRouter();
-  const { selectedDate, isLoading, setIsLoading } = useCreatePartyStore();
+  const { selectedDate, setSelectedDate, isLoading, setIsLoading } =
+    useCreatePartyStore();
 
   const {
     register,
@@ -61,14 +63,18 @@ export const CreatePartyForm = ({ className }: CreatePartyFormProps) => {
       return dateA.getTime() - dateB.getTime();
     });
 
-    try {
-      const response = await CreateParty({ ...formdata, date: selectedDate });
-
-      if (response.correct) router.push(`/party/${response.data?.partyid}`);
-      else toast.error(response.error);
-    } finally {
-      setIsLoading(false);
-    }
+    toast.promise(CreateParty({ ...formdata, date: selectedDate }), {
+      loading: "創建中...",
+      success: (res) => {
+        Delay(1, true).then(() => {
+          setSelectedDate([]);
+          setIsLoading(false);
+          router.push(`/party/${res.data?.partyid}`);
+        });
+        return "創建成功！";
+      },
+      error: (res) => res.error,
+    });
   };
 
   return (
@@ -127,7 +133,7 @@ export const CreatePartyForm = ({ className }: CreatePartyFormProps) => {
           </div>
         </div>
 
-        <Button className="mb-3" disabled={isLoading}>
+        <Button className="mb-3 bg-blue-500 hover:bg-blue-600" disabled={isLoading}>
           {isLoading ? "創建中..." : "創建"}
         </Button>
       </div>
