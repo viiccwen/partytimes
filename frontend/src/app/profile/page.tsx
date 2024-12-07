@@ -1,12 +1,12 @@
 import { VerifyAuth } from "@/lib/verify";
 import { Navbar } from "@/components/customs/navbar";
-import { PartyPanel } from "@/components/customs/party-panel";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
 
 import { GetPartyList } from "@/actions/party-actions";
 import { Metadata } from "next";
+import { PartyPanel } from "@/components/customs/profile/party-panel";
 
 export const metadata: Metadata = {
   title: "Profile",
@@ -15,10 +15,10 @@ export const metadata: Metadata = {
 export default async function ProfilePage() {
   const { isAuth, user } = await VerifyAuth(true);
 
-  if(!isAuth) redirect("/login");
-  
+  if (!isAuth) redirect("/login");
+
   const token: string | undefined = cookies().get("token")?.value;
-  const {correct, data, error} = await GetPartyList(token);
+  const { correct, data, error } = await GetPartyList(token);
   if (!correct || !data) redirect("/error");
 
   return (
@@ -26,9 +26,7 @@ export default async function ProfilePage() {
       <Toaster richColors />
       <Navbar isLogin={isAuth} HasFixed={false} isLoading={false} />
       <div className="md:m-7 mt-5">
-        <PartyPanel
-          parties={data.party}
-        />
+        <PartyPanel party={data.party} />
       </div>
     </div>
   );

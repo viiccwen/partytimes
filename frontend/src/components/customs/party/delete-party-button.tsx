@@ -7,6 +7,7 @@ import { DeleteParty } from "@/actions/party-actions";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { party_table_store } from "../profile/party-table";
+import { Delay } from "@/lib/utils";
 
 interface DeletePartyButtonProps {
   partyid: string;
@@ -18,31 +19,34 @@ export const DeletePartyButton = ({
   partyid,
   classname,
   label,
-  isConfirming
+  isConfirming,
 }: DeletePartyButtonProps) => {
+  const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
   const { setOpen } = party_table_store();
 
   const HandleClick = async () => {
     setIsDeleting(true);
-    try {
-      const response = await DeleteParty(partyid);
-
-      if (response.correct) {
+    toast.promise(DeleteParty(partyid), {
+      loading: "刪除中...",
+      success: () => {
+        Delay(1, true).then(() => router.push("/profile"));
+        return "刪除成功";
+      },
+      error: "刪除派對時發生錯誤",
+      finally: () => {
         setOpen(false);
-        window.location.replace("/profile");
-      } else {
-        toast.error(response.error);
-      }
-    } catch (error) {
-      toast.error("刪除派對時發生錯誤");
-    } finally {
-      setIsDeleting(false);
-    }
+        setIsDeleting(false);
+      },
+    });
   };
 
   return (
-    <Button className={classname} onClick={HandleClick} disabled={isDeleting || isConfirming}>
+    <Button
+      className={classname}
+      onClick={HandleClick}
+      disabled={isDeleting || isConfirming}
+    >
       {isDeleting ? "刪除中..." : label}
     </Button>
   );

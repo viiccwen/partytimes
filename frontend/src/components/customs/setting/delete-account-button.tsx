@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   AlertDialog,
@@ -15,17 +15,21 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { DeleteAccount } from "../../../actions/user-actions";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { Delay } from "@/lib/utils";
 
 export const DeleteAccountButton = () => {
-    const handleDeleteAccount = async () => {
-        const response = await DeleteAccount();
-
-        if (response.correct) {
-            window.location.href = "/";
-        } else {
-            toast.error(response.error);
-        }
-    }
+  const router = useRouter();
+  const handleDeleteAccount = async () => {
+    toast.promise(DeleteAccount, {
+      loading: "刪除中...",
+      success: () => {
+        Delay(1, true).then(() => router.push("/"));
+        return "刪除成功！";
+      },
+      error: (res) => res.error,
+    });
+  };
 
   return (
     <AlertDialog>
