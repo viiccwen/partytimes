@@ -20,6 +20,8 @@ import { party_edit_schema } from "@/lib/schema";
 import { toast } from "sonner";
 import { party_table_store } from "./party-table";
 import { useState } from "react";
+import { Delay } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface EditButtonProps {
   partyid: string;
@@ -34,6 +36,7 @@ export const EditButton = ({
   partyDescription,
   text,
 }: EditButtonProps) => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -46,13 +49,17 @@ export const EditButton = ({
 
   const onSubmit = async (formdata: party_edit_schema_type) => {
     setIsConfirming(true);
-    const response = await UpdateParty(formdata, partyid);
-
-    if (response.correct) {
-      window.location.reload();
-    } else {
-      toast.error(response.error);
-    }
+    toast.promise(UpdateParty(formdata, partyid), {
+      loading: "更新中...",
+      success: () => {
+        Delay(1, true).then(() => {
+          setOpen(false);
+          router.refresh()});
+        return "更新成功";
+      },
+      error: (res) => res.error,
+      finally: () => setIsConfirming(false),
+    });
   };
 
   return (
