@@ -56,7 +56,7 @@ const linkblocks = [
 
 export const Footer = () => {
   return (
-    <div className="flex justify-center mb-[100px]">
+    <div className="flex justify-center mb-[100px] sm:mb-0">
       <div className="w-[1000px]">
         <div className={cn("flex flex-col mt-[200px] mx-5 justify-between", "md:flex-row")}>
           <div className={cn("grid grid-cols-2 justify-evenly items-center", "md:flex md:flex-col md:h-[300px] md:items-start")}>

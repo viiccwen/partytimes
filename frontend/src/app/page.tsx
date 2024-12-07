@@ -18,14 +18,14 @@ export default async function Home() {
       <Navbar isLogin={isAuth} HasFixed={true} isLoading={false} />
       <div className="flex flex-col">
         <div className="w-full min-h-screen">
-          <div className="flex flex-col items-center mt-[100px] md:mt-[150px]">
+          <div className="flex flex-col items-center mt-[200px]">
             <div className="text-4xl md:text-[50px] md:leading-[60px] font-bold title-text">
               PartyTimes 都不揪？
             </div>
             <div className="text-3xl font-bold">學生的揪團神器</div>
             <div className="text-lg mt-5">讓你輕鬆揪團、輕鬆決定會議時間</div>
             <div className="flex gap-5">
-              <Link href="/party/0Gf7emMo">
+              <Link href="/party/dGSlFXRy">
                 <button
                   className={cn(
                     "bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded-full mt-10 transition-all duration-300",
