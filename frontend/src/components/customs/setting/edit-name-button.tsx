@@ -11,35 +11,45 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { name_schema } from "@/lib/schema";
+import { name_schema_type } from "@/lib/type";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 interface EditNameButtonProps {
-  value: string;
+  name: string;
 }
 
-export const EditNameButton = ({ value }: EditNameButtonProps) => {
-  const [name, setName] = useState<string>(value);
+export const EditNameButton = ({ name }: EditNameButtonProps) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<name_schema_type>({
+    resolver: zodResolver(name_schema),
+  });
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
 
-  // todo: change it into form action
-  const handleClick = async () => {
-    toast.promise(EditName(name), {
+  const onSubmit = async (formdata: name_schema_type) => {
+    toast.promise(EditName(formdata.name), {
       loading: "更改中...",
       success: () => {
         setOpen(false);
         router.refresh();
         return "成功更改名稱！";
       },
-      error: (res) => res.error,
+      error: (res) => res,
+      finally: () => setOpen(false),
     });
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger onClick={() => setOpen(true)}>
         <Edit2 className="w-4 h-4" />
       </DialogTrigger>
@@ -47,16 +57,21 @@ export const EditNameButton = ({ value }: EditNameButtonProps) => {
         <DialogHeader>
           <DialogTitle>更改名稱</DialogTitle>
         </DialogHeader>
-        <div>
-          <Input
-            placeholder="輸入新的名稱"
-            value={name}
-            onChange={(e) => setName(e.currentTarget.value)}
-          />
-        </div>
-        <DialogFooter>
-          <Button onClick={handleClick}>確認</Button>
-        </DialogFooter>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="mb-3">
+            <Input
+              placeholder="輸入新的名稱"
+              defaultValue={name}
+              {...register("name")}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-xs mt-3">{errors.name.message}</p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button type="submit">確認</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

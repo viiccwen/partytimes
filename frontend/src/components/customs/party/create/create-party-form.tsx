@@ -14,8 +14,7 @@ import { party_create_schema_type } from "@/lib/type";
 
 import { CreateParty } from "@/actions/party-actions";
 import { useCreatePartyStore } from "@/stores/create-party-store";
-import { ConvertTo24Hours } from "../inspect/timeline/party-timeline-helper";
-import { Delay } from "@/lib/utils";
+import { ConvertTo24Hours, Delay } from "@/lib/utils";
 
 interface CreatePartyFormProps {
   className?: string;
@@ -133,7 +132,7 @@ export const CreatePartyForm = ({ className }: CreatePartyFormProps) => {
           </div>
         </div>
 
-        <Button className="mb-3 bg-blue-500 hover:bg-blue-600" disabled={isLoading}>
+        <Button className="mb-3 bg-blue-500 hover:bg-blue-600 text-white" disabled={isLoading}>
           {isLoading ? "創建中..." : "創建"}
         </Button>
       </div>

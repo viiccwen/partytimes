@@ -56,7 +56,7 @@ export const DeleteAccount = async (): Promise<general_fetch_return_type> => {
       throw new Error(data.error);
     }
   } catch (error: any) {
-    return { correct: false, error: error.message };
+    throw new Promise((reject) => reject(error.message));
   }
 };
 
@@ -66,6 +66,7 @@ export const EditName = async (
   try {
     const token = Cookie.get("token");
     if (!token) throw new Error("尚未登入或是登入狀況有錯誤！");
+
     const response = await fetch(`${API_URL}/user/update/name`, {
       method: "POST",
       headers: {
@@ -82,7 +83,7 @@ export const EditName = async (
       throw new Error(data.error);
     }
   } catch (error: any) {
-    return { correct: false, error: error.message };
+    throw new Promise((reject) => reject(error.message));
   }
 };
 
