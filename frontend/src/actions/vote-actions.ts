@@ -55,7 +55,7 @@ export const CreateVote = async (
     }
   } catch (error: any) {
     // todo: handle error
-    return new Promise((reject) => reject(error.message));
+    throw new Promise((reject) => reject(error.message));
   }
 };
 
