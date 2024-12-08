@@ -5,6 +5,7 @@ import {
   feedback_schema,
   guest_schema,
   login_schema,
+  name_schema,
   party_create_schema,
   party_edit_schema,
   party_return_schema,
@@ -71,3 +72,5 @@ export type get_votetimes_fetch_return_type = general_fetch_return_type & {
 };
 
 export type feedback_schema_type = z.infer<typeof feedback_schema>;
+
+export type name_schema_type = z.infer<typeof name_schema>;
