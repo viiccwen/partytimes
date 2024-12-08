@@ -35,7 +35,6 @@ export const EditNameButton = ({ name }: EditNameButtonProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
 
-  // todo: change it into form action
   const onSubmit = async (formdata: name_schema_type) => {
     toast.promise(EditName(formdata.name), {
       loading: "更改中...",
@@ -44,26 +43,30 @@ export const EditNameButton = ({ name }: EditNameButtonProps) => {
         router.refresh();
         return "成功更改名稱！";
       },
-      error: (res) => res.error,
+      error: (res) => res,
+      finally: () => setOpen(false),
     });
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger onClick={() => setOpen(true)}>
         <Edit2 className="w-4 h-4" />
       </DialogTrigger>
       <DialogContent>
+        <DialogHeader>
+          <DialogTitle>更改名稱</DialogTitle>
+        </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogHeader>
-            <DialogTitle>更改名稱</DialogTitle>
-          </DialogHeader>
-          <div>
+          <div className="mb-3">
             <Input
               placeholder="輸入新的名稱"
-              value={name}
+              defaultValue={name}
               {...register("name")}
             />
+            {errors.name && (
+              <p className="text-red-500 text-xs mt-3">{errors.name.message}</p>
+            )}
           </div>
           <DialogFooter>
             <Button type="submit">確認</Button>

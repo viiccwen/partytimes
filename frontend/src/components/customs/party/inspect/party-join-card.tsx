@@ -101,14 +101,14 @@ interface ParticipantButtonProps {
   updateCurPointsUserid: (userid: string) => void;
 }
 
-const ParticipantButton = memo(function ParticipantButton({
+const ParticipantButton = memo(({
   join,
   showAllParticipants,
   point_joinList,
   clicked_user,
   handleClick,
   updateCurPointsUserid,
-}: ParticipantButtonProps) {
+}: ParticipantButtonProps) => {
   return (
     <button
       value={join.userId}
