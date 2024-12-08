@@ -51,7 +51,7 @@ export default async function SettingPage() {
                 <BasicBlock title="名稱">
                   <div className="flex items-center gap-4">
                     <p>{user.nickname}</p>
-                    <EditNameButton value={user.nickname} />
+                    <EditNameButton name={user.nickname} />
                   </div>
                 </BasicBlock>
                 <BasicBlock title="Email">
