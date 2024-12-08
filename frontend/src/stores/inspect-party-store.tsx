@@ -1,5 +1,3 @@
-import { ConvertTo24Hours } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
-import { party_return_schema_type, votes_schema_type } from "@/lib/type";
 import { create } from "zustand";
 
 export type block_type = {
@@ -45,17 +43,6 @@ type party_inspect_type = {
   updateIsConfirmClicked: (isConfirmClicked: boolean) => void;
   updateIsDeleteClicked: (isDeleteClicked: boolean) => void;
   updateIsScheduledClicked: (isScheduledClicked: boolean) => void;
-
-  getTimeSlotBlocks: (
-    votes: votes_schema_type[],
-    total_hours: number,
-    party: party_return_schema_type
-  ) => block_type[][][];
-  getUserVoteblocks: (
-    vote_blocks: block_type[][][],
-    nickname: string | undefined
-  ) => Set<string>;
-  getJoinList: (votes: votes_schema_type[]) => Array<joinlist_type>;
 };
 
 export const useVoteBlockStore = create<party_inspect_type>((set) => ({
@@ -83,70 +70,5 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
   updateIsDeleteClicked: (isDeleteClicked) => set({ isDeleteClicked }),
   updateIsScheduledClicked: (isScheduledClicked) => set({ isScheduledClicked }),
 
-  getTimeSlotBlocks(votes, total_hours, party) {
-    let blocks: block_type[][][] = Array.from(
-      { length: party.date.length },
-      () => Array.from({ length: total_hours * 2 }, () => [])
-    );
-
-    const party_start_time = ConvertTo24Hours(
-      party.start_time,
-      party.start_ampm,
-      true
-    );
-
-    votes.forEach((vote: votes_schema_type) => {
-      vote.timeslots.forEach((timeslot) => {
-        const date = timeslot.date;
-        const row = party.date.findIndex((v) => v === date);
-
-        const start_time = ConvertTo24Hours(
-          timeslot.start_time,
-          timeslot.start_ampm,
-          true
-        );
-        const end_time = ConvertTo24Hours(
-          timeslot.end_time,
-          timeslot.end_ampm,
-          false
-        );
-
-        const start = start_time - party_start_time;
-        const end = end_time - party_start_time;
-
-        for (let i = start; i < end; i += 0.5) {
-          const col = i * 2;
-          blocks[row][col].push({
-            creatorName: vote.creatorName,
-            userId: vote.userId,
-            isScheduled: false,
-          });
-        }
-      });
-    });
-
-    return blocks;
-  },
-  getUserVoteblocks(vote_blocks, nickname) {
-    if (nickname == undefined) return new Set<string>();
-    let userVoteBlocks: Set<string> = new Set();
-
-    vote_blocks.forEach((blocks, row) => {
-      blocks.forEach((block, col) => {
-        block.forEach((vote) => {
-          if (vote.creatorName === nickname) {
-            userVoteBlocks.add(`${row}-${col}`);
-          }
-        });
-      });
-    });
-
-    return userVoteBlocks;
-  },
-  getJoinList(votes: votes_schema_type[]) {
-    return votes.map((vote) => ({
-      creatorName: vote.creatorName,
-      userId: vote.userId,
-    }));
-  },
+  
 }));

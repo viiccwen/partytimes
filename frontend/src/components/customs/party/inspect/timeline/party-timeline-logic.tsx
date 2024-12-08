@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
 import { party_return_schema_type } from "@/lib/type";
 import { useGuestVoteStore } from "@/stores/guest-vote-store";
+import { getUserVoteblocks } from "@/lib/utils";
 
 interface PartyTimelineLogicProps {
   party: party_return_schema_type;
@@ -39,7 +40,6 @@ export const PartyTimelineLogic = ({
     updateIsConfirmClicked,
     updateIsDeleteClicked,
     updateIsScheduledClicked,
-    getUserVoteblocks,
   } = useVoteBlockStore();
 
   const { setOpen, setTimeslots } = useGuestVoteStore();
@@ -62,7 +62,6 @@ export const PartyTimelineLogic = ({
       return;
     }
 
-    console.log(userSelectBlock);
     if (userSelectBlock.size === 0) {
       toast.error("請選擇時間區塊！");
       return;
@@ -70,36 +69,32 @@ export const PartyTimelineLogic = ({
 
     const timeslots = GenerateTimeSlots(userSelectBlock, party);
 
-    if (!userid) {
-      if (clicked_user.userId === "") {
-        // new guest user
-        setTimeslots(timeslots);
-        setOpen(true);
-      } else {
-        // existed guest user
-        updateIsConfirmClicked(true);
-        const res = await CreateVote(
+    // New Guest User
+    if (!userid && clicked_user.userId === "") {
+      setTimeslots(timeslots);
+      setOpen(true);
+      return;
+
+      // Existing Guest User or Authenticated User
+    } else {
+      updateIsConfirmClicked(true);
+      toast.promise(
+        CreateVote(
           timeslots,
           party.partyid,
           clicked_user.creatorName,
           clicked_user.userId
-        );
-
-        res.correct
-          ? (await RefreshVoteData(), toast.success("創建投票成功！"))
-          : toast.error(res.error);
-
-        updateIsConfirmClicked(false);
-      }
-    } else {
-      // login user
-      updateIsConfirmClicked(true);
-      const res = await CreateVote(timeslots, party.partyid);
-      res.correct
-        ? (await RefreshVoteData(), toast.success("創建投票成功！"))
-        : toast.error(res.error);
-
-      updateIsConfirmClicked(false);
+        ),
+        {
+          loading: "創建中...",
+          success: () => {
+            RefreshVoteData();
+            return "創建投票成功！";
+          },
+          error: (err) => err,
+          finally: () => updateIsConfirmClicked(false),
+        }
+      );
     }
   };
 
@@ -151,15 +146,27 @@ export const PartyTimelineLogic = ({
 
     updateIsDeleteClicked(true);
 
-    const res = userid
-      ? await DeleteVote(party.partyid, userid)
-      : await DeleteVote(party.partyid, clicked_user.userId);
-
-    res.correct
-      ? (await RefreshVoteData(), toast.success("刪除投票成功！"))
-      : toast.error(res.error);
-
-    updateIsDeleteClicked(false);
+    if (clicked_user.userId !== "") {
+      toast.promise(DeleteVote(party.partyid, clicked_user.userId), {
+        loading: "刪除中...",
+        success: () => {
+          RefreshVoteData();
+          return "刪除投票成功！";
+        },
+        error: (err) => err,
+        finally: () => updateIsDeleteClicked(false),
+      });
+    } else {
+      toast.promise(DeleteVote(party.partyid, userid), {
+        loading: "刪除中...",
+        success: () => {
+          RefreshVoteData();
+          return "刪除投票成功！";
+        },
+        error: (err) => err,
+        finally: () => updateIsDeleteClicked(false),
+      });
+    }
   }, [party, clicked_user, userid]);
 
   return {
