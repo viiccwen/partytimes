@@ -62,7 +62,6 @@ export const PartyTimelineLogic = ({
       return;
     }
 
-    console.log(userSelectBlock);
     if (userSelectBlock.size === 0) {
       toast.error("請選擇時間區塊！");
       return;
@@ -70,36 +69,32 @@ export const PartyTimelineLogic = ({
 
     const timeslots = GenerateTimeSlots(userSelectBlock, party);
 
-    if (!userid) {
-      if (clicked_user.userId === "") {
-        // new guest user
-        setTimeslots(timeslots);
-        setOpen(true);
-      } else {
-        // existed guest user
-        updateIsConfirmClicked(true);
-        const res = await CreateVote(
+    // New Guest User
+    if (!userid && clicked_user.userId === "") {
+      setTimeslots(timeslots);
+      setOpen(true);
+      return;
+
+    // Existing Guest User or Authenticated User
+    } else {
+      updateIsConfirmClicked(true);
+      toast.promise(
+        CreateVote(
           timeslots,
           party.partyid,
           clicked_user.creatorName,
           clicked_user.userId
-        );
-
-        res.correct
-          ? (await RefreshVoteData(), toast.success("創建投票成功！"))
-          : toast.error(res.error);
-
-        updateIsConfirmClicked(false);
-      }
-    } else {
-      // login user
-      updateIsConfirmClicked(true);
-      const res = await CreateVote(timeslots, party.partyid);
-      res.correct
-        ? (await RefreshVoteData(), toast.success("創建投票成功！"))
-        : toast.error(res.error);
-
-      updateIsConfirmClicked(false);
+        ),
+        {
+          loading: "創建中...",
+          success: () => {
+            RefreshVoteData();
+            return "創建投票成功！";
+          },
+          error: (err) => err.error,
+          finally: () => updateIsConfirmClicked(false),
+        }
+      );
     }
   };
 
