@@ -16,17 +16,8 @@ export const CreateVote = async (
   try {
     let token = Cookie.get("token");
     let response;
-    if (token) {
-      response = await fetch(`${API_URL}/vote/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ partyid, timeslots }),
-      });
-    } else if (nickname && guestid) {
-      // use guest user to update vote
+
+    if (nickname && guestid) {
       response = await fetch(`${API_URL}/vote/create`, {
         method: "POST",
         headers: {
@@ -43,8 +34,17 @@ export const CreateVote = async (
         },
         body: JSON.stringify({ partyid, nickname, timeslots }),
       });
+    } else if (token) {
+      response = await fetch(`${API_URL}/vote/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ partyid, timeslots }),
+      });
     } else {
-      return { correct: false, error: "wrong parameters" };
+      throw new Error("發生未知錯誤！請重試。");
     }
 
     if (response.ok) {
