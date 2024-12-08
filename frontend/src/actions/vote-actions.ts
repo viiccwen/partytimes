@@ -48,13 +48,14 @@ export const CreateVote = async (
     }
 
     if (response.ok) {
-      return { correct: true };
+      return new Promise((resolve) => resolve({ correct: true }));
     } else {
       const data = await response.json();
       throw new Error(data.error);
     }
   } catch (error: any) {
-    return { correct: false, error: error.message };
+    // todo: handle error
+    return new Promise((reject) => reject(error.message));
   }
 };
 
@@ -71,13 +72,13 @@ export const GetVoteTimes = async (
 
     if (response.ok) {
       const data = await response.json();
-      return { correct: true, data };
+      return new Promise((resolve) => resolve({ correct: true, data }));
     } else {
       const data = await response.json();
       throw new Error(data.error);
     }
   } catch (error: any) {
-    return { correct: false, error: error.message };
+    throw new Promise((reject) => reject(error.message));
   }
 };
 
@@ -107,12 +108,12 @@ export const DeleteVote = async (
     }
 
     if (response.ok) {
-      return { correct: true };
+      return new Promise((resolve) => resolve({ correct: true }));
     } else {
       const data = await response.json();
       throw new Error(data.error);
     }
   } catch (error: any) {
-    return { correct: false, error: error.message };
+    throw new Promise((reject) => reject(error.message));
   }
 };

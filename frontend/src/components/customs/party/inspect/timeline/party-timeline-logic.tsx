@@ -75,7 +75,7 @@ export const PartyTimelineLogic = ({
       setOpen(true);
       return;
 
-    // Existing Guest User or Authenticated User
+      // Existing Guest User or Authenticated User
     } else {
       updateIsConfirmClicked(true);
       toast.promise(
@@ -91,7 +91,7 @@ export const PartyTimelineLogic = ({
             RefreshVoteData();
             return "創建投票成功！";
           },
-          error: (err) => err.error,
+          error: (err) => err,
           finally: () => updateIsConfirmClicked(false),
         }
       );
@@ -146,15 +146,27 @@ export const PartyTimelineLogic = ({
 
     updateIsDeleteClicked(true);
 
-    const res = userid
-      ? await DeleteVote(party.partyid, userid)
-      : await DeleteVote(party.partyid, clicked_user.userId);
-
-    res.correct
-      ? (await RefreshVoteData(), toast.success("刪除投票成功！"))
-      : toast.error(res.error);
-
-    updateIsDeleteClicked(false);
+    if (clicked_user.userId !== "") {
+      toast.promise(DeleteVote(party.partyid, clicked_user.userId), {
+        loading: "刪除中...",
+        success: () => {
+          RefreshVoteData();
+          return "刪除投票成功！";
+        },
+        error: (err) => err,
+        finally: () => updateIsDeleteClicked(false),
+      });
+    } else {
+      toast.promise(DeleteVote(party.partyid, userid), {
+        loading: "刪除中...",
+        success: () => {
+          RefreshVoteData();
+          return "刪除投票成功！";
+        },
+        error: (err) => err,
+        finally: () => updateIsDeleteClicked(false),
+      });
+    }
   }, [party, clicked_user, userid]);
 
   return {
