@@ -48,26 +48,6 @@ export const PartyTimelineHeader = ({
     isScheduledClicked,
   } = useVoteBlockStore();
 
-  const renderButton = (
-    variant: variant_type,
-    onClick: () => void,
-    icon: JSX.Element,
-    text: string,
-    isLoading: boolean = false,
-    additionalClasses: string = "",
-    disabled: boolean = false
-  ) => (
-    <Button
-      variant={variant}
-      onClick={onClick}
-      className={`gap-2 ${additionalClasses}`}
-      disabled={disabled}
-    >
-      {icon}
-      <p className="hidden md:block">{isLoading ? `${text}中...` : text}</p>
-    </Button>
-  );
-
   const headerContent = () => {
     if (isEditing) {
       return (
@@ -159,3 +139,23 @@ export const PartyTimelineHeader = ({
 
   return <div className={className}>{headerContent()}</div>;
 };
+
+const renderButton = (
+  variant: variant_type,
+  onClick: () => void,
+  icon: JSX.Element,
+  text: string,
+  isLoading: boolean = false,
+  additionalClasses: string = "",
+  disabled: boolean = false
+) => (
+  <Button
+    variant={variant}
+    onClick={onClick}
+    className={`gap-2 ${additionalClasses}`}
+    disabled={disabled}
+  >
+    {icon}
+    <p className="hidden md:block">{isLoading ? `${text}中...` : text}</p>
+  </Button>
+);
