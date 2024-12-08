@@ -6,38 +6,8 @@ import {
   timeslots_create_schema_type,
 } from "@/lib/type";
 import { Dispatch, ReactNode, SetStateAction } from "react";
-import { cn } from "@/lib/utils";
+import { cn, ConvertTo24Hours } from "@/lib/utils";
 import { CalendarCheck2 } from "lucide-react";
-
-export const ConvertTo24Hours = (
-  time: number,
-  ampm: string,
-  isStart: boolean
-) => {
-  let return_time: number = time === 12 ? 0 : time;
-
-  if (return_time === 0 && ampm == "AM" && isStart) return_time = 0;
-  else if (return_time === 0 && ampm == "AM" && !isStart) return_time = 24;
-  else return_time = ampm === "PM" ? return_time + 12 : return_time;
-
-  return return_time;
-};
-
-export const CalculateTotalHours = (
-  party: party_return_schema_type
-): number => {
-  let start_time: number = ConvertTo24Hours(
-    party.start_time,
-    party.start_ampm,
-    true
-  );
-  let end_time: number = ConvertTo24Hours(
-    party.end_time,
-    party.end_ampm,
-    false
-  );
-  return end_time - start_time;
-};
 
 export const formatTime = (hour: number): string => {
   if (hour === 0 || hour == 24) return "12 AM";

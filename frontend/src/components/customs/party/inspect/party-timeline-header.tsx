@@ -20,6 +20,16 @@ interface PartyTimelineHeaderProps {
   HandleDeleteButton: () => void;
 }
 
+type variant_type =
+  | "link"
+  | "default"
+  | "destructive"
+  | "outline"
+  | "secondary"
+  | "ghost"
+  | null
+  | undefined;
+
 export const PartyTimelineHeader = ({
   className,
   isEditing,
@@ -39,33 +49,23 @@ export const PartyTimelineHeader = ({
   } = useVoteBlockStore();
 
   const renderButton = (
-    (
-      variant:
-        | "link"
-        | "default"
-        | "destructive"
-        | "outline"
-        | "secondary"
-        | "ghost"
-        | null
-        | undefined,
-      onClick: () => void,
-      icon: JSX.Element,
-      text: string,
-      isLoading: boolean = false,
-      additionalClasses: string = "",
-      disabled: boolean = false
-    ) => (
-      <Button
-        variant={variant}
-        onClick={onClick}
-        className={`gap-2 ${additionalClasses}`}
-        disabled={disabled}
-      >
-        {icon}
-        <p className="hidden md:block">{isLoading ? `${text}中...` : text}</p>
-      </Button>
-    )
+    variant: variant_type,
+    onClick: () => void,
+    icon: JSX.Element,
+    text: string,
+    isLoading: boolean = false,
+    additionalClasses: string = "",
+    disabled: boolean = false
+  ) => (
+    <Button
+      variant={variant}
+      onClick={onClick}
+      className={`gap-2 ${additionalClasses}`}
+      disabled={disabled}
+    >
+      {icon}
+      <p className="hidden md:block">{isLoading ? `${text}中...` : text}</p>
+    </Button>
   );
 
   const headerContent = () => {

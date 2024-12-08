@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
 import { party_return_schema_type } from "@/lib/type";
 import { useGuestVoteStore } from "@/stores/guest-vote-store";
+import { getUserVoteblocks } from "@/lib/utils";
 
 interface PartyTimelineLogicProps {
   party: party_return_schema_type;
@@ -39,7 +40,6 @@ export const PartyTimelineLogic = ({
     updateIsConfirmClicked,
     updateIsDeleteClicked,
     updateIsScheduledClicked,
-    getUserVoteblocks,
   } = useVoteBlockStore();
 
   const { setOpen, setTimeslots } = useGuestVoteStore();

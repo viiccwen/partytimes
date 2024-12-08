@@ -6,7 +6,6 @@ import {
   useState,
 } from "react";
 import {
-  CalculateTotalHours,
   generateGridCells,
   generateHeader,
   GenerateScheduledBlock,
@@ -17,6 +16,7 @@ import {
   ToggleBlockSchedule,
   ToggleBlockSelection,
 } from "@/lib/block-selection-helper";
+import { CalculateTotalHours } from "@/lib/utils";
 
 interface TimeLineComponentProps {
   party: party_return_schema_type;
