@@ -35,7 +35,6 @@ export const EditNameButton = ({ name }: EditNameButtonProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
 
-  // todo: change it into form action
   const onSubmit = async (formdata: name_schema_type) => {
     toast.promise(EditName(formdata.name), {
       loading: "更改中...",
