@@ -133,7 +133,7 @@ export const CreatePartyForm = ({ className }: CreatePartyFormProps) => {
           </div>
         </div>
 
-        <Button className="mb-3 bg-blue-500 hover:bg-blue-600" disabled={isLoading}>
+        <Button className="mb-3 bg-blue-500 hover:bg-blue-600 text-white" disabled={isLoading}>
           {isLoading ? "創建中..." : "創建"}
         </Button>
       </div>

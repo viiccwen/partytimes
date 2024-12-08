@@ -11,13 +11,13 @@ import { Delay } from "@/lib/utils";
 
 interface DeletePartyButtonProps {
   partyid: string;
-  classname: string;
+  className?: string;
   label: string;
   isConfirming: boolean;
 }
 export const DeletePartyButton = ({
   partyid,
-  classname,
+  className,
   label,
   isConfirming,
 }: DeletePartyButtonProps) => {
@@ -43,7 +43,7 @@ export const DeletePartyButton = ({
 
   return (
     <Button
-      className={classname}
+      className={className}
       onClick={HandleClick}
       disabled={isDeleting || isConfirming}
     >
