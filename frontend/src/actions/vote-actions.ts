@@ -54,7 +54,7 @@ export const CreateVote = async (
       throw new Error(data.error);
     }
   } catch (error: any) {
-    return { correct: false, error: error.message };
+    throw new Promise((reject) => reject(error.message));
   }
 };
 
@@ -77,7 +77,7 @@ export const GetVoteTimes = async (
       throw new Error(data.error);
     }
   } catch (error: any) {
-    return { correct: false, error: error.message };
+    throw new Promise((reject) => reject(error.message));
   }
 };
 
@@ -113,6 +113,6 @@ export const DeleteVote = async (
       throw new Error(data.error);
     }
   } catch (error: any) {
-    return { correct: false, error: error.message };
+    throw new Promise((reject) => reject(error.message));
   }
 };
