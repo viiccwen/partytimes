@@ -50,13 +50,13 @@ export const DeleteAccount = async (): Promise<general_fetch_return_type> => {
 
     if (response.ok) {
       Cookie.remove("token");
-      return { correct: true };
+      throw new Promise((resolve) => resolve({ correct: true }));
     } else {
       const data = await response.json();
       throw new Error(data.error);
     }
   } catch (error: any) {
-    return { correct: false, error: error.message };
+    throw new Promise((reject) => reject(error.message));
   }
 };
 
@@ -76,13 +76,13 @@ export const EditName = async (
     });
 
     if (response.ok) {
-      return { correct: true };
+      throw new Promise((resolve) => resolve({ correct: true }));
     } else {
       const data = await response.json();
       throw new Error(data.error);
     }
   } catch (error: any) {
-    return { correct: false, error: error.message };
+    throw new Promise((reject) => reject(error.message));
   }
 };
 
