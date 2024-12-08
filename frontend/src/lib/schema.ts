@@ -107,3 +107,7 @@ export const feedback_schema = z.object({
   title: z.string().max(30, "標題最多30字"),
   content: z.string().min(1, "請輸入內容"),
 });
+
+export const name_schema = z.object({
+  name: z.string().min(1, "名稱不可為空").max(20, "名稱最多20字"),
+});

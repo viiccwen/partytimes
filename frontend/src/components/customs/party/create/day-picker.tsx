@@ -142,7 +142,7 @@ export const DayPicker = (props : DayPickerProps) => {
                       day
                     )
                   )
-                    ? "bg-blue-400 text-white hover:bg-blue-500 hover:text-white"
+                    ? "bg-blue-500 text-white hover:bg-blue-400 hover:text-white"
                     : "hover:bg-blue-300 hover:text-white dark:text-white"
                 }`}
                 disabled={CheckValidDate({

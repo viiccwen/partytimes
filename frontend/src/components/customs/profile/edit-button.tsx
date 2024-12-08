@@ -1,6 +1,13 @@
 "use client";
-import { UpdateParty } from "@/actions/party-actions";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Edit2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -8,20 +15,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+
 import { party_edit_schema_type } from "@/lib/type";
-import { Edit2 } from "lucide-react";
-import { DeletePartyButton } from "../party/delete-party-button";
 import { EditPartyButton } from "./edit-party-button";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { party_edit_schema } from "@/lib/schema";
-import { toast } from "sonner";
+import { UpdateParty } from "@/actions/party-actions";
+
 import { party_table_store } from "./party-table";
-import { useState } from "react";
 import { Delay } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { DeletePartyButton } from "../party/delete-party-button";
+
 
 interface EditButtonProps {
   partyid: string;
@@ -104,14 +108,14 @@ export const EditButton = ({
             </div>
           </div>
 
-          <div className="w-full flex gap-4 mt-5">
+          <div className="w-full flex flex-row-reverse gap-4 mt-5">
+            <EditPartyButton classname="w-full text-white bg-blue-500 hover:bg-blue-600" label="確認" isConfirming={isConfirming} />
             <DeletePartyButton
               partyid={partyid}
-              classname="w-full"
+              className="w-full bg-inherit text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"
               label="刪除派對"
               isConfirming={isConfirming}
             />
-            <EditPartyButton classname="w-full" label="確認" isConfirming={isConfirming} />
           </div>
         </form>
       </DialogContent>
