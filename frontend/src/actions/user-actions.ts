@@ -50,7 +50,7 @@ export const DeleteAccount = async (): Promise<general_fetch_return_type> => {
 
     if (response.ok) {
       Cookie.remove("token");
-      throw new Promise((resolve) => resolve({ correct: true }));
+      return { correct: true };
     } else {
       const data = await response.json();
       throw new Error(data.error);
@@ -66,6 +66,7 @@ export const EditName = async (
   try {
     const token = Cookie.get("token");
     if (!token) throw new Error("尚未登入或是登入狀況有錯誤！");
+
     const response = await fetch(`${API_URL}/user/update/name`, {
       method: "POST",
       headers: {
@@ -76,7 +77,7 @@ export const EditName = async (
     });
 
     if (response.ok) {
-      throw new Promise((resolve) => resolve({ correct: true }));
+      return { correct: true };
     } else {
       const data = await response.json();
       throw new Error(data.error);

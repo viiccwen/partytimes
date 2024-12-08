@@ -48,7 +48,7 @@ export const CreateVote = async (
     }
 
     if (response.ok) {
-      return new Promise((resolve) => resolve({ correct: true }));
+      return { correct: true };
     } else {
       const data = await response.json();
       throw new Error(data.error);
@@ -72,7 +72,7 @@ export const GetVoteTimes = async (
 
     if (response.ok) {
       const data = await response.json();
-      return new Promise((resolve) => resolve({ correct: true, data }));
+      return { correct: true, data };
     } else {
       const data = await response.json();
       throw new Error(data.error);
@@ -108,7 +108,7 @@ export const DeleteVote = async (
     }
 
     if (response.ok) {
-      return new Promise((resolve) => resolve({ correct: true }));
+      return { correct: true };
     } else {
       const data = await response.json();
       throw new Error(data.error);
