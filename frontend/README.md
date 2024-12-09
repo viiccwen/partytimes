@@ -1,36 +1,134 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
-First, run the development server:
+## 文件結構 Project Structure
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+.
+├── README.md
+├── bun.lockb
+├── components.json
+├── next.config.mjs
+├── package.json        # dependencies & script
+├── postcss.config.js
+├── public              # store photos
+├── src                 # source code
+│   ├── actions         # server-side action (ex. send requests)
+│   │   ├── mail-actions.ts     
+│   │   ├── party-actions.ts
+│   │   ├── schedule-action.ts
+│   │   ├── user-actions.ts
+│   │   └── vote-actions.ts
+│   ├── app
+│   │   ├── (OAuth)
+│   │   │   └── oauth           # oauth redirect page
+│   │   │       └── page.tsx    
+│   │   ├── (others)
+│   │   │   ├── about           
+│   │   │   │   └── page.tsx    # (partytimes.org/about)
+│   │   │   ├── feedback        
+│   │   │   │   └── page.tsx    # (partytimes.org/feedback)
+│   │   │   └── logs
+│   │   │       └── page.tsx    # (partytimes.org/logs)
+│   │   ├── (party)
+│   │   │   ├── create
+│   │   │   │   ├── loading.tsx 
+│   │   │   │   └── page.tsx    # (partytimes.org/create)
+│   │   │   ├── error
+│   │   │   │   └── page.tsx    # (partytimes.org/error)
+│   │   │   └── party
+│   │   │       └── [partyId]
+│   │   │           ├── loading.tsx 
+│   │   │           └── page.tsx    # (partytimes.org/party/{partyId})
+│   │   ├── globals.css
+│   │   ├── icon.svg
+│   │   ├── layout.tsx          # global layout (ex. metadata)
+│   │   ├── login
+│   │   │   └── page.tsx        # (partytimes.org/login)
+│   │   ├── page.tsx            # (partytimes.org/)
+│   │   ├── profile             
+│   │   │   ├── loading.tsx
+│   │   │   └── page.tsx        # (partytimes.org/profile)
+│   │   └── setting
+│   │       ├── loading.tsx
+│   │       └── page.tsx        # (partytimes.org/setting)
+│   ├── components              # store components
+│   │   ├── customs             # customs components
+│   │   │   ├── ShareURLButton.tsx
+│   │   │   ├── back-button.tsx
+│   │   │   ├── home
+│   │   │   │   ├── description-block.tsx
+│   │   │   │   └── footer.tsx
+│   │   │   ├── hydrate-provider.tsx
+│   │   │   ├── loading-component.tsx
+│   │   │   ├── menubar.tsx
+│   │   │   ├── mode-toggle.tsx
+│   │   │   ├── navbar.tsx
+│   │   │   ├── oauth
+│   │   │   │   └── oauth-component.tsx
+│   │   │   ├── others
+│   │   │   │   ├── feedback-form.tsx
+│   │   │   │   └── logs-card.tsx
+│   │   │   ├── party
+│   │   │   │   ├── create
+│   │   │   │   │   ├── create-party-form.tsx
+│   │   │   │   │   ├── day-picker.tsx
+│   │   │   │   │   └── time-select.tsx
+│   │   │   │   ├── delete-party-button.tsx
+│   │   │   │   ├── guest-dialog.tsx
+│   │   │   │   └── inspect
+│   │   │   │       ├── party-header.tsx
+│   │   │   │       ├── party-join-card.tsx
+│   │   │   │       ├── party-timeline-card.tsx
+│   │   │   │       ├── party-timeline-header.tsx
+│   │   │   │       └── timeline
+│   │   │   │           ├── party-timeline-helper.tsx
+│   │   │   │           ├── party-timeline-logic.tsx
+│   │   │   │           └── timeline-component.tsx
+│   │   │   ├── profile
+│   │   │   │   ├── edit-button.tsx
+│   │   │   │   ├── edit-party-button.tsx
+│   │   │   │   ├── inspect-button.tsx
+│   │   │   │   ├── logout-button.tsx
+│   │   │   │   ├── menu-button.tsx
+│   │   │   │   ├── party-panel.tsx
+│   │   │   │   ├── party-table.tsx
+│   │   │   │   ├── party-tabs.tsx
+│   │   │   │   ├── setting-button.tsx
+│   │   │   │   └── status-label.tsx
+│   │   │   ├── setting
+│   │   │   │   ├── delete-account-button.tsx
+│   │   │   │   └── edit-name-button.tsx
+│   │   │   └── user
+│   │   │       └── oauth-button.tsx
+│   │   ├── theme-provider.tsx          # dark-mode provider for next/theme
+│   │   └── ui                          # created by shadcn/ui
+│   │       ├── alert-dialog.tsx
+│   │       ├── button.tsx
+│   │       ├── card.tsx
+│   │       ├── dialog.tsx
+│   │       ├── dropdown-menu.tsx
+│   │       ├── form.tsx
+│   │       ├── input.tsx
+│   │       ├── label.tsx
+│   │       ├── select.tsx
+│   │       ├── separator.tsx
+│   │       ├── sheet.tsx
+│   │       ├── skeleton.tsx
+│   │       ├── table.tsx
+│   │       ├── tabs.tsx
+│   │       ├── textarea.tsx
+│   │       └── tooltip.tsx
+│   ├── lib
+│   │   ├── block-selection-helper.ts  # party selection helper 
+│   │   ├── coop-clublists.ts          # homepage club lists
+│   │   ├── description-blocklists.ts  # homepage feature lists
+│   │   ├── logs.ts                    
+│   │   ├── schema.ts                  
+│   │   ├── type.ts
+│   │   ├── utils.ts                   # some helper function
+│   │   └── verify.ts                  # authentication helper function
+│   └── stores                         # redux store for zustand
+│       ├── create-party-store.tsx
+│       ├── guest-vote-store.tsx
+│       └── inspect-party-store.tsx
+├── tailwind.config.ts
+└── tsconfig.json
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
