@@ -1,7 +1,7 @@
 # PartyTimes 都不揪？
 
-[![Bun](https://img.shields.io/badge/nextjs-v1.1.34-black)](https://nextjs.org/)
-[![Bun](https://img.shields.io/badge/Bun-v14.1.4-white)](https://bun.sh/)
+[![Next](https://img.shields.io/badge/nextjs-v14.1.4-black)](https://nextjs.org/)
+[![Bun](https://img.shields.io/badge/Bun-v1.1.34-white)](https://bun.sh/)
 [![Docker](https://img.shields.io/badge/Docker-Enabled-blue)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
