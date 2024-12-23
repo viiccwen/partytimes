@@ -1,4 +1,4 @@
-import { prisma } from "..";
+import { prisma } from "../app";
 import { GeneratePartyId } from "../utils/utils";
 
 /**
