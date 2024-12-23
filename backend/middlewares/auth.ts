@@ -1,4 +1,4 @@
-import { prisma } from "..";
+import { prisma } from "../app";
 import { Verify } from "../utils/utils";
 
 const jwt = require("jsonwebtoken");

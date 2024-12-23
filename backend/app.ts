@@ -32,8 +32,6 @@ app.use("/api", schedule_router);
 app.use("/api", oauth_router);
 app.use("/api", email_router);
 
-app.listen(API_PORT, () => {
-  console.log(`Server is running on port ${API_PORT}`);
-});
-
 export const prisma = new PrismaClient();
+
+export default app;

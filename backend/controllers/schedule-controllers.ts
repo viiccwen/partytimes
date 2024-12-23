@@ -1,4 +1,4 @@
-import { prisma } from "..";
+import { prisma } from "../app";
 
 export const DecideSchedule = async (req: any, res: any) => {
   try {
