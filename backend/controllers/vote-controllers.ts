@@ -10,7 +10,7 @@ import { Verify } from "../utils/utils";
  */
 export const CreateVote = async (req: any, res: any) => {
   try {
-    const { timeslots, partyid, nickname, guestid } = await req.body;
+    const { timeslots, partyid, nickname, email, guestid } = await req.body;
 
     if (!timeslots || !partyid) {
       throw new Error("請提供所有必要資訊");
@@ -54,7 +54,7 @@ export const CreateVote = async (req: any, res: any) => {
         user = await prisma.user.create({
           data: {
             nickname,
-            email: "guest",
+            email: email,
             username: nickname,
             password: "guest",
             role: "GUEST",

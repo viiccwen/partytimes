@@ -9,10 +9,10 @@ export const GeneratePartyId = () => {
 }
 
 export const Verify = async (token: string) => {
-    const response = await new Promise((resolve, reject) => {
-        jwt.verify(token, JWT_SECRET, (err: any, payload: any) => {
-            err ? reject(err) : resolve(payload)
-        })
-    });
-    return response;
-}
+    try {
+        const payload = await jwt.verify(token, JWT_SECRET);
+        return payload;
+    } catch (error: any) {
+        throw new Error("驗證失敗！");
+    }
+};
