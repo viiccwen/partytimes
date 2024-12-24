@@ -2,8 +2,12 @@ const passport = require("passport");
 const GitHubStrategy = require("passport-github2").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const express = require("express");
+const google_calendar = "https://www.googleapis.com/auth/calendar";
 
-import { handleGoogleOAuthCallback, handleGitHubOAuthCallback } from "../controllers/user-controllers";
+import {
+  handleGoogleOAuthCallback,
+  handleGitHubOAuthCallback,
+} from "../controllers/oauth-controllers";
 
 const router = express.Router();
 
@@ -28,7 +32,7 @@ passport.use(
       callbackURL: `${process.env.AUTH_CALBACK_URL}/api/auth/callback/google`,
     },
     (accessToken: any, refreshToken: any, profile: any, done: any) => {
-      done(null, { provider: "google", ...profile });
+      done(null, { provider: "google", ...profile, accessToken, refreshToken });
     }
   )
 );
@@ -45,7 +49,11 @@ router.get(
 
 router.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", {
+    scope: ["profile", "email", google_calendar],
+    accessType: "offline",
+    prompt: "consent"
+  })
 );
 router.get(
   "/auth/callback/google",

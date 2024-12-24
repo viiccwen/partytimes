@@ -7,41 +7,68 @@ import {
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const Cookie = require("js-cookie");
 
+// todo: add email to create vote
+
+interface vote_create_schema_type {
+  partyid: string;
+  nickname: string;
+  email?: string;
+  guestid?: string;
+  timeslots: timeslots_create_schema_type;
+}
+
 export const CreateVote = async (
-  timeslots: timeslots_create_schema_type,
-  partyid: string,
-  nickname?: string,
-  guestid?: string
+  props: vote_create_schema_type
 ): Promise<general_fetch_return_type> => {
   try {
     let token = Cookie.get("token");
     let response;
 
-    if (nickname && guestid) {
+    if (props.nickname && props.guestid) {
+      const body = {
+        partyid: props.partyid,
+        nickname: props.nickname,
+        guestid: props.guestid,
+        timeslots: props.timeslots,
+      };
+
       response = await fetch(`${API_URL}/vote/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ partyid, nickname, guestid, timeslots }),
+        body: JSON.stringify(body),
       });
-    } else if (nickname) {
+    } else if (props.nickname) {
       // first time create vote by guest user
+
+      const body = {
+        partyid: props.partyid,
+        nickname: props.nickname,
+        email: props.email,
+        timeslots: props.timeslots,
+      };
+
       response = await fetch(`${API_URL}/vote/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ partyid, nickname, timeslots }),
+        body: JSON.stringify(body),
       });
     } else if (token) {
+      const body = {
+        partyid: props.partyid,
+        timeslots: props.timeslots,
+      };
+
       response = await fetch(`${API_URL}/vote/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ partyid, timeslots }),
+        body: JSON.stringify(body),
       });
     } else {
       throw new Error("發生未知錯誤！請重試。");

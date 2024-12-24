@@ -25,6 +25,9 @@ model User {
   githubId String? @unique
   googleId String? @unique
 
+  accessToken  String?
+  refreshToken String?
+
   parties   Party[]
   votetimes Votetime[]
 }

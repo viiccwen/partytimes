@@ -78,23 +78,22 @@ export const PartyTimelineLogic = ({
       // Existing Guest User or Authenticated User
     } else {
       updateIsConfirmClicked(true);
-      toast.promise(
-        CreateVote(
-          timeslots,
-          party.partyid,
-          clicked_user.creatorName,
-          clicked_user.userId
-        ),
-        {
-          loading: "創建中...",
-          success: () => {
-            RefreshVoteData();
-            return "創建投票成功！";
-          },
-          error: (err) => err,
-          finally: () => updateIsConfirmClicked(false),
-        }
-      );
+
+      const body = {
+        partyid: party.partyid,
+        nickname: clicked_user.creatorName,
+        guestid: clicked_user.userId,
+        timeslots,
+      };
+      toast.promise(CreateVote(body), {
+        loading: "創建中...",
+        success: () => {
+          RefreshVoteData();
+          return "創建投票成功！";
+        },
+        error: (err) => err,
+        finally: () => updateIsConfirmClicked(false),
+      });
     }
   };
 
