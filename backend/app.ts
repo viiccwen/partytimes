@@ -5,7 +5,6 @@ import vote_router from "./routers/vote-routers";
 import schedule_router from "./routers/schedule-routers";
 import oauth_router from "./routers/oauth-routers";
 import email_router from "./routers/mail-routers";
-import calendar_router from "./routers/calendar-routers";
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -32,8 +31,6 @@ app.use("/api", vote_router);
 app.use("/api", schedule_router);
 app.use("/api", oauth_router);
 app.use("/api", email_router);
-app.use("/api", calendar_router);
-
 
 export const prisma = new PrismaClient();
 

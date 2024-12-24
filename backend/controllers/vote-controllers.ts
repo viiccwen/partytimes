@@ -165,11 +165,19 @@ export const DeleteVote = async (req: any, res: any) => {
       });
       if (!vote) throw new Error("投票不存在");
 
+      // delete vote
       const deletedVote = await prisma.votetime.delete({
         where: { id: vote.id },
       });
 
       if (!deletedVote) throw new Error("刪除失敗！");
+
+      // delete user
+      const deletedGuest = await prisma.user.delete({
+        where: { id: userid },
+      });
+
+      if (!deletedGuest) throw new Error("刪除失敗！");
 
       res.sendStatus(200);
     } else {
