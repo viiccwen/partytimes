@@ -6,7 +6,6 @@ import {
   DecideSchedule,
   DeleteSchedule,
 } from "../controllers/schedule-controllers";
-import { AuthMiddleware } from "../middlewares/auth";
 
 const express = require("express");
 const schedule_router = express.Router();
@@ -19,7 +18,6 @@ schedule_router.post(
 );
 schedule_router.delete(
   "/schedule/delete/:partyid",
-  AuthMiddleware,
   DeleteSchedule,
   deleteCalendarEvent
 );
