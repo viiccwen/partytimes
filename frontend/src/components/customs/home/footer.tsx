@@ -44,7 +44,7 @@ const linkblocks = [
   ],
   [
     {
-      link: "#",
+      link: "/privacy",
       text: "使用者條款",
     },
     {
