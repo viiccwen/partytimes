@@ -19,6 +19,7 @@ const font_style = Afacad({
 
 export default async function Home() {
   const { isAuth, user } = await VerifyAuth(true);
+  
 
   return (
     <>
