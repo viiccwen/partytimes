@@ -1,14 +1,21 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Afacad, Noto_Sans_TC } from "@next/font/google";
 
 import { DescriptionBlock } from "@/components/customs/home/description-block";
 import { Footer } from "@/components/customs/home/footer";
 import { Navbar } from "@/components/customs/navbar";
-
-import { cn } from "@/lib/utils";
 import { ClubLists } from "@/lib/coop-clublists";
 import { DescriptionBlockLists } from "@/lib/description-blocklists";
+
+import { cn } from "@/lib/utils";
 import { VerifyAuth } from "@/lib/verify";
+
+const font_style = Afacad({
+  subsets: ["cyrillic-ext"],
+  weight: ["400", "600", "700"],
+  display: "swap",
+});
 
 export default async function Home() {
   const { isAuth, user } = await VerifyAuth(true);
@@ -19,17 +26,39 @@ export default async function Home() {
       <div className="flex flex-col">
         <div className="w-full min-h-screen">
           <div className="flex flex-col items-center mt-[200px]">
-            <div className="text-4xl md:text-[50px] md:leading-[60px] font-bold title-text">
+            <div
+              className={cn(
+                font_style.className,
+                "text-5xl md:text-[56px] md:leading-[64px] font-extrabold title-text text-gradient",
+                "animate-fade-up animate-once"
+              )}
+            >
               PartyTimes 都不揪？
             </div>
-            <div className="text-3xl font-bold">學生的揪團神器</div>
-            <div className="text-lg mt-5">讓你輕鬆揪團、輕鬆決定會議時間</div>
+            <div
+              className={cn(
+                "text-3xl font-semibold",
+                " text-gray-700 dark:text-gray-200",
+                "animate-fade-up animate-once animate-delay-500"
+              )}
+            >
+              學生的揪團神器
+            </div>
+            <div
+              className={cn(
+                "text-base md:text-lg text-gray-600 dark:text-gray-400 mt-5",
+                "animate-fade-up animate-once animate-delay-1000"
+              )}
+            >
+              讓你輕鬆揪團、決定會議時間
+            </div>
             <div className="flex gap-5">
               <Link href="/party/dGSlFXRy">
                 <button
                   className={cn(
-                    "bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded-full mt-10 transition-all duration-300",
-                    "hover:bg-slate-700 dark:hover:bg-slate-200 hover:shadow-lg"
+                    "bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 shadow-lg rounded-full mt-10 transition-all duration-300",
+                    "hover:bg-blue-700 hover:to-blue-700",
+                    "animate-fade-up animate-once animate-delay-[1500ms]"
                   )}
                 >
                   派對頁面 🎉
@@ -38,8 +67,9 @@ export default async function Home() {
               <Link href="/login">
                 <button
                   className={cn(
-                    "bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded-full mt-10 transition-all duration-300",
-                    "hover:bg-blue-600 dark:hover:bg-blue-600 dark:hover:text-white hover:shadow-lg"
+                    "bg-gray-900 text-white dark:bg-slate-700 px-6 py-3 shadow-md rounded-full mt-10 transition-all duration-300",
+                    "hover:bg-gray-800 dark:hover:bg-slate-800",
+                    "animate-fade-up animate-once animate-delay-[1500ms]"
                   )}
                 >
                   開始使用 🤩
@@ -49,7 +79,12 @@ export default async function Home() {
           </div>
 
           <div className="flex flex-col items-center mt-[100px] gap-5">
-            <div className="text-black dark:text-slate-100 font-bold text-lg mt-5">
+            <div
+              className={cn(
+                "text-black dark:text-gray-200 font-bold text-lg mt-5",
+                "animate-fade animate-once animate-delay-[2000ms]"
+              )}
+            >
               還有誰在使用...？
             </div>
             <div className="w-full">
@@ -61,7 +96,10 @@ export default async function Home() {
                       width={club.width}
                       height={club.height}
                       alt={club.alt}
-                      className="transition-all duration-300 hover:shadow-lg"
+                      className={cn(
+                        "transition-all duration-300 hover:shadow-lg",
+                        "animate-fade animate-once animate-delay-[2500ms]"
+                      )}
                     />
                   </Link>
                 ))}

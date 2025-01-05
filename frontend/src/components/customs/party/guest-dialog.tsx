@@ -39,20 +39,19 @@ export const GuestDialog = ({ partyid }: guest_dialog_props) => {
     resolver: zodResolver(guest_schema),
   });
 
-  const { timeslots, open, setOpen } = useGuestVoteStore(
-    (state) => state
-  );
+  const { timeslots, open, setOpen } = useGuestVoteStore((state) => state);
   const { updateIsEditing } = useVoteBlockStore((state) => state);
   const router = useRouter();
 
-  const onSubmit = async (formdata: any) => {
+  const onSubmit = async (formdata: guest_schema_type) => {
     const { nickname, email } = formdata;
 
-    const res: general_fetch_return_type = await CreateVote(
-      timeslots,
+    const res: general_fetch_return_type = await CreateVote({
       partyid,
-      nickname
-    );
+      nickname,
+      email,
+      timeslots,
+    });
 
     if (res.correct) {
       setOpen(false);
