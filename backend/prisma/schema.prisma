@@ -86,6 +86,7 @@ model Decision {
   start_ampm AMPM   @default(AM)
   end_time   Float
   end_ampm   AMPM   @default(PM)
+  eventId    String?
 
   party   Party  @relation(fields: [partyid], references: [partyid], onDelete: Cascade)
   partyid String @unique

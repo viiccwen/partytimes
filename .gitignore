@@ -17,7 +17,6 @@
 /build
 
 # misc
-.DS_Store
 *.pem
 
 # debug
@@ -213,9 +212,6 @@ dist
 
 # IntelliJ based IDEs
 .idea
-
-# Finder (MacOS) folder config
-.DS_Store
 
 .prisma
 
