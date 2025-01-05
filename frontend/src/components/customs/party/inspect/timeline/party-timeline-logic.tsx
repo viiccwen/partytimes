@@ -105,13 +105,16 @@ export const PartyTimelineLogic = ({
 
   const HandleScheduleButton = async () => {
     if (isScheduled) {
-      const res = await DeleteSchedule(party.partyid);
-      if (!res.correct) toast.error(res.error);
-      else {
-        await RefreshVoteData();
-        toast.success("刪除登記成功！");
-        return;
-      }
+      toast.promise(DeleteSchedule(party.partyid), {
+        loading: "刪除中...",
+        success: () => {
+          RefreshVoteData();
+          return "刪除登記成功！";
+        },
+        error: (err) => err,
+        finally: () => updateIsDeleteClicked(false),
+      });
+      return;
     }
 
     if (!isScheduling) {
@@ -127,14 +130,19 @@ export const PartyTimelineLogic = ({
 
     updateIsScheduledClicked(true);
     const timeslot = GenerateTimeSlots(userSelectBlock, party)[0];
-    const res = await CreateSchedule(party.partyid, timeslot);
 
-    res.correct
-      ? (await RefreshVoteData(), toast.success("創建登記成功！"))
-      : toast.error(res.error);
-
-    updateIsScheduling(false);
-    updateIsScheduledClicked(false);
+    toast.promise(CreateSchedule(party.partyid, timeslot), {
+      loading: "創建中...",
+      success: () => {
+        RefreshVoteData();
+        return "創建登記成功！";
+      },
+      error: (err) => err,
+      finally: () => {
+        updateIsScheduling(false);
+        updateIsDeleteClicked(false);
+      },
+    });
   };
 
   const HandleDeleteButton = useCallback(async () => {

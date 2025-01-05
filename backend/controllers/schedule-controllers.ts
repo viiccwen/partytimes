@@ -84,6 +84,7 @@ export const DecideSchedule = async (req: any, res: any, next: any) => {
       start: start,
       end: end,
       invited_lists: invited_lists,
+      partyid,
     };
 
     next();
@@ -92,14 +93,37 @@ export const DecideSchedule = async (req: any, res: any, next: any) => {
   }
 };
 
-export const DeleteSchedule = async (req: any, res: any) => {
+export const DeleteSchedule = async (req: any, res: any, next: any) => {
   try {
-    const { partyid } = await req.params;
+    const { partyid } = req.params;
 
     if (!partyid) {
       throw new Error("派對不存在！");
     }
 
+    // get party and decision
+    const party = await prisma.party.findUnique({
+      where: { partyid: partyid },
+      include: { decision: true },
+    });
+
+    if (!party) {
+      throw new Error("派對不存在！");
+    }
+
+    
+    // get creator's googleId and refreshToken
+    const creator = await prisma.user.findUnique({
+      where: { id: party.userId },
+      select: { googleId: true, refreshToken: true },
+    });
+    
+    req.body = {
+      eventId: party.decision?.eventId,
+      refresh_token: creator?.refreshToken
+    };
+
+    // update party status and add decision
     const deleted_party = await prisma.party.update({
       where: { partyid: partyid },
       data: {
@@ -112,6 +136,11 @@ export const DeleteSchedule = async (req: any, res: any) => {
 
     if (!deleted_party) {
       throw new Error("刪除失敗！");
+    }
+
+    // using GitHub Oauth to login, don't need to delete event on google calendar
+    if (creator?.googleId && req.body.refresh_token && req.body.eventId) {
+      return next();
     }
 
     res.sendStatus(200);

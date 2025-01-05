@@ -1,5 +1,10 @@
 export const log_list = [
   {
+    date: "2025/01/05",
+    title: "提交審核 (大家新年快樂 🎉)",
+    content: "已送交 Google Calendar 審核，並預計將server部署至 Zeabur",
+  },
+  {
     date: "2024/12/24",
     title: "加入 Google Calendar 功能 (Beta)",
     content: "現在只要派對創建者為 Google 登入，登記派對時就可以將派對加入 Google Calendar 了 🥳",
