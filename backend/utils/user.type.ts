@@ -2,6 +2,7 @@ import type { $Enums, User } from "@prisma/client";
 
 export interface CreateUserType {
   username: string;
+  nickname: string;
   email: string;
   password: string;
   role: $Enums.Plan;
@@ -24,18 +25,10 @@ export interface UserType extends User {
   refreshToken: string | null;
 }
 
-export type UserAttribute =
-  | "id"
-  | "username"
-  | "email"
-  | "role"
-  | "githubId"
-  | "googleId"
-  | "accessToken"
-  | "refreshToken";
+export type ProviderType = "github" | "google";
 
 export type PayloadType = {
-  provider: string;
+  provider: ProviderType;
   id: string;
 };
 

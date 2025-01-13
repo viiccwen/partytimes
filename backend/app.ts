@@ -10,6 +10,7 @@ import express from "express";
 import cors from "cors";
 import passport from "passport";
 import dotenv from "dotenv";
+import bodyParser from "body-parser";
 
 if(process.env.NODE_ENV === "production") 
   dotenv.config({ path: ".env" });
@@ -21,6 +22,7 @@ const API_PORT = process.env.API_PORT || 3000;
 const app = express();
 
 app.use(cors());
+app.use(bodyParser.json());
 app.use(passport.initialize());
 
 app.use("/api", user_router);

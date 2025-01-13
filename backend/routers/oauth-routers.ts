@@ -16,11 +16,10 @@ import type {
 const google_calendar_api = "https://www.googleapis.com/auth/calendar";
 
 import {
-  handleGoogleOAuthCallback,
-  handleGitHubOAuthCallback,
-  getUserEmails,
+  googleOAuthCallback,
+  gitHubOAuthCallback,
 } from "../controllers/oauth-controllers";
-import { createUser, findUser } from "../utils/utils";
+import { createUser, findUser, getUserEmails } from "../utils/user";
 
 const router = Router();
 
@@ -43,7 +42,8 @@ passport.use(
         const user =
           (await findUser("githubId", profile.id)) ||
           (await createUser({
-            username: profile.username!,
+            username: profile.displayName,
+            nickname: profile.displayName,
             email: email!,
             password: "",
             role: "FREE",
@@ -79,7 +79,8 @@ passport.use(
         const user =
           (await findUser("googleId", profile.id)) ||
           (await createUser({
-            username: profile.username!,
+            username: profile.displayName,
+            nickname: profile.displayName,
             email: email!,
             password: "",
             role: "FREE",
@@ -105,7 +106,7 @@ router.get(
 router.get(
   "/auth/callback/github",
   passport.authenticate("github", { session: false }),
-  handleGitHubOAuthCallback
+  gitHubOAuthCallback
 );
 
 router.get(
@@ -119,7 +120,7 @@ router.get(
 router.get(
   "/auth/callback/google",
   passport.authenticate("google", { session: false }),
-  handleGoogleOAuthCallback
+  googleOAuthCallback
 );
 
 export default router;

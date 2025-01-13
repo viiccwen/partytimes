@@ -1,5 +1,5 @@
 import { prisma } from "../app";
-import { Verify } from "../utils/utils";
+import { Verify } from "../utils/verify";
 
 // situation
 /**

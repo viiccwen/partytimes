@@ -29,7 +29,7 @@ export const gitHubOAuthCallback = async (req: any, res: any) => {
       id: user.githubId!,
     };
 
-    const token = sign(payload, JWT_SECRET, { expiresIn: "12h" });
+    const token = sign(payload, JWT_SECRET, { expiresIn: "15d" });
     res.redirect(`${process.env.AUTH_REDIRECT_URL}?token=${token}`);
   } catch (error: any) {
     res.redirect(`${process.env.AUTH_REDIRECT_URL}?error=${error.message}`);
