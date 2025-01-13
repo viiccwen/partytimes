@@ -17,7 +17,7 @@ export const CheckAuth = async (req: any, res: any) => {
     const user = req.user! as UserType;
 
     const FilterUser = {
-      username: user.username,
+      id: user.id,
       nickname: user.nickname,
       email: user.email,
     };

@@ -1,14 +1,19 @@
 import { prisma } from "../app";
-import type {
-  CreateUserType,
-  GitHubEmailType,
-  UserType,
-} from "./user.type";
+import type { CreateUserType, GitHubEmailType, UserType } from "./user.type";
 
 export const findUser = async (type: keyof UserType, value: string) => {
   return await prisma.user.findFirst({
     where: {
       [type]: value,
+    },
+  });
+};
+
+export const findGuest = async (type: keyof UserType, value: string) => {
+  return await prisma.user.findFirst({
+    where: {
+      [type]: value,
+      role: "GUEST",
     },
   });
 };
@@ -46,6 +51,15 @@ export const deleteUser = async (user: UserType) => {
   } catch (error) {
     throw new Error("刪除失敗...");
   }
+};
+
+export const deleteGuest = async (userid: string) => {
+  return await prisma.user.delete({
+    where: {
+      id: userid,
+      role: "GUEST",
+    },
+  });
 };
 
 export const updateUser = async (

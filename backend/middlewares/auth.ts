@@ -9,7 +9,7 @@ import { findUser } from "../utils/user";
 
 const JWT_SECRET = process.env.JWT_SECRET || "";
 
-const extractToken = (req: any): string | null => {
+export const extractToken = (req: any): string | null => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer "))
     return authHeader.split(" ")[1];
