@@ -1,15 +1,28 @@
-const passport = require("passport");
-const GitHubStrategy = require("passport-github2").Strategy;
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const express = require("express");
-const google_calendar = "https://www.googleapis.com/auth/calendar";
+import passport from "passport";
+import { Router } from "express";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { Strategy as GitHubStrategy } from "passport-github2";
+
+import type { VerifyFunction, VerifyCallback } from "passport-oauth2";
+import type {
+  Profile as GithubProfile,
+  StrategyOptions as GitHubStrategyOptions,
+} from "passport-github2";
+import type {
+  Profile as GoogleProfile,
+  StrategyOptions as GoogleStrategyOptions,
+} from "passport-google-oauth20";
+
+const google_calendar_api = "https://www.googleapis.com/auth/calendar";
 
 import {
   handleGoogleOAuthCallback,
   handleGitHubOAuthCallback,
+  getUserEmails,
 } from "../controllers/oauth-controllers";
+import { createUser, findUser } from "../utils/utils";
 
-const router = express.Router();
+const router = Router();
 
 passport.use(
   new GitHubStrategy(
@@ -17,10 +30,34 @@ passport.use(
       clientID: process.env.AUTH_GITHUB_ID!,
       clientSecret: process.env.AUTH_GITHUB_SECRET!,
       callbackURL: `${process.env.AUTH_CALBACK_URL}/api/auth/callback/github`,
-    },
-    (accessToken: any, refreshToken: any, profile: any, done: any) => {
-      done(null, { provider: "github", ...profile, accessToken });
-    }
+    } satisfies GitHubStrategyOptions,
+    (async (
+      accessToken: string,
+      refreshToken: string,
+      profile: GithubProfile,
+      done: VerifyCallback
+    ) => {
+      try {
+        const emails = await getUserEmails(accessToken);
+        const email = emails.find((email) => email.primary)?.email;
+        const user =
+          (await findUser("githubId", profile.id)) ||
+          (await createUser({
+            username: profile.username!,
+            email: email!,
+            password: "",
+            role: "FREE",
+            githubId: profile.id,
+            googleId: null,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+          }));
+
+        done(null, user);
+      } catch (error) {
+        done(error);
+      }
+    }) satisfies VerifyFunction
   )
 );
 
@@ -30,10 +67,34 @@ passport.use(
       clientID: process.env.AUTH_GOOGLE_ID!,
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
       callbackURL: `${process.env.AUTH_CALBACK_URL}/api/auth/callback/google`,
-    },
-    (accessToken: any, refreshToken: any, profile: any, done: any) => {
-      done(null, { provider: "google", ...profile, accessToken, refreshToken });
-    }
+    } satisfies GoogleStrategyOptions,
+    (async (
+      accessToken: string,
+      refreshToken: string,
+      profile: GoogleProfile,
+      done: VerifyCallback
+    ) => {
+      try {
+        const email = profile.emails![0].value;
+        const user =
+          (await findUser("googleId", profile.id)) ||
+          (await createUser({
+            username: profile.username!,
+            email: email!,
+            password: "",
+            role: "FREE",
+            githubId: null,
+            googleId: profile.id,
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+          }));
+
+        done(null, user);
+      } catch (error) {
+        console.log(error);
+        done(error);
+      }
+    }) satisfies VerifyFunction
   )
 );
 
@@ -50,9 +111,9 @@ router.get(
 router.get(
   "/auth/google",
   passport.authenticate("google", {
-    scope: ["profile", "email", google_calendar],
+    scope: ["profile", "email", google_calendar_api],
     accessType: "offline",
-    prompt: "consent"
+    prompt: "consent",
   })
 );
 router.get(

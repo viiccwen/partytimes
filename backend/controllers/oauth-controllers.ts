@@ -1,97 +1,35 @@
-import { prisma } from "../app";
+import type { User } from "@prisma/client";
+import type { PayloadType } from "../utils/user.type";
+import { sign } from "jsonwebtoken";
 
-const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || "";
 
-export const handleGoogleOAuthCallback = async (req: any, res: any) => {
-  const { provider, id, displayName, emails, accessToken, refreshToken } =
-    req.user;
-
+export const googleOAuthCallback = async (req: any, res: any) => {
   try {
-    let user = await prisma.user.findFirst({
-      where: {
-        [provider + "Id"]: id,
-      },
-    });
+    const user: User = req.user!;
 
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          username: displayName,
-          nickname: displayName,
-          email: emails[0].value,
-          [provider + "Id"]: id,
-          password: "", // oauth don't need password
-          accessToken,
-          refreshToken,
-        },
-      });
-    } else {
-      // Update access and refresh tokens if user already exists
-      await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          accessToken,
-          refreshToken,
-        },
-      });
-    }
+    const payload: PayloadType = {
+      provider: "google",
+      id: user.googleId!,
+    };
 
-    const token = jwt.sign({ id: user.id }, JWT_SECRET, {
-      algorithm: "HS256",
-      expiresIn: "12h",
-    });
+    const token = sign(payload, JWT_SECRET, { expiresIn: "12h" });
     res.redirect(`${process.env.AUTH_REDIRECT_URL}?token=${token}`);
   } catch (error: any) {
     res.redirect(`${process.env.AUTH_REDIRECT_URL}?error=${error.message}`);
   }
 };
 
-export const handleGitHubOAuthCallback = async (req: any, res: any) => {
-  const { provider, id, username, displayName, accessToken } = req.user;
-
+export const gitHubOAuthCallback = async (req: any, res: any) => {
   try {
-    // get email
-    const response = await fetch("https://api.github.com/user/emails", {
-      headers: {
-        Authorization: `token ${accessToken}`,
-      },
-    });
+    const user: User = req.user!;
 
-    if (!response.ok) {
-      throw new Error(`取得email失敗...`);
-    }
+    const payload: PayloadType = {
+      provider: "github",
+      id: user.githubId!,
+    };
 
-    const email_data = await response.json();
-    const primaryEmail = email_data.find((email: any) => email.primary)?.email;
-
-    if (!primaryEmail) {
-      throw new Error("沒有主要email...");
-    }
-
-    let user = await prisma.user.findFirst({
-      where: {
-        [provider + "Id"]: id,
-        email: primaryEmail,
-      },
-    });
-
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          username: username,
-          nickname: displayName,
-          email: primaryEmail,
-          [provider + "Id"]: id,
-          password: "", // oauth don't need password
-        },
-      });
-    }
-
-    const token = jwt.sign({ id: user.id }, JWT_SECRET, {
-      algorithm: "HS256",
-      expiresIn: "12h",
-    });
+    const token = sign(payload, JWT_SECRET, { expiresIn: "12h" });
     res.redirect(`${process.env.AUTH_REDIRECT_URL}?token=${token}`);
   } catch (error: any) {
     res.redirect(`${process.env.AUTH_REDIRECT_URL}?error=${error.message}`);

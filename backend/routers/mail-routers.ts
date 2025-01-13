@@ -1,6 +1,6 @@
 import { SendFeedbackMail } from "../controllers/mail-controllers";
+import express from "express";
 
-const express = require("express");
 const router = express.Router();
 
 router.post("/mail/feedback", SendFeedbackMail);

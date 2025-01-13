@@ -6,11 +6,10 @@ import schedule_router from "./routers/schedule-routers";
 import oauth_router from "./routers/oauth-routers";
 import email_router from "./routers/mail-routers";
 
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const passport = require("passport");
-const dotenv = require("dotenv");
+import express from "express";
+import cors from "cors";
+import passport from "passport";
+import dotenv from "dotenv";
 
 if(process.env.NODE_ENV === "production") 
   dotenv.config({ path: ".env" });
@@ -22,7 +21,6 @@ const API_PORT = process.env.API_PORT || 3000;
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.json());
 app.use(passport.initialize());
 
 app.use("/api", user_router);
@@ -33,5 +31,9 @@ app.use("/api", oauth_router);
 app.use("/api", email_router);
 
 export const prisma = new PrismaClient();
+
+app.listen(API_PORT, () => {
+  console.log(`Server is running on port ${API_PORT}`);
+});
 
 export default app;
