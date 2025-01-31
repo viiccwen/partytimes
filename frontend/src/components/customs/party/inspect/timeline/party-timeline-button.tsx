@@ -92,7 +92,6 @@ export const PartyButton = ({
       });
     }
   };
-
   
   const HandleScheduleButton = async () => {
     if (isScheduled) {
