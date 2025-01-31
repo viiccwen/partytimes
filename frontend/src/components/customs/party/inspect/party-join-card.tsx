@@ -14,11 +14,16 @@ interface PartyJoinCardProps {
   className?: string;
 }
 
-export const PartyJoinCard = ({
-  className,
-}: PartyJoinCardProps) => {
+export const PartyJoinCard = ({ className }: PartyJoinCardProps) => {
   const { join_lists } = useTimelineUserStore();
-  const { vote_blocks, cur_points_position, clicked_user, isEditing,  updateClickedUser, updateCurPointsUserid } = useVoteBlockStore();
+  const {
+    vote_blocks,
+    cur_points_position,
+    clicked_user,
+    isEditing,
+    updateClickedUser,
+    updateCurPointsUserid,
+  } = useVoteBlockStore();
   const [point_joinList, setPointJoinList] = useState(new Set<string>());
 
   const showAllParticipants = useMemo(
@@ -53,15 +58,12 @@ export const PartyJoinCard = ({
     }
   }, [cur_points_position, isEditing, clicked_user, vote_blocks]);
 
-  const handleClick = useCallback(
-    (join: joinlist_type) => {
-      updateClickedUser(
-        clicked_user.userId === join.userId ? "" : join.userId,
-        join.creatorName
-      );
-    },
-    [clicked_user, updateClickedUser]
-  );
+  const handleClick = (join: joinlist_type) => {
+    updateClickedUser(
+      clicked_user.userId === join.userId ? "" : join.userId,
+      join.creatorName
+    );
+  };
 
   if (!vote_blocks || vote_blocks.length === 0) return null;
 
@@ -99,35 +101,37 @@ interface ParticipantButtonProps {
   updateCurPointsUserid: (userid: string) => void;
 }
 
-const ParticipantButton = memo(({
-  join,
-  showAllParticipants,
-  point_joinList,
-  clicked_user,
-  handleClick,
-  updateCurPointsUserid,
-}: ParticipantButtonProps) => {
-  return (
-    <button
-      value={join.userId}
-      className={cn(
-        "h-[35px] text-lg text-start transition",
-        showAllParticipants || point_joinList.has(join.userId)
-          ? "dark:text-white text-black"
-          : "text-gray-400",
-        clicked_user.userId === join.userId
-          ? "dark:text-blue-500 text-blue-700"
-          : "",
-        "dark:hover:text-blue-400 hover:text-blue-600 text-sm md:text-lg"
-      )}
-      onClick={() => handleClick(join)}
-      onMouseEnter={() => updateCurPointsUserid(join.userId)}
-      onMouseLeave={() => updateCurPointsUserid("")}
-    >
-      {join.creatorName}
-    </button>
-  );
-});
+const ParticipantButton = memo(
+  ({
+    join,
+    showAllParticipants,
+    point_joinList,
+    clicked_user,
+    handleClick,
+    updateCurPointsUserid,
+  }: ParticipantButtonProps) => {
+    return (
+      <button
+        value={join.userId}
+        className={cn(
+          "h-[35px] text-lg text-start transition",
+          showAllParticipants || point_joinList.has(join.userId)
+            ? "dark:text-white text-black"
+            : "text-gray-400",
+          clicked_user.userId === join.userId
+            ? "dark:text-blue-500 text-blue-700"
+            : "",
+          "dark:hover:text-blue-400 hover:text-blue-600 text-sm md:text-lg"
+        )}
+        onClick={() => handleClick(join)}
+        onMouseEnter={() => updateCurPointsUserid(join.userId)}
+        onMouseLeave={() => updateCurPointsUserid("")}
+      >
+        {join.creatorName}
+      </button>
+    );
+  }
+);
 
 const getBlockUsers = (
   all_voteblocks: block_type[][][],
