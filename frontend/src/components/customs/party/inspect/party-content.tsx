@@ -56,7 +56,7 @@ export const PartyContent = ({
 
   useEffect(() => {
     setJoinLists(initial_join_lists);
-  }, [join_lists]);
+  }, [initial_join_lists]);
 
   return (
     <>
