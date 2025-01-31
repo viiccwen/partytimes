@@ -16,6 +16,11 @@ export type position_type = {
   col: number;
 };
 
+export type points_type = {
+  x: number;
+  y: number;
+};
+
 export type clicked_user_type = {
   userId: string;
   creatorName: string;
@@ -27,6 +32,8 @@ type party_inspect_type = {
   cur_points_userid: string;
   user_selected_block: Set<string>;
   clicked_user: clicked_user_type;
+  start_points: position_type;
+
   isEditing: boolean;
   isScheduling: boolean;
   isMouseDown: boolean;
@@ -40,6 +47,8 @@ type party_inspect_type = {
   updateCurPointsUserid: (userid: string) => void;
   updateSelectedBlock: (selectedBlock: Set<string>) => void;
   updateClickedUser: (userId: string, creatorName: string) => void;
+  updateStartPoints: (row: number, col: number) => void;
+
   updateIsEditing: (isEditing: boolean) => void;
   updateIsScheduling: (isScheduling: boolean) => void;
   updateIsMouseDown: (isMouseDown: boolean) => void;
@@ -55,6 +64,7 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
   cur_points_userid: "",
   user_selected_block: new Set<string>(),
   clicked_user: { userId: "", creatorName: "" },
+  start_points: { row: -1, col: -1 },
   isEditing: false,
   isScheduling: false,
   isMouseDown: false,
@@ -71,6 +81,7 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
     set({ user_selected_block: selectedBlock }),
   updateClickedUser: (userId, creatorName) =>
     set({ clicked_user: { userId, creatorName } }),
+  updateStartPoints: (row, col) => set({ start_points: { row, col } }),
   updateIsEditing: (isEditing) => set({ isEditing }),
   updateIsScheduling: (isScheduling) => set({ isScheduling }),
   updateIsMouseDown: (isMouseDown) => set({ isMouseDown }),
