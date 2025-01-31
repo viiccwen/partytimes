@@ -16,7 +16,6 @@ import { useTimelineUserStore } from "@/stores/timeline-user-store";
 
 interface PartyTimelineCardProps {
   className?: string;
-  user: user_info_schema_type | undefined;
   HandleCheckButton: () => Promise<void>;
   HandleScheduleButton: () => Promise<void>;
   HandleDeleteButton: () => Promise<void>;
@@ -25,14 +24,12 @@ interface PartyTimelineCardProps {
 
 export const PartyTimelineCard = ({
   className,
-  user,
   HandleCheckButton,
   HandleScheduleButton,
   HandleDeleteButton,
   HandleCancelButton,
 }: PartyTimelineCardProps) => {
-  const { party } = usePartyStore();
-  const { join_lists } = useTimelineUserStore();
+  const { user } = useTimelineUserStore();
 
   return (
     <>
@@ -47,10 +44,11 @@ export const PartyTimelineCard = ({
             HandleDeleteButton={HandleDeleteButton}
             HandleCancelButton={HandleCancelButton}
           />
-          <TimeLineComponent VoteNumber={join_lists.length} />
+          <TimeLineComponent />
         </CardContent>
       </Card>
-      <GuestDialog partyid={party.partyid} />
+      
+      <GuestDialog />
     </>
   );
 };

@@ -5,23 +5,19 @@ import {
   generateHeader,
   GenerateScheduledBlock,
 } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
-import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
+import { useVoteBlockStore } from "@/stores/inspect-party-store";
 import {
   ToggleBlockSchedule,
   ToggleBlockSelection,
 } from "@/lib/block-selection-helper";
 import { CalculateTotalHours } from "@/lib/utils";
 import { usePartyStore } from "@/stores/party-store";
+import { useTimelineUserStore } from "@/stores/timeline-user-store";
 
-interface TimeLineComponentProps {
-  VoteNumber: number;
-}
-
-export const TimeLineComponent = ({
-  VoteNumber,
-}: TimeLineComponentProps) => {
+export const TimeLineComponent = () => {
   const [TouchedBlock, setTouchedBlock] = useState<string | null>(null);
   const { party } = usePartyStore();
+  const { join_lists } = useTimelineUserStore();
   const {
     vote_blocks,
     user_selected_block,
@@ -35,6 +31,7 @@ export const TimeLineComponent = ({
     isEditing,
     isScheduling,
   } = useVoteBlockStore();
+  const VoteNumber = join_lists.length;
   const scheduled_time = party.decision;
 
   const handleClickTimeBlock = (row: number, col: number) => {

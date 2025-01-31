@@ -33,6 +33,8 @@ export const generateGridCells = (
   updateIsMouseDown: (isMouseDown: boolean) => void,
   updateTouchedBlock: Dispatch<SetStateAction<string | null>>
 ): React.ReactElement => {
+  
+
   if (!party || !party.date) return <></>;
 
   const date_length = party.date.length;

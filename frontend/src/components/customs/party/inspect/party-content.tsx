@@ -29,7 +29,7 @@ export const PartyContent = ({
   initial_join_lists,
 }: PartyContentProps) => {
   const { updateSelectedBlock, updateVoteBlocks } = useVoteBlockStore();
-  const { join_lists, setJoinLists } = useTimelineUserStore();
+  const { setJoinLists, setUser } = useTimelineUserStore();
   const { setParty } = usePartyStore();
 
   const {
@@ -58,11 +58,14 @@ export const PartyContent = ({
     setJoinLists(initial_join_lists);
   }, [initial_join_lists]);
 
+  useEffect(() => {
+    setUser(user);
+  }, [user]);
+
   return (
     <>
       <PartyTimelineCard
         className="col-span-4 flex-1"
-        user={user}
         HandleCheckButton={HandleCheckButton}
         HandleScheduleButton={HandleScheduleButton}
         HandleDeleteButton={HandleDeleteButton}
