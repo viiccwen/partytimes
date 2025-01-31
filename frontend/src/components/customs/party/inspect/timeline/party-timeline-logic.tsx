@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { useCallback } from "react";
 import { toast } from "sonner";
 import { CreateVote, DeleteVote } from "@/actions/vote-actions";
 import { CreateSchedule, DeleteSchedule } from "@/actions/schedule-action";
@@ -15,8 +15,6 @@ interface PartyTimelineLogicProps {
   allvoteblocks: block_type[][][];
   user_votes: Set<string>;
   userid: string | undefined;
-  userSelectBlock: Set<string>;
-  setUserSelectBlock: Dispatch<SetStateAction<Set<string>>>;
 }
 
 export const PartyTimelineLogic = ({
@@ -24,16 +22,16 @@ export const PartyTimelineLogic = ({
   allvoteblocks,
   user_votes,
   userid,
-  userSelectBlock,
-  setUserSelectBlock,
 }: PartyTimelineLogicProps) => {
   const router = useRouter();
   const isScheduled = party.status;
   const {
     clicked_user,
+    user_selected_block,
     isEditing,
     isScheduling,
     updateCurPointsPosition,
+    updateSelectedBlock,
     updateClickedUser,
     updateIsEditing,
     updateIsScheduling,
@@ -55,19 +53,19 @@ export const PartyTimelineLogic = ({
     if (!isEditing) {
       updateIsEditing(true);
       if (clicked_user.userId !== "") {
-        setUserSelectBlock(
+        updateSelectedBlock(
           getUserVoteblocks(allvoteblocks, clicked_user.creatorName)
         );
       }
       return;
     }
 
-    if (userSelectBlock.size === 0) {
+    if (user_selected_block.size === 0) {
       toast.error("請選擇時間區塊！");
       return;
     }
 
-    const timeslots = GenerateTimeSlots(userSelectBlock, party);
+    const timeslots = GenerateTimeSlots(user_selected_block, party);
 
     // New Guest User
     if (!userid && clicked_user.userId === "") {
@@ -98,7 +96,7 @@ export const PartyTimelineLogic = ({
   };
 
   const HandleCancelButton = () => {
-    setUserSelectBlock(user_votes);
+    updateSelectedBlock(user_votes);
     updateIsEditing(false);
     updateIsScheduling(false);
   };
@@ -118,18 +116,18 @@ export const PartyTimelineLogic = ({
     }
 
     if (!isScheduling) {
-      setUserSelectBlock(new Set<string>());
+      updateSelectedBlock(new Set<string>());
       updateIsScheduling(true);
       return;
     }
 
-    if (userSelectBlock.size === 0) {
+    if (user_selected_block.size === 0) {
       toast.error("請選擇時間區塊！");
       return;
     }
 
     updateIsScheduledClicked(true);
-    const timeslot = GenerateTimeSlots(userSelectBlock, party)[0];
+    const timeslot = GenerateTimeSlots(user_selected_block, party)[0];
 
     toast.promise(CreateSchedule(party.partyid, timeslot), {
       loading: "創建中...",

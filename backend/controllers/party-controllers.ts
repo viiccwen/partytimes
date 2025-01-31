@@ -1,5 +1,10 @@
+import type { Decision } from "@prisma/client";
 import { prisma } from "../app";
+import { createParty, findParty } from "../utils/party";
+import type { PartyType } from "../utils/party.type";
 import { GeneratePartyId } from "../utils/utils";
+import type { Request, Response } from "express";
+import type { UserType } from "../utils/user.type";
 
 /**
  * @param date: string[]
@@ -12,14 +17,9 @@ import { GeneratePartyId } from "../utils/utils";
  * @param status: boolean
  */
 
-export const CheckExistParty = async (partyid: string) => {
-  const party = await prisma.party.findUnique({ where: { partyid } });
-  return party ? true : false;
-};
-
-export const CreateParty = async (req: any, res: any) => {
+export const CreateParty = async (req: Request, res: Response) => {
   try {
-    if (!req.user) throw new Error("尚未登入或是登入狀況有錯誤！");
+    const user = req.user as UserType;
     if (
       !req.body.date &&
       !req.body.title &&
@@ -30,27 +30,20 @@ export const CreateParty = async (req: any, res: any) => {
     )
       throw new Error("請提供正確的派對資訊！");
 
-    let partyid;
-    let isExist = true;
-    while (isExist) {
-      partyid = GeneratePartyId();
-      isExist = await CheckExistParty(partyid);
-    }
+    const partyid = await GeneratePartyId();
 
-    const party = await prisma.party.create({
-      data: {
-        partyid: partyid,
-        title: req.body.title,
-        description: req.body.description,
-        date: req.body.date,
-        start_time: req.body.start_time,
-        start_ampm: req.body.start_ampm,
-        end_time: req.body.end_time,
-        end_ampm: req.body.end_ampm,
-        userId: req.user.id,
-      },
+    const party = await createParty({
+      partyid: partyid,
+      title: req.body.title,
+      description: req.body.description,
+      date: req.body.date,
+      start_time: req.body.start_time,
+      start_ampm: req.body.start_ampm,
+      end_time: req.body.end_time,
+      end_ampm: req.body.end_ampm,
+      userId: user.id,
+      status: false,
     });
-
     if (!party) throw new Error("創建派對失敗！");
 
     res.status(200).json({ partyid: partyid });
@@ -59,20 +52,20 @@ export const CreateParty = async (req: any, res: any) => {
   }
 };
 
-export const GetParty = async (req: any, res: any) => {
+export const GetParty = async (req: Request, res: Response) => {
   try {
-    const { partyid } = await req.query;
-
+    const user = req.user as UserType;
+    const { partyid } = req.query;
     if (!partyid) throw new Error("請提供正確的派對資訊！");
 
-    const party = await prisma.party.findFirst({
-      where: { partyid },
-      include: { decision: true },
-    });
+    const party = await findParty(partyid as string);
 
     if (!party) throw new Error("找不到派對資訊！");
 
-    const filteredParty = {
+    const filteredParty: Omit<
+      PartyType & { decision: Decision | null },
+      "userId"
+    > = {
       title: party.title,
       partyid: party.partyid,
       description: party.description,
@@ -91,14 +84,18 @@ export const GetParty = async (req: any, res: any) => {
   }
 };
 
-export const GetPartyList = async (req: any, res: any) => {
+export const GetPartyList = async (req: Request, res: Response) => {
   try {
+    const user = req.user as UserType;
     const party = await prisma.party.findMany({
-      where: { userId: req.user.id },
+      where: { userId: user.id },
       include: { decision: true },
     });
 
-    const filteredParty = party?.map((party) => {
+    const filteredParty: Omit<
+      PartyType & { decision: Decision | null },
+      "userId"
+    >[] = party?.map((party) => {
       return {
         title: party.title,
         partyid: party.partyid,
@@ -119,11 +116,11 @@ export const GetPartyList = async (req: any, res: any) => {
   }
 };
 
-export const DeleteParty = async (req: any, res: any) => {
+export const DeleteParty = async (req: Request, res: Response) => {
   try {
-    if (!req.user) throw new Error("尚未登入或是登入狀況有錯誤！");
+    const user = req.user as UserType;
     const { partyid } = await req.body;
-    const userId = req.user.id;
+    const userId = user.id;
 
     if (!partyid) throw new Error("請提供正確的派對資訊！");
 
@@ -146,20 +143,19 @@ export const DeleteParty = async (req: any, res: any) => {
   }
 };
 
-export const UpdateParty = async (req: any, res: any) => {
+export const UpdateParty = async (req: Request, res: Response) => {
   try {
+    const user = req.user as UserType;
     if (!req.user) throw new Error("尚未登入或是登入狀況有錯誤！");
-    const userId = req.user.id;
+    const userId = user.id;
     const { partyid, title, description } = await req.body;
-    
-    if (!partyid || !title)
-      throw new Error("請提供正確的派對資訊！");
-    
+
+    if (!partyid || !title) throw new Error("請提供正確的派對資訊！");
+
     // check is party owner
     let party = await prisma.party.findFirst({
       where: { partyid, userId },
     });
-
     if (!party) throw new Error("你沒有權限刪除派對！");
 
     party = await prisma.party.update({
@@ -169,7 +165,6 @@ export const UpdateParty = async (req: any, res: any) => {
         description,
       },
     });
-
     if (!party) throw new Error("更新派對失敗！");
 
     res.sendStatus(200);

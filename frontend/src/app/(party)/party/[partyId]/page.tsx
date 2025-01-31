@@ -24,6 +24,7 @@ export default async function PartyPage({
   const votes = await GetVoteTimes(party.partyid).then((res) => res.data);
   if (!votes) redirect("/error");
 
+  // Get time slot blocks for each vote
   const vote_blocks = getTimeSlotBlocks(
     votes,
     CalculateTotalHours(party),

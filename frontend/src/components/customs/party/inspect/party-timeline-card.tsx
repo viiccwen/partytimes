@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 
 import { PartyHeader } from "./party-header";
@@ -9,7 +9,7 @@ import { GuestDialog } from "../guest-dialog";
 import { PartyTimelineLogic } from "./timeline/party-timeline-logic";
 import { TimeLineComponent } from "./timeline/timeline-component";
 
-import { block_type } from "@/stores/inspect-party-store";
+import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
 import { party_return_schema_type, user_info_schema_type } from "@/lib/type";
 
 interface PartyTimelineCardProps {
@@ -29,8 +29,7 @@ export const PartyTimelineCard = ({
   VoteNumber,
   user_votes,
 }: PartyTimelineCardProps) => {
-  const [userSelectBlock, setUserSelectBlock] =
-    useState<Set<string>>(user_votes);
+  const { updateSelectedBlock } = useVoteBlockStore();
 
   const {
     HandleCheckButton,
@@ -43,12 +42,14 @@ export const PartyTimelineCard = ({
     party,
     allvoteblocks,
     user_votes,
-    userid: user?.id,
-    userSelectBlock,
-    setUserSelectBlock,
+    userid: user?.id
   });
 
   if (!allvoteblocks || allvoteblocks.length === 0) return null;
+
+  useEffect(() => {
+    updateSelectedBlock(user_votes);
+  }, [user_votes]);
 
   return (
     <>
@@ -70,8 +71,6 @@ export const PartyTimelineCard = ({
             party={party}
             allvoteblocks={allvoteblocks}
             VoteNumber={VoteNumber}
-            userSelectBlock={userSelectBlock}
-            setUserSelectBlock={setUserSelectBlock}
             isEditing={isEditing}
             isScheduling={isScheduling}
           />

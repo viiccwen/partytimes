@@ -1,3 +1,4 @@
+import { Router } from "express";
 import {
   createCalendarEvent,
   deleteCalendarEvent,
@@ -7,10 +8,8 @@ import {
   DeleteSchedule,
 } from "../controllers/schedule-controllers";
 
-const express = require("express");
-const schedule_router = express.Router();
+const schedule_router = Router();
 
-// todo: add middleware
 schedule_router.post(
   "/schedule/create",
   DecideSchedule,
