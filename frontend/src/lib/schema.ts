@@ -69,7 +69,7 @@ export const party_return_schema = z.object({
   start_ampm: z.enum(ampm),
   end_time: z.number(),
   end_ampm: z.enum(ampm),
-  decision: decision_schema,
+  decision: decision_schema.optional(),
 });
 
 export const party_edit_schema = z.object({

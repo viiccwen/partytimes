@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useVoteBlockStore } from "@/stores/inspect-party-store";
+import { usePartyStore } from "@/stores/party-store";
 import {
   CircleCheckBig,
   CircleX,
@@ -11,9 +12,6 @@ import {
 
 interface PartyTimelineHeaderProps {
   className?: string;
-  isEditing: boolean;
-  isScheduling: boolean;
-  has_scheduled: boolean;
   HandleCancelButton: () => void;
   HandleCheckButton: () => void;
   HandleScheduleButton: () => void;
@@ -32,9 +30,6 @@ type variant_type =
 
 export const PartyTimelineHeader = ({
   className,
-  isEditing,
-  isScheduling,
-  has_scheduled,
   HandleCheckButton,
   HandleScheduleButton,
   HandleCancelButton,
@@ -46,7 +41,11 @@ export const PartyTimelineHeader = ({
     isConfirmClicked,
     isDeleteClicked,
     isScheduledClicked,
+    isEditing,
+    isScheduling
   } = useVoteBlockStore();
+  const { party } = usePartyStore();
+  const has_scheduled = party.status;
 
   const headerContent = () => {
     if (isEditing) {

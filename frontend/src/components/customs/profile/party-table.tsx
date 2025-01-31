@@ -61,7 +61,7 @@ export const PartyTable = ({ party }: PartyTableProps) => {
             <button className="flex w-full min-h-[150px] gap-5 border-2 rounded-lg p-5 my-5 transition duration-300 ease-in-out shadow-md hover:bg-slate-100 dark:hover:bg-slate-800">
               <div className="flex gap-5 h-full">
                 <div className="flex gap-3 items-center text-sm min-w-[90px] md:text-base">
-                  {content.status
+                  {content.status && content.decision
                     ? formatDate(content.decision.date)
                     : "未計畫"}
                 </div>
@@ -101,7 +101,7 @@ export const PartyTable = ({ party }: PartyTableProps) => {
                   </div>
                   <div className="text-xs md:text-base flex items-center gap-2">
                     <Clock size={16} />
-                    {content.status
+                    {content.status && content.decision
                       ? formatTime(content.decision)
                       : formatTime({
                           start_time: content.start_time,

@@ -1,76 +1,86 @@
 "use client";
-import {
-  Dispatch,
-  SetStateAction,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   generateGridCells,
   generateHeader,
   GenerateScheduledBlock,
 } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
-import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
-import { party_return_schema_type } from "@/lib/type";
-import {
-  ToggleBlockSchedule,
-  ToggleBlockSelection,
-} from "@/lib/block-selection-helper";
+import { useVoteBlockStore } from "@/stores/inspect-party-store";
 import { CalculateTotalHours } from "@/lib/utils";
+import { usePartyStore } from "@/stores/party-store";
+import { useTimelineUserStore } from "@/stores/timeline-user-store";
 
-interface TimeLineComponentProps {
-  party: party_return_schema_type;
-  allvoteblocks: block_type[][][];
-  VoteNumber: number;
-  userSelectBlock: Set<string>;
-  setUserSelectBlock: Dispatch<SetStateAction<Set<string>>>;
-  isEditing: boolean;
-  isScheduling: boolean;
-}
-
-export const TimeLineComponent = ({
-  party,
-  allvoteblocks,
-  VoteNumber,
-  isEditing,
-  isScheduling,
-  userSelectBlock,
-  setUserSelectBlock,
-}: TimeLineComponentProps) => {
+export const TimeLineComponent = () => {
   const [TouchedBlock, setTouchedBlock] = useState<string | null>(null);
-  const scheduled_time = party.decision;
+  const [isAdding, setIsAdding] = useState(false);
+  const { party } = usePartyStore();
+  const { join_lists } = useTimelineUserStore();
   const {
+    vote_blocks,
+    user_selected_block,
     clicked_user,
     cur_points_userid,
+    isEditing,
+    isScheduling,
+    start_points,
+    updateSelectedBlock,
     updateCurPointsPosition,
     updateIsMouseDown,
-    isMouseDown,
     updateIsBounced,
+    updateStartPoints,
   } = useVoteBlockStore();
+  const scheduled_time = party.decision;
 
-  const handleClickTimeBlock = 
-    (row: number, col: number) => {
-      if (!isEditing && !isScheduling) {
-        // bounce animation effect
-        const bounceTimings = [150, 300, 450, 600];
-        bounceTimings.forEach((time, index) => {
-          setTimeout(() => {
-            updateIsBounced(index % 2 === 0);
-          }, time);
-        });
-        return;
+  const handleClickTimeBlock = (
+    row: number,
+    col: number,
+    isDragging: boolean,
+    isMobile: boolean
+  ) => {
+    if (!isEditing && !isScheduling) {
+      if (isMobile) return;
+
+      // bounce animation effect
+      const bounceTimings = [150, 300, 450, 600];
+      bounceTimings.forEach((time, index) => {
+        setTimeout(() => {
+          updateIsBounced(index % 2 === 0);
+        }, time);
+      });
+      return;
+    }
+
+    if (!isDragging) {
+      updateStartPoints(row, col);
+      setIsAdding(!user_selected_block.has(`${col}-${row}`));
+      return;
+    }
+
+    if (start_points.col != -1 && start_points.row != -1) {
+      const { row: start_row, col: start_col } = start_points;
+      const end_row = row;
+      const end_col = col;
+
+      // calculate selected range（ensure left-top -> right-down）
+      const min_row = Math.min(start_row, end_row);
+      const max_row = Math.max(start_row, end_row);
+      const min_col = Math.min(start_col, end_col);
+      const max_col = Math.max(start_col, end_col);
+
+      const selectedBlocks = new Set<string>(user_selected_block);
+
+      for (let r = min_row; r <= max_row; r++) {
+        for (let c = min_col; c <= max_col; c++) {
+          const block = `${c}-${r}`;
+
+          if (isAdding) selectedBlocks.add(block);
+          else selectedBlocks.delete(block);
+        }
       }
 
-      const block_key = `${col}-${row}`;
-
-      if (isEditing) {
-        setUserSelectBlock((prev) => ToggleBlockSelection(prev, block_key));
-      } else if (isScheduling) {
-        if (!isMouseDown) setUserSelectBlock(new Set<string>());
-        setUserSelectBlock((prev) => ToggleBlockSchedule(prev, col, row));
-      }
-    };
-
+      updateSelectedBlock(new Set(selectedBlocks));
+    }
+  };
   const total_half_hours = useMemo(
     () => CalculateTotalHours(party) * 2,
     [party]
@@ -85,11 +95,11 @@ export const TimeLineComponent = ({
     const gridCells = generateGridCells(
       party,
       total_half_hours,
-      VoteNumber,
-      userSelectBlock,
+      join_lists.length,
+      user_selected_block,
       isEditing,
       isScheduling,
-      allvoteblocks,
+      vote_blocks,
       cur_points_userid,
       clicked_user,
       TouchedBlock,
@@ -109,13 +119,13 @@ export const TimeLineComponent = ({
   }, [
     party,
     handleClickTimeBlock,
-    userSelectBlock,
+    user_selected_block,
     cur_points_userid,
     clicked_user,
-    allvoteblocks,
+    vote_blocks,
     isEditing,
     isScheduling,
-    VoteNumber,
+    join_lists.length,
     TouchedBlock,
     updateCurPointsPosition,
     updateIsMouseDown,

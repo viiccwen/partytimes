@@ -1,8 +1,15 @@
 import { google } from "googleapis";
 import { prisma } from "../app";
-import { Verify } from "../utils/utils";
+import { verify } from "jsonwebtoken";
+import { promisify } from "node:util";
 
-const extractToken = (req: any): string | null => {
+import type { RequestHandler } from "express";
+import type { PayloadType, UserType } from "../utils/user.type";
+import { findUser } from "../utils/user";
+
+const JWT_SECRET = process.env.JWT_SECRET || "";
+
+export const extractToken = (req: any): string | null => {
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer "))
     return authHeader.split(" ")[1];
@@ -10,27 +17,39 @@ const extractToken = (req: any): string | null => {
   return null;
 };
 
-export const AuthMiddleware = async (req: any, res: any, next: any) => {
+const jwtVerifyPromise: (token: string, secret: string) => Promise<unknown> =
+  promisify(verify);
+
+const Verify = async (
+  token: string,
+  secret: string = JWT_SECRET
+): Promise<unknown> => {
+  return jwtVerifyPromise(token, secret);
+};
+
+export const AuthMiddleware: RequestHandler = async (req, res, next) => {
   try {
     // extract token
     const token = extractToken(req);
     if (!token) throw new Error("未授權！");
 
     // verify token
-    const payload: any = await Verify(token);
+    const payload = (await Verify(token)) as PayloadType & {
+      iat: number;
+      exp: number;
+    };
 
     // find user
-    const currentUser = await prisma.user.findFirst({
-      where: {
-        id: payload.id,
-      },
-    });
-    if (!currentUser) throw new Error("未授權！");
+    const providerId: keyof UserType = `${payload.provider}Id`;
+    const user = await findUser(providerId, payload.id);
 
-    req.user = currentUser;
+    if (!user) throw new Error("未授權！");
+
+    req.user = user;
     next();
   } catch (error: any) {
-    return res.status(401).json({ error: error.message });
+    res.status(401).json({ error: error.message });
+    return;
   }
 };
 

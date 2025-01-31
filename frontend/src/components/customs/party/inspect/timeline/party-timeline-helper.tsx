@@ -20,15 +20,20 @@ export const formatTime = (hour: number): string => {
 export const generateGridCells = (
   party: party_return_schema_type,
   total_half_hours: number,
-  VoteNumber: number,
-  userSelectBlock: Set<string>,
+  vote_number: number,
+  user_selected_block: Set<string>,
   isEditing: boolean,
   isScheduling: boolean,
-  AllvoteBlocks: block_type[][][],
+  vote_blocks: block_type[][][],
   cur_points_userid: string,
   clicked_user: clicked_user_type,
   TouchedBlock: string | null,
-  handleClickTimeBlock: (row: number, col: number, isDragging: boolean) => void,
+  handleClickTimeBlock: (
+    row: number,
+    col: number,
+    isDragging: boolean,
+    isMobile: boolean
+  ) => void,
   updateCurPointsPosition: (row: number, col: number) => void,
   updateIsMouseDown: (isMouseDown: boolean) => void,
   updateTouchedBlock: Dispatch<SetStateAction<string | null>>
@@ -39,12 +44,12 @@ export const generateGridCells = (
 
   const renderCell = (row: number, col: number) => {
     const block_key: string = `${col}-${row}`;
-    const isSelected: boolean = userSelectBlock.has(block_key);
-    const isVoted: number = AllvoteBlocks[col][row].length;
-    const isPointed: boolean = AllvoteBlocks[col][row].some(
+    const isSelected: boolean = user_selected_block.has(block_key);
+    const isVoted: number = vote_blocks[col][row].length;
+    const isPointed: boolean = vote_blocks[col][row].some(
       (block) => block.userId === cur_points_userid
     );
-    const isClicked: boolean = AllvoteBlocks[col][row].some(
+    const isClicked: boolean = vote_blocks[col][row].some(
       (block) => block.userId === clicked_user.userId
     );
 
@@ -52,12 +57,12 @@ export const generateGridCells = (
       if (!isEditing && !isScheduling) {
         if (clicked_user.userId) return isClicked ? "bg-blue-400" : "";
         if (cur_points_userid) return isPointed ? "bg-blue-400" : "";
-        return isVoted ? DecideBlockColor(VoteNumber, isVoted) : "";
+        return isVoted ? DecideBlockColor(vote_number, isVoted) : "";
       } else if (isScheduling) {
         return isSelected
           ? "bg-orange-400"
           : isVoted
-          ? DecideBlockColor(VoteNumber, isVoted)
+          ? DecideBlockColor(vote_number, isVoted)
           : "";
       } else {
         return isSelected ? "bg-blue-400" : "";
@@ -69,7 +74,8 @@ export const generateGridCells = (
         key={block_key}
         id={block_key}
         className={cn(
-          "block touch-none border-r-[1px] border-slate-400 h-[24px] col-auto hover:border-[1px] md:hover:border-dashed",
+          "block border-r-[1px] border-slate-400 h-[24px] col-auto hover:border-[1px] md:hover:border-dashed",
+          isEditing || isScheduling ? "touch-none" : "",
           row % 2 === 0
             ? "border-t-[1px]"
             : row === total_half_hours - 1
@@ -88,8 +94,14 @@ export const generateGridCells = (
         onTouchStart={(e) => {
           e.preventDefault();
           updateIsMouseDown(true);
-          handleClickTimeBlock(row, col, false);
+          handleClickTimeBlock(row, col, false, true);
           updateTouchedBlock(e.currentTarget.id);
+        }}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          updateIsMouseDown(false);
+          handleClickTimeBlock(row, col, true, true);
+          updateCurPointsPosition(-1, -1);
         }}
         onTouchMove={(e) => {
           e.preventDefault();
@@ -103,26 +115,22 @@ export const generateGridCells = (
             if (element && block_id && block_id !== TouchedBlock) {
               const [col, row] = block_id.split("-").map(Number);
               updateCurPointsPosition(col, row);
-              handleClickTimeBlock(row, col, true);
+              handleClickTimeBlock(row, col, true, true);
               updateTouchedBlock(block_id);
             }
           }
         }}
-        onTouchEnd={(e) => {
-          e.preventDefault();
-          updateIsMouseDown(false);
-          updateCurPointsPosition(-1, -1);
-        }}
         onMouseDown={() => {
           updateIsMouseDown(true);
-          handleClickTimeBlock(row, col, false);
-        }}
-        onMouseUp={() => {
-          updateIsMouseDown(false);
+          handleClickTimeBlock(row, col, false, false);
         }}
         onMouseEnter={(e) => {
           updateCurPointsPosition(col, row);
-          if (e.buttons === 1) handleClickTimeBlock(row, col, true);
+          if (e.buttons === 1) handleClickTimeBlock(row, col, true, false);
+        }}
+        onMouseUp={() => {
+          updateIsMouseDown(false);
+          handleClickTimeBlock(row, col, true, false);
         }}
         onDragStart={(e) => e.preventDefault()}
         onMouseLeave={() => updateCurPointsPosition(-1, -1)}
@@ -167,7 +175,7 @@ export const generateGridCells = (
 
 export const GenerateScheduledBlock = (
   party: party_return_schema_type,
-  scheduled_time: decision_schema_type | null
+  scheduled_time: decision_schema_type | undefined | null
 ) => {
   if (!scheduled_time) return null;
 
@@ -211,7 +219,6 @@ export const generateHeader = (party: party_return_schema_type): ReactNode => {
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const getWeekday = (dateString: string) => {
     const date = new Date(dateString);
-    // const date = moment(dateString, moment.ISO_8601, true);
     return weekdays[date.getDay()];
   };
 
@@ -242,10 +249,10 @@ export const GetTimeWithAMPM = (time: number) => {
 };
 
 export const GenerateTimeSlots = (
-  userSelectBlock: Set<string>,
+  user_selected_block: Set<string>,
   party: party_return_schema_type
 ) => {
-  const blocks = Array.from(userSelectBlock);
+  const blocks = Array.from(user_selected_block);
   const party_start_time = ConvertTo24Hours(
     party.start_time,
     party.start_ampm,

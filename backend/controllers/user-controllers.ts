@@ -1,17 +1,11 @@
-import { prisma } from "../app";
+import type { Request, Response } from "express";
+import { deleteUser, updateUser } from "../utils/user";
+import type { UserType } from "../utils/user.type";
 
-export const DeleteAccount = async (req: any, res: any) => {
+export const DeleteAccount = async (req: Request, res: Response) => {
   try {
-    if (!req.user) throw new Error("你尚未登入");
-
-    const user = await prisma.user.delete({
-      where: {
-        id: req.user.id,
-      },
-    });
-
-    if (!user) throw new Error("使用者不存在！");
-
+    const user = req.user! as UserType;
+    await deleteUser(user);
     res.status(200).json({ message: "帳戶已刪除！" });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -20,15 +14,7 @@ export const DeleteAccount = async (req: any, res: any) => {
 
 export const CheckAuth = async (req: any, res: any) => {
   try {
-    if (!req.user) throw new Error("你尚未登入");
-
-    let user = await prisma.user.findFirst({
-      where: {
-        id: req.user.id,
-      },
-    });
-
-    if (!user) throw new Error("使用者不存在！");
+    const user = req.user! as UserType;
 
     const FilterUser = {
       id: user.id,
@@ -42,23 +28,14 @@ export const CheckAuth = async (req: any, res: any) => {
   }
 };
 
-export const UpdateUserName = async (req: any, res: any) => {
+export const UpdateUserName = async (req: Request, res: Response) => {
   try {
+    const user = req.user as UserType;
     const { nickname } = await req.body;
-    if (!nickname) throw new Error("請提供暱稱");
 
-    let user = await prisma.user.update({
-      where: {
-        id: req.user.id,
-      },
-      data: {
-        nickname,
-      },
-    });
+    const update_user = await updateUser(user, "nickname", nickname);
 
-    if (!user) throw new Error("使用者不存在！");
-
-    res.status(200).json({ nickname: user.nickname });
+    res.status(200).json({ nickname: update_user.nickname });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

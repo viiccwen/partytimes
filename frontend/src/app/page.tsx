@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Afacad, Noto_Sans_TC } from "@next/font/google";
+import { Afacad } from "@next/font/google";
 
 import { DescriptionBlock } from "@/components/customs/home/description-block";
 import { Footer } from "@/components/customs/home/footer";

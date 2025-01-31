@@ -25,12 +25,10 @@ import { CreateVote } from "@/actions/vote-actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useVoteBlockStore } from "@/stores/inspect-party-store";
+import { usePartyStore } from "@/stores/party-store";
 
-interface guest_dialog_props {
-  partyid: string;
-}
-
-export const GuestDialog = ({ partyid }: guest_dialog_props) => {
+export const GuestDialog = () => {
+  const { party } = usePartyStore();
   const {
     handleSubmit,
     register,
@@ -46,20 +44,16 @@ export const GuestDialog = ({ partyid }: guest_dialog_props) => {
   const onSubmit = async (formdata: guest_schema_type) => {
     const { nickname, email } = formdata;
 
-    const res: general_fetch_return_type = await CreateVote({
-      partyid,
-      nickname,
-      email,
-      timeslots,
+    toast.promise(CreateVote({ partyid: party.partyid, nickname, email, timeslots }), {
+      loading: "登記中...",
+      success: "登記成功！",
+      error: (res) => res.error,
+      finally: () => {
+        setOpen(false);
+        updateIsEditing(false);
+        router.refresh();
+      }
     });
-
-    if (res.correct) {
-      setOpen(false);
-      updateIsEditing(false);
-      router.refresh();
-    } else {
-      toast.error(res.error);
-    }
   };
 
   return (
