@@ -6,31 +6,24 @@ import {
   GenerateScheduledBlock,
 } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
 import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
-import { party_return_schema_type } from "@/lib/type";
 import {
   ToggleBlockSchedule,
   ToggleBlockSelection,
 } from "@/lib/block-selection-helper";
 import { CalculateTotalHours } from "@/lib/utils";
+import { usePartyStore } from "@/stores/party-store";
 
 interface TimeLineComponentProps {
-  party: party_return_schema_type;
-  allvoteblocks: block_type[][][];
   VoteNumber: number;
-  isEditing: boolean;
-  isScheduling: boolean;
 }
 
 export const TimeLineComponent = ({
-  party,
-  allvoteblocks,
   VoteNumber,
-  isEditing,
-  isScheduling,
 }: TimeLineComponentProps) => {
   const [TouchedBlock, setTouchedBlock] = useState<string | null>(null);
-  const scheduled_time = party.decision;
+  const { party } = usePartyStore();
   const {
+    vote_blocks,
     user_selected_block,
     clicked_user,
     cur_points_userid,
@@ -39,7 +32,10 @@ export const TimeLineComponent = ({
     updateIsMouseDown,
     isMouseDown,
     updateIsBounced,
+    isEditing,
+    isScheduling,
   } = useVoteBlockStore();
+  const scheduled_time = party.decision;
 
   const handleClickTimeBlock = (row: number, col: number) => {
     if (!isEditing && !isScheduling) {
@@ -81,7 +77,7 @@ export const TimeLineComponent = ({
       user_selected_block,
       isEditing,
       isScheduling,
-      allvoteblocks,
+      vote_blocks,
       cur_points_userid,
       clicked_user,
       TouchedBlock,
@@ -104,7 +100,7 @@ export const TimeLineComponent = ({
     user_selected_block,
     cur_points_userid,
     clicked_user,
-    allvoteblocks,
+    vote_blocks,
     isEditing,
     isScheduling,
     VoteNumber,

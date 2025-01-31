@@ -7,20 +7,18 @@ import {
   joinlist_type,
   useVoteBlockStore,
 } from "@/stores/inspect-party-store";
+import { useTimelineUserStore } from "@/stores/timeline-user-store";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 interface PartyJoinCardProps {
   className?: string;
-  allvoteblocks: block_type[][][];
-  joinList: Array<joinlist_type>;
 }
 
 export const PartyJoinCard = ({
   className,
-  allvoteblocks,
-  joinList,
 }: PartyJoinCardProps) => {
-  const { cur_points_position, clicked_user, isEditing,  updateClickedUser, updateCurPointsUserid } = useVoteBlockStore();
+  const { join_lists } = useTimelineUserStore();
+  const { vote_blocks, cur_points_position, clicked_user, isEditing,  updateClickedUser, updateCurPointsUserid } = useVoteBlockStore();
   const [point_joinList, setPointJoinList] = useState(new Set<string>());
 
   const showAllParticipants = useMemo(
@@ -34,26 +32,26 @@ export const PartyJoinCard = ({
   const sortedJoinList = useMemo(
     () =>
       showAllParticipants
-        ? joinList
-        : [...joinList].sort((a, b) => {
+        ? join_lists
+        : [...join_lists].sort((a, b) => {
             const aInPointList = point_joinList.has(a.userId) ? 1 : 0;
             const bInPointList = point_joinList.has(b.userId) ? 1 : 0;
             return bInPointList - aInPointList;
           }),
-    [showAllParticipants, joinList, point_joinList]
+    [showAllParticipants, join_lists, point_joinList]
   );
 
   useEffect(() => {
     if (!isEditing && clicked_user.userId === "") {
       setPointJoinList(
         getBlockUsers(
-          allvoteblocks,
+          vote_blocks,
           cur_points_position.row,
           cur_points_position.col
         )
       );
     }
-  }, [cur_points_position, isEditing, clicked_user, allvoteblocks]);
+  }, [cur_points_position, isEditing, clicked_user, vote_blocks]);
 
   const handleClick = useCallback(
     (join: joinlist_type) => {
@@ -65,7 +63,7 @@ export const PartyJoinCard = ({
     [clicked_user, updateClickedUser]
   );
 
-  if (!allvoteblocks || allvoteblocks.length === 0) return null;
+  if (!vote_blocks || vote_blocks.length === 0) return null;
 
   return (
     <Card className={className}>
@@ -73,8 +71,8 @@ export const PartyJoinCard = ({
         <div className="font-bold text-2xl my-5">
           參與者{" "}
           {showAllParticipants
-            ? `(${joinList.length})`
-            : `(${point_joinList.size}/${joinList.length})`}
+            ? `(${join_lists.length})`
+            : `(${point_joinList.size}/${join_lists.length})`}
         </div>
         {sortedJoinList.map((join) => (
           <ParticipantButton
