@@ -1,60 +1,44 @@
 "use client";
 import { Card, CardContent } from "@/components/ui/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 
 import { PartyHeader } from "./party-header";
 import { PartyTimelineHeader } from "./party-timeline-header";
 import { GuestDialog } from "../guest-dialog";
-import { PartyTimelineLogic } from "./timeline/party-timeline-logic";
+import { PartyButton } from "./timeline/party-timeline-button";
 import { TimeLineComponent } from "./timeline/timeline-component";
 
-import { block_type } from "@/stores/inspect-party-store";
+import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
 import { party_return_schema_type, user_info_schema_type } from "@/lib/type";
+import { usePartyStore } from "@/stores/party-store";
+import { useTimelineUserStore } from "@/stores/timeline-user-store";
 
 interface PartyTimelineCardProps {
   className?: string;
-  party: party_return_schema_type;
   user: user_info_schema_type | undefined;
-  allvoteblocks: block_type[][][];
-  user_votes: Set<string>;
-  VoteNumber: number;
+  HandleCheckButton: () => Promise<void>;
+  HandleScheduleButton: () => Promise<void>;
+  HandleDeleteButton: () => Promise<void>;
+  HandleCancelButton: () => void;
 }
 
 export const PartyTimelineCard = ({
   className,
-  party,
   user,
-  allvoteblocks,
-  VoteNumber,
-  user_votes,
+  HandleCheckButton,
+  HandleScheduleButton,
+  HandleDeleteButton,
+  HandleCancelButton,
 }: PartyTimelineCardProps) => {
-  const [userSelectBlock, setUserSelectBlock] =
-    useState<Set<string>>(user_votes);
-
-  const {
-    HandleCheckButton,
-    HandleScheduleButton,
-    HandleDeleteButton,
-    HandleCancelButton,
-    isEditing,
-    isScheduling,
-  } = PartyTimelineLogic({
-    party,
-    allvoteblocks,
-    user_votes,
-    userid: user?.id,
-    userSelectBlock,
-    setUserSelectBlock,
-  });
-
-  if (!allvoteblocks || allvoteblocks.length === 0) return null;
+  const { party } = usePartyStore();
+  const { join_lists } = useTimelineUserStore();
 
   return (
     <>
       <Card className={className}>
         <CardContent>
-          <PartyHeader className="mt-5" party={party} isLogin={user !== undefined} />
+          <PartyHeader className="mt-5" isLogin={user !== undefined} />
           <Separator className="h-1 my-3" />
           <PartyTimelineHeader
             className="mt-5"
@@ -62,19 +46,8 @@ export const PartyTimelineCard = ({
             HandleScheduleButton={HandleScheduleButton}
             HandleDeleteButton={HandleDeleteButton}
             HandleCancelButton={HandleCancelButton}
-            isEditing={isEditing}
-            isScheduling={isScheduling}
-            has_scheduled={party.status}
           />
-          <TimeLineComponent
-            party={party}
-            allvoteblocks={allvoteblocks}
-            VoteNumber={VoteNumber}
-            userSelectBlock={userSelectBlock}
-            setUserSelectBlock={setUserSelectBlock}
-            isEditing={isEditing}
-            isScheduling={isScheduling}
-          />
+          <TimeLineComponent VoteNumber={join_lists.length} />
         </CardContent>
       </Card>
       <GuestDialog partyid={party.partyid} />

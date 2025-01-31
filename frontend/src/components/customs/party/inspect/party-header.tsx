@@ -1,18 +1,21 @@
-import { party_return_schema_type } from "@/lib/type";
+'use client';
 import { ShareURLButton } from "../../ShareURLButton";
 import { EditButton } from "../../profile/edit-button";
+import { usePartyStore } from "@/stores/party-store";
 
 interface PartyHeaderProps {
-  party: party_return_schema_type;
   className?: string;
   isLogin: boolean;
 }
 
 export const PartyHeader = ({
-  party,
   className,
   isLogin,
 }: PartyHeaderProps) => {
+  const { party } = usePartyStore();
+
+  if (!party.title) return null;
+
   return (
     <div className={className}>
       <div className="flex justify-between items-center">

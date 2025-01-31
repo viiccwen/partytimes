@@ -24,7 +24,7 @@ export const generateGridCells = (
   userSelectBlock: Set<string>,
   isEditing: boolean,
   isScheduling: boolean,
-  AllvoteBlocks: block_type[][][],
+  vote_blocks: block_type[][][],
   cur_points_userid: string,
   clicked_user: clicked_user_type,
   TouchedBlock: string | null,
@@ -40,11 +40,11 @@ export const generateGridCells = (
   const renderCell = (row: number, col: number) => {
     const block_key: string = `${col}-${row}`;
     const isSelected: boolean = userSelectBlock.has(block_key);
-    const isVoted: number = AllvoteBlocks[col][row].length;
-    const isPointed: boolean = AllvoteBlocks[col][row].some(
+    const isVoted: number = vote_blocks[col][row].length;
+    const isPointed: boolean = vote_blocks[col][row].some(
       (block) => block.userId === cur_points_userid
     );
-    const isClicked: boolean = AllvoteBlocks[col][row].some(
+    const isClicked: boolean = vote_blocks[col][row].some(
       (block) => block.userId === clicked_user.userId
     );
 
@@ -167,7 +167,7 @@ export const generateGridCells = (
 
 export const GenerateScheduledBlock = (
   party: party_return_schema_type,
-  scheduled_time: decision_schema_type | null
+  scheduled_time: decision_schema_type | undefined | null
 ) => {
   if (!scheduled_time) return null;
 

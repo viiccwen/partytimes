@@ -1,39 +1,33 @@
 "use client";
-import { Dispatch, SetStateAction, useCallback } from "react";
+import { useCallback } from "react";
 import { toast } from "sonner";
 import { CreateVote, DeleteVote } from "@/actions/vote-actions";
 import { CreateSchedule, DeleteSchedule } from "@/actions/schedule-action";
 import { GenerateTimeSlots } from "@/components/customs/party/inspect/timeline/party-timeline-helper";
 import { useRouter } from "next/navigation";
-import { block_type, useVoteBlockStore } from "@/stores/inspect-party-store";
-import { party_return_schema_type } from "@/lib/type";
+import { useVoteBlockStore } from "@/stores/inspect-party-store";
 import { useGuestVoteStore } from "@/stores/guest-vote-store";
 import { getUserVoteblocks } from "@/lib/utils";
+import { usePartyStore } from "@/stores/party-store";
 
 interface PartyTimelineLogicProps {
-  party: party_return_schema_type;
-  allvoteblocks: block_type[][][];
   user_votes: Set<string>;
   userid: string | undefined;
-  userSelectBlock: Set<string>;
-  setUserSelectBlock: Dispatch<SetStateAction<Set<string>>>;
 }
 
-export const PartyTimelineLogic = ({
-  party,
-  allvoteblocks,
+export const PartyButton = ({
   user_votes,
   userid,
-  userSelectBlock,
-  setUserSelectBlock,
 }: PartyTimelineLogicProps) => {
   const router = useRouter();
-  const isScheduled = party.status;
   const {
+    vote_blocks,
     clicked_user,
+    user_selected_block,
     isEditing,
     isScheduling,
     updateCurPointsPosition,
+    updateSelectedBlock,
     updateClickedUser,
     updateIsEditing,
     updateIsScheduling,
@@ -41,6 +35,8 @@ export const PartyTimelineLogic = ({
     updateIsDeleteClicked,
     updateIsScheduledClicked,
   } = useVoteBlockStore();
+  const { party } = usePartyStore();
+  const isScheduled = party?.status;
 
   const { setOpen, setTimeslots } = useGuestVoteStore();
 
@@ -55,19 +51,19 @@ export const PartyTimelineLogic = ({
     if (!isEditing) {
       updateIsEditing(true);
       if (clicked_user.userId !== "") {
-        setUserSelectBlock(
-          getUserVoteblocks(allvoteblocks, clicked_user.creatorName)
+        updateSelectedBlock(
+          getUserVoteblocks(vote_blocks, clicked_user.creatorName)
         );
       }
       return;
     }
 
-    if (userSelectBlock.size === 0) {
+    if (user_selected_block.size === 0) {
       toast.error("請選擇時間區塊！");
       return;
     }
 
-    const timeslots = GenerateTimeSlots(userSelectBlock, party);
+    const timeslots = GenerateTimeSlots(user_selected_block, party);
 
     // New Guest User
     if (!userid && clicked_user.userId === "") {
@@ -96,13 +92,7 @@ export const PartyTimelineLogic = ({
       });
     }
   };
-
-  const HandleCancelButton = () => {
-    setUserSelectBlock(user_votes);
-    updateIsEditing(false);
-    updateIsScheduling(false);
-  };
-
+  
   const HandleScheduleButton = async () => {
     if (isScheduled) {
       toast.promise(DeleteSchedule(party.partyid), {
@@ -116,21 +106,21 @@ export const PartyTimelineLogic = ({
       });
       return;
     }
-
+    
     if (!isScheduling) {
-      setUserSelectBlock(new Set<string>());
+      updateSelectedBlock(new Set<string>());
       updateIsScheduling(true);
       return;
     }
-
-    if (userSelectBlock.size === 0) {
+    
+    if (user_selected_block.size === 0) {
       toast.error("請選擇時間區塊！");
       return;
     }
-
+    
     updateIsScheduledClicked(true);
-    const timeslot = GenerateTimeSlots(userSelectBlock, party)[0];
-
+    const timeslot = GenerateTimeSlots(user_selected_block, party)[0];
+    
     toast.promise(CreateSchedule(party.partyid, timeslot), {
       loading: "創建中...",
       success: () => {
@@ -144,15 +134,15 @@ export const PartyTimelineLogic = ({
       },
     });
   };
-
+  
   const HandleDeleteButton = useCallback(async () => {
     if (clicked_user.userId === "" && userid === undefined) {
       toast.error("請先選擇使用者!");
       return;
     }
-
+    
     updateIsDeleteClicked(true);
-
+    
     if (clicked_user.userId !== "") {
       toast.promise(DeleteVote(party.partyid, clicked_user.userId), {
         loading: "刪除中...",
@@ -175,13 +165,17 @@ export const PartyTimelineLogic = ({
       });
     }
   }, [party, clicked_user, userid]);
-
+  
+  const HandleCancelButton = () => {
+    updateSelectedBlock(user_votes);
+    updateIsEditing(false);
+    updateIsScheduling(false);
+  };
+  
   return {
     HandleCheckButton,
     HandleCancelButton,
     HandleScheduleButton,
     HandleDeleteButton,
-    isEditing,
-    isScheduling,
   };
 };

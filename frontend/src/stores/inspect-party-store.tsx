@@ -22,8 +22,10 @@ export type clicked_user_type = {
 };
 
 type party_inspect_type = {
+  vote_blocks: block_type[][][];
   cur_points_position: position_type;
   cur_points_userid: string;
+  user_selected_block: Set<string>;
   clicked_user: clicked_user_type;
   isEditing: boolean;
   isScheduling: boolean;
@@ -33,8 +35,10 @@ type party_inspect_type = {
   isDeleteClicked: boolean;
   isScheduledClicked: boolean;
 
+  updateVoteBlocks: (vote_blocks: block_type[][][]) => void;
   updateCurPointsPosition: (row: number, col: number) => void;
   updateCurPointsUserid: (userid: string) => void;
+  updateSelectedBlock: (selectedBlock: Set<string>) => void;
   updateClickedUser: (userId: string, creatorName: string) => void;
   updateIsEditing: (isEditing: boolean) => void;
   updateIsScheduling: (isScheduling: boolean) => void;
@@ -46,8 +50,10 @@ type party_inspect_type = {
 };
 
 export const useVoteBlockStore = create<party_inspect_type>((set) => ({
+  vote_blocks: [],
   cur_points_position: { row: -1, col: -1 },
   cur_points_userid: "",
+  user_selected_block: new Set<string>(),
   clicked_user: { userId: "", creatorName: "" },
   isEditing: false,
   isScheduling: false,
@@ -57,9 +63,12 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
   isDeleteClicked: false,
   isScheduledClicked: false,
 
+  updateVoteBlocks: (vote_blocks) => set({ vote_blocks }),
   updateCurPointsPosition: (row, col) =>
     set({ cur_points_position: { row, col } }),
   updateCurPointsUserid: (userid) => set({ cur_points_userid: userid }),
+  updateSelectedBlock: (selectedBlock) =>
+    set({ user_selected_block: selectedBlock }),
   updateClickedUser: (userId, creatorName) =>
     set({ clicked_user: { userId, creatorName } }),
   updateIsEditing: (isEditing) => set({ isEditing }),
@@ -69,6 +78,4 @@ export const useVoteBlockStore = create<party_inspect_type>((set) => ({
   updateIsConfirmClicked: (isConfirmClicked) => set({ isConfirmClicked }),
   updateIsDeleteClicked: (isDeleteClicked) => set({ isDeleteClicked }),
   updateIsScheduledClicked: (isScheduledClicked) => set({ isScheduledClicked }),
-
-  
 }));

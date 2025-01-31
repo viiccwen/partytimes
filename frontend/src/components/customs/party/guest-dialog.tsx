@@ -46,20 +46,16 @@ export const GuestDialog = ({ partyid }: guest_dialog_props) => {
   const onSubmit = async (formdata: guest_schema_type) => {
     const { nickname, email } = formdata;
 
-    const res: general_fetch_return_type = await CreateVote({
-      partyid,
-      nickname,
-      email,
-      timeslots,
+    toast.promise(CreateVote({ partyid, nickname, email, timeslots }), {
+      loading: "登記中...",
+      success: "登記成功！",
+      error: (res) => res.error,
+      finally: () => {
+        setOpen(false);
+        updateIsEditing(false);
+        router.refresh();
+      }
     });
-
-    if (res.correct) {
-      setOpen(false);
-      updateIsEditing(false);
-      router.refresh();
-    } else {
-      toast.error(res.error);
-    }
   };
 
   return (
