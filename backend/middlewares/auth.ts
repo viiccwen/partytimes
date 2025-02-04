@@ -1,5 +1,5 @@
 import { google } from "googleapis";
-import { prisma } from "../app";
+import { prisma } from "../db";
 import { verify } from "jsonwebtoken";
 import { promisify } from "node:util";
 

@@ -1,5 +1,5 @@
 import type { Decision } from "@prisma/client";
-import { prisma } from "../app";
+import { prisma } from "../db";
 import { createParty, findParty } from "../utils/party";
 import type { PartyType } from "../utils/party.type";
 import { GeneratePartyId } from "../utils/utils";

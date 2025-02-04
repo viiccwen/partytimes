@@ -1,4 +1,4 @@
-import { prisma } from "../app";
+import { prisma } from "../db";
 import type { Request, Response } from "express";
 import { extractToken } from "../middlewares/auth";
 import { createUser, deleteGuest, findGuest, findUser } from "../utils/user";

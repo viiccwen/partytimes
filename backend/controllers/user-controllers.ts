@@ -6,6 +6,7 @@ export const DeleteAccount = async (req: Request, res: Response) => {
   try {
     const user = req.user! as UserType;
     await deleteUser(user);
+    
     res.status(200).json({ message: "帳戶已刪除！" });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
