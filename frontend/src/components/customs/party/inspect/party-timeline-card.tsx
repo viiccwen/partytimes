@@ -47,7 +47,7 @@ export const PartyTimelineCard = ({
           <TimeLineComponent />
         </CardContent>
       </Card>
-      
+
       <GuestDialog />
     </>
   );

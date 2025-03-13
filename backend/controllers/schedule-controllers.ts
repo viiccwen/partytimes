@@ -1,4 +1,4 @@
-import { prisma } from "../app";
+import { prisma } from "../db";
 
 const formatTime = (date: Date, time: number, ampm: "AM" | "PM") => {
   if (time >= 12 && ampm === "AM") time -= 12;

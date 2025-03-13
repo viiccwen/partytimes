@@ -1,4 +1,4 @@
-import { prisma } from "../app";
+import { prisma } from "../db";
 import type { CreateUserType, GitHubEmailType, UserType } from "./user.type";
 
 export const findUser = async (type: keyof UserType, value: string) => {

@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import party_router from "./routers/party-routers";
 import user_router from "./routers/user-routers";
 import vote_router from "./routers/vote-routers";
@@ -17,8 +16,6 @@ if(process.env.NODE_ENV === "production")
 else
   dotenv.config({ path: ".env.development" });
 
-const API_PORT = process.env.API_PORT || 3000;
-
 const app = express();
 
 app.use(cors());
@@ -31,11 +28,5 @@ app.use("/api", vote_router);
 app.use("/api", schedule_router);
 app.use("/api", oauth_router);
 app.use("/api", email_router);
-
-export const prisma = new PrismaClient();
-
-app.listen(API_PORT, () => {
-  console.log(`Server is running on port ${API_PORT}`);
-});
 
 export default app;

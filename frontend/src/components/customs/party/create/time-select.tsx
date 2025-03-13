@@ -7,10 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SelectGroup } from "@radix-ui/react-select";
-import {
-  Control,
-  Controller,
-} from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
 import { party_create_schema_type } from "@/lib/type";
 
 interface TimeSelectProps {
@@ -24,7 +21,7 @@ interface TimeSelectProps {
 export const TimeSelect = ({
   defaultValue,
   registerName,
-  control
+  control,
 }: TimeSelectProps) => {
   return (
     <Controller
@@ -32,7 +29,10 @@ export const TimeSelect = ({
       defaultValue={defaultValue}
       name={registerName as keyof party_create_schema_type}
       render={({ field }) => (
-        <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
+        <Select
+          onValueChange={field.onChange}
+          defaultValue={field.value.toString()}
+        >
           <SelectTrigger className="w-[70px]">
             <SelectValue placeholder={defaultValue} ref={field.ref} />
           </SelectTrigger>
@@ -46,7 +46,7 @@ export const TimeSelect = ({
                 <SelectItem key={hour} value={hour.toString()}>
                   {hour}
                 </SelectItem>
-              )
+              ),
             )}
           </SelectContent>
         </Select>
@@ -72,7 +72,10 @@ export const AmPmSelect = ({
       defaultValue={defaultValue}
       name={registerName as keyof party_create_schema_type}
       render={({ field }) => (
-        <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
+        <Select
+          onValueChange={field.onChange}
+          defaultValue={field.value.toString()}
+        >
           <SelectTrigger className="w-[70px]">
             <SelectValue placeholder={defaultValue} ref={field.ref} />
           </SelectTrigger>

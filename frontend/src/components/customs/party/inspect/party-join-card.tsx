@@ -31,7 +31,7 @@ export const PartyJoinCard = ({ className }: PartyJoinCardProps) => {
       isEditing ||
       (cur_points_position.row === -1 && cur_points_position.col === -1) ||
       clicked_user.userId !== "",
-    [isEditing, cur_points_position, clicked_user]
+    [isEditing, cur_points_position, clicked_user],
   );
 
   const sortedJoinList = useMemo(
@@ -43,7 +43,7 @@ export const PartyJoinCard = ({ className }: PartyJoinCardProps) => {
             const bInPointList = point_joinList.has(b.userId) ? 1 : 0;
             return bInPointList - aInPointList;
           }),
-    [showAllParticipants, join_lists, point_joinList]
+    [showAllParticipants, join_lists, point_joinList],
   );
 
   useEffect(() => {
@@ -52,8 +52,8 @@ export const PartyJoinCard = ({ className }: PartyJoinCardProps) => {
         getBlockUsers(
           vote_blocks,
           cur_points_position.row,
-          cur_points_position.col
-        )
+          cur_points_position.col,
+        ),
       );
     }
   }, [cur_points_position, isEditing, clicked_user, vote_blocks]);
@@ -61,7 +61,7 @@ export const PartyJoinCard = ({ className }: PartyJoinCardProps) => {
   const handleClick = (join: joinlist_type) => {
     updateClickedUser(
       clicked_user.userId === join.userId ? "" : join.userId,
-      join.creatorName
+      join.creatorName,
     );
   };
 
@@ -121,7 +121,7 @@ const ParticipantButton = memo(
           clicked_user.userId === join.userId
             ? "dark:text-blue-500 text-blue-700"
             : "",
-          "dark:hover:text-blue-400 hover:text-blue-600 text-sm md:text-lg"
+          "dark:hover:text-blue-400 hover:text-blue-600 text-sm md:text-lg",
         )}
         onClick={() => handleClick(join)}
         onMouseEnter={() => updateCurPointsUserid(join.userId)}
@@ -130,13 +130,13 @@ const ParticipantButton = memo(
         {join.creatorName}
       </button>
     );
-  }
+  },
 );
 
 const getBlockUsers = (
   all_voteblocks: block_type[][][],
   row: number,
-  col: number
+  col: number,
 ): Set<string> => {
   if (row === -1 || col === -1) return new Set<string>();
   return new Set(all_voteblocks[row][col].map((vote) => vote.userId));

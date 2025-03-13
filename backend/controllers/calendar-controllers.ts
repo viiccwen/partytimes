@@ -1,5 +1,5 @@
 import { google } from "googleapis";
-import { prisma } from "../app";
+import { prisma } from "../db";
 import { refreshAccessToken } from "../middlewares/auth";
 
 export const getCalendarEvents = async (req: any, res: any) => {

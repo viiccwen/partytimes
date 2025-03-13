@@ -1,4 +1,4 @@
-import { prisma } from "../app";
+import { prisma } from "../db";
 import type { PartyType } from "./party.type";
 
 export const findParty = async (partyid: string) => {

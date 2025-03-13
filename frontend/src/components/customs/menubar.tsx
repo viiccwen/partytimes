@@ -79,7 +79,7 @@ export const MenuBar = ({
                 >
                   {ele.name}
                 </Link>
-              )
+              ),
           )}
         </div>
       </SheetContent>

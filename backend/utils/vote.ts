@@ -1,4 +1,4 @@
-import { prisma } from "../app";
+import { prisma } from "../db";
 import type { TimeSlotType } from "./timeslots.type";
 import type { VoteType } from "./vote.type";
 

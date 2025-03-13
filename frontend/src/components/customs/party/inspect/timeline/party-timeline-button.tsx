@@ -52,7 +52,7 @@ export const PartyButton = ({
       updateIsEditing(true);
       if (clicked_user.userId !== "") {
         updateSelectedBlock(
-          getUserVoteblocks(vote_blocks, clicked_user.creatorName)
+          getUserVoteblocks(vote_blocks, clicked_user.creatorName),
         );
       }
       return;
@@ -92,7 +92,7 @@ export const PartyButton = ({
       });
     }
   };
-  
+
   const HandleScheduleButton = async () => {
     if (isScheduled) {
       toast.promise(DeleteSchedule(party.partyid), {
@@ -106,21 +106,21 @@ export const PartyButton = ({
       });
       return;
     }
-    
+
     if (!isScheduling) {
       updateSelectedBlock(new Set<string>());
       updateIsScheduling(true);
       return;
     }
-    
+
     if (user_selected_block.size === 0) {
       toast.error("請選擇時間區塊！");
       return;
     }
-    
+
     updateIsScheduledClicked(true);
     const timeslot = GenerateTimeSlots(user_selected_block, party)[0];
-    
+
     toast.promise(CreateSchedule(party.partyid, timeslot), {
       loading: "創建中...",
       success: () => {
@@ -134,15 +134,15 @@ export const PartyButton = ({
       },
     });
   };
-  
+
   const HandleDeleteButton = useCallback(async () => {
     if (clicked_user.userId === "" && userid === undefined) {
       toast.error("請先選擇使用者!");
       return;
     }
-    
+
     updateIsDeleteClicked(true);
-    
+
     if (clicked_user.userId !== "") {
       toast.promise(DeleteVote(party.partyid, clicked_user.userId), {
         loading: "刪除中...",
@@ -165,13 +165,13 @@ export const PartyButton = ({
       });
     }
   }, [party, clicked_user, userid]);
-  
+
   const HandleCancelButton = () => {
     updateSelectedBlock(user_votes);
     updateIsEditing(false);
     updateIsScheduling(false);
   };
-  
+
   return {
     HandleCheckButton,
     HandleCancelButton,

@@ -42,7 +42,7 @@ export const PartyTimelineHeader = ({
     isDeleteClicked,
     isScheduledClicked,
     isEditing,
-    isScheduling
+    isScheduling,
   } = useVoteBlockStore();
   const { party } = usePartyStore();
   const has_scheduled = party.status;
@@ -60,13 +60,13 @@ export const PartyTimelineHeader = ({
               "刪除",
               isDeleteClicked,
               "text-red-400 hover:text-white hover:bg-red-400",
-              isConfirmClicked || isDeleteClicked
+              isConfirmClicked || isDeleteClicked,
             )}
             {renderButton(
               "outline",
               HandleCancelButton,
               <CircleX className="w-4 h-4" />,
-              "取消"
+              "取消",
             )}
             {renderButton(
               "default",
@@ -75,7 +75,7 @@ export const PartyTimelineHeader = ({
               "確認",
               isConfirmClicked,
               "bg-blue-500 hover:bg-blue-700 text-white",
-              isConfirmClicked || isDeleteClicked
+              isConfirmClicked || isDeleteClicked,
             )}
           </div>
         </div>
@@ -91,7 +91,7 @@ export const PartyTimelineHeader = ({
               "outline",
               HandleCancelButton,
               <CircleX className="w-4 h-4" />,
-              "取消"
+              "取消",
             )}
             {renderButton(
               "default",
@@ -100,7 +100,7 @@ export const PartyTimelineHeader = ({
               "確認",
               isConfirmClicked || isScheduledClicked,
               "bg-blue-500 hover:bg-blue-700 text-white",
-              isConfirmClicked || isDeleteClicked || isScheduledClicked
+              isConfirmClicked || isDeleteClicked || isScheduledClicked,
             )}
           </div>
         </div>
@@ -115,7 +115,7 @@ export const PartyTimelineHeader = ({
             "outline",
             HandleScheduleButton,
             <LucideCalendarCheck2 className="w-4 h-4" />,
-            has_scheduled ? "重新登記" : "登記"
+            has_scheduled ? "重新登記" : "登記",
           )}
           {renderButton(
             "outline",
@@ -129,7 +129,7 @@ export const PartyTimelineHeader = ({
               !isEditing && isBounced
                 ? "transition scale-110 duration-300 ease-in-out"
                 : "transition scale-100 duration-300 ease-in-out"
-            }`
+            }`,
           )}
         </div>
       </div>
@@ -146,7 +146,7 @@ const renderButton = (
   text: string,
   isLoading: boolean = false,
   additionalClasses: string = "",
-  disabled: boolean = false
+  disabled: boolean = false,
 ) => (
   <Button
     variant={variant}

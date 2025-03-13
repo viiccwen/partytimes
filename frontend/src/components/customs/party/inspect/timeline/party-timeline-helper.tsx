@@ -32,11 +32,11 @@ export const generateGridCells = (
     row: number,
     col: number,
     isDragging: boolean,
-    isMobile: boolean
+    isMobile: boolean,
   ) => void,
   updateCurPointsPosition: (row: number, col: number) => void,
   updateIsMouseDown: (isMouseDown: boolean) => void,
-  updateTouchedBlock: Dispatch<SetStateAction<string | null>>
+  updateTouchedBlock: Dispatch<SetStateAction<string | null>>,
 ): React.ReactElement => {
   if (!party || !party.date) return <></>;
 
@@ -47,10 +47,10 @@ export const generateGridCells = (
     const isSelected: boolean = user_selected_block.has(block_key);
     const isVoted: number = vote_blocks[col][row].length;
     const isPointed: boolean = vote_blocks[col][row].some(
-      (block) => block.userId === cur_points_userid
+      (block) => block.userId === cur_points_userid,
     );
     const isClicked: boolean = vote_blocks[col][row].some(
-      (block) => block.userId === clicked_user.userId
+      (block) => block.userId === clicked_user.userId,
     );
 
     const getBlockAppearance = (): string => {
@@ -62,8 +62,8 @@ export const generateGridCells = (
         return isSelected
           ? "bg-orange-400"
           : isVoted
-          ? DecideBlockColor(vote_number, isVoted)
-          : "";
+            ? DecideBlockColor(vote_number, isVoted)
+            : "";
       } else {
         return isSelected ? "bg-blue-400" : "";
       }
@@ -79,17 +79,17 @@ export const generateGridCells = (
           row % 2 === 0
             ? "border-t-[1px]"
             : row === total_half_hours - 1
-            ? "border-b-[1px]"
-            : "",
+              ? "border-b-[1px]"
+              : "",
           col === 0
             ? "border-l-[1px]"
             : col === date_length - 1
-            ? "border-r-[1px]"
-            : "",
+              ? "border-r-[1px]"
+              : "",
           isEditing || isScheduling
             ? "hover:cursor-row-resize select-none"
             : "hover:cursor-pointer",
-          getBlockAppearance()
+          getBlockAppearance(),
         )}
         onTouchStart={(e) => {
           e.preventDefault();
@@ -109,7 +109,7 @@ export const generateGridCells = (
             const touch = e.touches[0];
             const element = document.elementFromPoint(
               touch.clientX,
-              touch.clientY
+              touch.clientY,
             );
             const block_id = element?.id;
             if (element && block_id && block_id !== TouchedBlock) {
@@ -143,7 +143,7 @@ export const generateGridCells = (
     const start_time = ConvertTo24Hours(
       party.start_time,
       party.start_ampm,
-      true
+      true,
     );
     const time = row % 2 === 0 ? formatTime(start_time + hour) : "";
 
@@ -159,7 +159,7 @@ export const generateGridCells = (
           }}
         >
           {Array.from({ length: date_length }, (_, col) =>
-            renderCell(row, col)
+            renderCell(row, col),
           )}
         </div>
       </div>
@@ -175,7 +175,7 @@ export const generateGridCells = (
 
 export const GenerateScheduledBlock = (
   party: party_return_schema_type,
-  scheduled_time: decision_schema_type | undefined | null
+  scheduled_time: decision_schema_type | undefined | null,
 ) => {
   if (!scheduled_time) return null;
 
@@ -185,7 +185,7 @@ export const GenerateScheduledBlock = (
     ConvertTo24Hours(
       scheduled_time.start_time,
       scheduled_time.start_ampm,
-      true
+      true,
     ) - ConvertTo24Hours(party.start_time, party.start_ampm, true);
   const end =
     ConvertTo24Hours(scheduled_time.end_time, scheduled_time.end_ampm, false) -
@@ -250,13 +250,13 @@ export const GetTimeWithAMPM = (time: number) => {
 
 export const GenerateTimeSlots = (
   user_selected_block: Set<string>,
-  party: party_return_schema_type
+  party: party_return_schema_type,
 ) => {
   const blocks = Array.from(user_selected_block);
   const party_start_time = ConvertTo24Hours(
     party.start_time,
     party.start_ampm,
-    true
+    true,
   );
 
   const raw_timeSlots = blocks.map((block) => {
@@ -330,7 +330,7 @@ export const GenerateTimeSlots = (
 
 export const DecideBlockColor: (all: number, selected: number) => string = (
   all: number,
-  selected: number
+  selected: number,
 ) => {
   const percentage = (selected / all) * 100;
   if (percentage <= 25) return "bg-blue-300";

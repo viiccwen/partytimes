@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { ShareURLButton } from "../../ShareURLButton";
 import { EditButton } from "../../profile/edit-button";
 import { usePartyStore } from "@/stores/party-store";
@@ -8,10 +8,7 @@ interface PartyHeaderProps {
   isLogin: boolean;
 }
 
-export const PartyHeader = ({
-  className,
-  isLogin,
-}: PartyHeaderProps) => {
+export const PartyHeader = ({ className, isLogin }: PartyHeaderProps) => {
   const { party } = usePartyStore();
 
   if (!party.title) return null;

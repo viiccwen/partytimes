@@ -35,7 +35,7 @@ export const TimeLineComponent = () => {
     row: number,
     col: number,
     isDragging: boolean,
-    isMobile: boolean
+    isMobile: boolean,
   ) => {
     if (!isEditing && !isScheduling) {
       if (isMobile) return;
@@ -83,12 +83,12 @@ export const TimeLineComponent = () => {
   };
   const total_half_hours = useMemo(
     () => CalculateTotalHours(party) * 2,
-    [party]
+    [party],
   );
   const header = useMemo(() => generateHeader(party), [party]);
   const schedule_block = useMemo(
     () => GenerateScheduledBlock(party, scheduled_time),
-    [party, scheduled_time]
+    [party, scheduled_time],
   );
 
   return useMemo(() => {
@@ -106,7 +106,7 @@ export const TimeLineComponent = () => {
       handleClickTimeBlock,
       updateCurPointsPosition,
       updateIsMouseDown,
-      setTouchedBlock
+      setTouchedBlock,
     );
 
     return (

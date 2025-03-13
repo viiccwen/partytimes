@@ -18,7 +18,7 @@ interface vote_create_schema_type {
 }
 
 export const CreateVote = async (
-  props: vote_create_schema_type
+  props: vote_create_schema_type,
 ): Promise<general_fetch_return_type> => {
   try {
     let token = Cookie.get("token");
@@ -86,7 +86,7 @@ export const CreateVote = async (
 };
 
 export const GetVoteTimes = async (
-  partyid: string
+  partyid: string,
 ): Promise<get_votetimes_fetch_return_type> => {
   try {
     const response = await fetch(`${API_URL}/vote/get?partyid=${partyid}`, {
@@ -110,7 +110,7 @@ export const GetVoteTimes = async (
 
 export const DeleteVote = async (
   partyid: string,
-  userid: string | undefined
+  userid: string | undefined,
 ): Promise<general_fetch_return_type> => {
   try {
     let token = Cookie.get("token");

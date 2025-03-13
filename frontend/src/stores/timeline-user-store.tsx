@@ -5,7 +5,7 @@ import { user_info_schema_type } from "@/lib/type";
 type timeline_user_type = {
   join_lists: joinlist_type[];
   user: user_info_schema_type | undefined;
-  
+
   setJoinLists: (join_lists: joinlist_type[]) => void;
   setUser: (user: user_info_schema_type | undefined) => void;
 };

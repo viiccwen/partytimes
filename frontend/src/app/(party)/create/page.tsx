@@ -18,7 +18,7 @@ export default async function PartyCreatePage() {
     <div>
       <Navbar isLogin={isAuth} HasFixed={false} isLoading={false} />
       <Toaster richColors />
-      
+
       <div className="flex flex-col justify-center items-center mt-5 mb-10 gap-5">
         <p className="text-2xl font-bold">創建派對 🎉</p>
         <Card className="flex flex-wrap flex-grow h-auto p-5 gap-[30px]">
