@@ -11,7 +11,7 @@
 ├── public              # store photos
 ├── src                 # source code
 │   ├── actions         # server-side action (ex. send requests)
-│   │   ├── mail-actions.ts     
+│   │   ├── mail-actions.ts
 │   │   ├── party-actions.ts
 │   │   ├── schedule-action.ts
 │   │   ├── user-actions.ts
@@ -19,23 +19,23 @@
 │   ├── app
 │   │   ├── (OAuth)
 │   │   │   └── oauth           # oauth redirect page
-│   │   │       └── page.tsx    
+│   │   │       └── page.tsx
 │   │   ├── (others)
-│   │   │   ├── about           
+│   │   │   ├── about
 │   │   │   │   └── page.tsx    # (partytimes.org/about)
-│   │   │   ├── feedback        
+│   │   │   ├── feedback
 │   │   │   │   └── page.tsx    # (partytimes.org/feedback)
 │   │   │   └── logs
 │   │   │       └── page.tsx    # (partytimes.org/logs)
 │   │   ├── (party)
 │   │   │   ├── create
-│   │   │   │   ├── loading.tsx 
+│   │   │   │   ├── loading.tsx
 │   │   │   │   └── page.tsx    # (partytimes.org/create)
 │   │   │   ├── error
 │   │   │   │   └── page.tsx    # (partytimes.org/error)
 │   │   │   └── party
 │   │   │       └── [partyId]
-│   │   │           ├── loading.tsx 
+│   │   │           ├── loading.tsx
 │   │   │           └── page.tsx    # (partytimes.org/party/{partyId})
 │   │   ├── globals.css
 │   │   ├── icon.svg
@@ -43,7 +43,7 @@
 │   │   ├── login
 │   │   │   └── page.tsx        # (partytimes.org/login)
 │   │   ├── page.tsx            # (partytimes.org/)
-│   │   ├── profile             
+│   │   ├── profile
 │   │   │   ├── loading.tsx
 │   │   │   └── page.tsx        # (partytimes.org/profile)
 │   │   └── setting
@@ -117,11 +117,11 @@
 │   │       ├── textarea.tsx
 │   │       └── tooltip.tsx
 │   ├── lib
-│   │   ├── block-selection-helper.ts  # party selection helper 
+│   │   ├── block-selection-helper.ts  # party selection helper
 │   │   ├── coop-clublists.ts          # homepage club lists
 │   │   ├── description-blocklists.ts  # homepage feature lists
-│   │   ├── logs.ts                    
-│   │   ├── schema.ts                  
+│   │   ├── logs.ts
+│   │   ├── schema.ts
 │   │   ├── type.ts
 │   │   ├── utils.ts                   # some helper function
 │   │   └── verify.ts                  # authentication helper function

@@ -47,7 +47,7 @@ export default async function SettingPage() {
               <div className="space-y-5">
                 <div className="text-lg font-bold">基本資料</div>
                 <Separator />
-                
+
                 <BasicBlock title="名稱">
                   <div className="flex items-center gap-4">
                     <p>{user.nickname}</p>

@@ -33,7 +33,9 @@ export const Navbar = ({ isLogin, isLoading, HasFixed }: NavbarProps) => {
   const router = useRouter();
 
   return (
-    <div className={`w-full ${HasFixed ? "fixed" : ""} backdrop-blur-sm drop-shadow-xl z-10`}>
+    <div
+      className={`w-full ${HasFixed ? "fixed" : ""} backdrop-blur-sm drop-shadow-xl z-10`}
+    >
       <div className="flex justify-between p-5">
         <div className="flex ml-3 md:hidden">
           <MenuBar side="left" isLogin={isLogin} />
@@ -65,7 +67,7 @@ export const Navbar = ({ isLogin, isLoading, HasFixed }: NavbarProps) => {
                   >
                     {<Link href={ele.url}>{ele.name}</Link>}
                   </button>
-                )
+                ),
             )}
           </div>
         </div>

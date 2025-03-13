@@ -12,7 +12,8 @@ export const log_list = [
   {
     date: "2024/12/24",
     title: "加入 Google Calendar 功能 (Beta)",
-    content: "現在只要派對創建者為 Google 登入，登記派對時就可以將派對加入 Google Calendar 了 🥳",
+    content:
+      "現在只要派對創建者為 Google 登入，登記派對時就可以將派對加入 Google Calendar 了 🥳",
   },
   {
     date: "2024/12/09",

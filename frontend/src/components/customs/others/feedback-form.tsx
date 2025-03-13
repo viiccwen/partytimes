@@ -48,7 +48,11 @@ export const FeedbackForm = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card className={cn("md:w-[500px] min-h-[500px] p-5")}>
           <CardContent>
-            <div className={cn("text-2xl", "md:text-3xl font-bold text-center")}>意見回饋</div>
+            <div
+              className={cn("text-2xl", "md:text-3xl font-bold text-center")}
+            >
+              意見回饋
+            </div>
             <div className={cn("text-sm", "md:text-lg mt-5 text-center")}>
               歡迎提供意見回饋，讓我們做得更好！
             </div>

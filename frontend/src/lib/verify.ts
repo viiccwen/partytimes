@@ -1,4 +1,4 @@
-'use server';
+"use server";
 import { Auth } from "@/actions/user-actions";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";

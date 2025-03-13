@@ -26,7 +26,7 @@ export const getJoinList = (votes: votes_schema_type[]) => {
 // Get Time Slot Blocks
 export const getUserVoteblocks = (
   vote_blocks: block_type[][][],
-  nickname: string | undefined
+  nickname: string | undefined,
 ): Set<string> => {
   if (!nickname) return new Set<string>();
 
@@ -35,9 +35,9 @@ export const getUserVoteblocks = (
       blocks.flatMap((block, col) =>
         block
           .filter((vote) => vote.creatorName === nickname)
-          .map(() => `${row}-${col}`)
-      )
-    )
+          .map(() => `${row}-${col}`),
+      ),
+    ),
   );
 };
 
@@ -45,16 +45,16 @@ export const getUserVoteblocks = (
 export const getTimeSlotBlocks = (
   votes: votes_schema_type[],
   total_hours: number,
-  party: party_return_schema_type
+  party: party_return_schema_type,
 ) => {
   let blocks: block_type[][][] = Array.from({ length: party.date.length }, () =>
-    Array.from({ length: total_hours * 2 }, () => [])
+    Array.from({ length: total_hours * 2 }, () => []),
   );
 
   const party_start_time = ConvertTo24Hours(
     party.start_time,
     party.start_ampm,
-    true
+    true,
   );
 
   votes.forEach((vote: votes_schema_type) => {
@@ -65,12 +65,12 @@ export const getTimeSlotBlocks = (
       const start_time = ConvertTo24Hours(
         timeslot.start_time,
         timeslot.start_ampm,
-        true
+        true,
       );
       const end_time = ConvertTo24Hours(
         timeslot.end_time,
         timeslot.end_ampm,
-        false
+        false,
       );
 
       const start = start_time - party_start_time;
@@ -93,7 +93,7 @@ export const getTimeSlotBlocks = (
 export const ConvertTo24Hours = (
   time: number,
   ampm: string,
-  isStart: boolean
+  isStart: boolean,
 ) => {
   let return_time: number = time === 12 ? 0 : time;
 
@@ -105,17 +105,17 @@ export const ConvertTo24Hours = (
 };
 
 export const CalculateTotalHours = (
-  party: party_return_schema_type
+  party: party_return_schema_type,
 ): number => {
   let start_time: number = ConvertTo24Hours(
     party.start_time,
     party.start_ampm,
-    true
+    true,
   );
   let end_time: number = ConvertTo24Hours(
     party.end_time,
     party.end_ampm,
-    false
+    false,
   );
   return end_time - start_time;
 };

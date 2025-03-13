@@ -5,7 +5,12 @@ import { Navbar } from "@/components/customs/navbar";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
-import { CalculateTotalHours, getJoinList, getTimeSlotBlocks, getUserVoteblocks } from "@/lib/utils";
+import {
+  CalculateTotalHours,
+  getJoinList,
+  getTimeSlotBlocks,
+  getUserVoteblocks,
+} from "@/lib/utils";
 import { PartyContent } from "@/components/customs/party/inspect/party-content";
 
 export default async function PartyPage({
@@ -27,7 +32,7 @@ export default async function PartyPage({
   const vote_blocks = getTimeSlotBlocks(
     votes,
     CalculateTotalHours(party),
-    party
+    party,
   );
   const user_votes = getUserVoteblocks(vote_blocks, user?.nickname);
   const join_lists = getJoinList(votes);
@@ -37,12 +42,12 @@ export default async function PartyPage({
       <Toaster richColors />
       <Navbar isLogin={isAuth} HasFixed={false} isLoading={false} />
       <div className="flex flex-col gap-6 md:mx-7 md:flex-row mb-[100px]">
-        <PartyContent 
-          initial_party={party} 
-          initial_vote_blocks={vote_blocks} 
+        <PartyContent
+          initial_party={party}
+          initial_vote_blocks={vote_blocks}
           initial_join_lists={join_lists}
-          user={user} 
-          user_votes={user_votes} 
+          user={user}
+          user_votes={user_votes}
         />
       </div>
     </div>

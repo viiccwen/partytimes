@@ -13,7 +13,10 @@ import { Navbar } from "@/components/customs/navbar";
 import { Toaster } from "sonner";
 
 import { cn } from "@/lib/utils";
-import { GithubOAuthButton, GoogleOAuthButton } from "@/components/customs/user/oauth-button";
+import {
+  GithubOAuthButton,
+  GoogleOAuthButton,
+} from "@/components/customs/user/oauth-button";
 import { VerifyAuth } from "@/lib/verify";
 
 export const metadata: Metadata = {

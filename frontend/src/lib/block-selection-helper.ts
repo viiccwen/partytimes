@@ -7,7 +7,7 @@ export const ToggleBlockSelection = (prev: Set<string>, block_key: string) => {
 export const ToggleBlockSchedule = (
   prev: Set<string>,
   col: number,
-  row: number
+  row: number,
 ) => {
   const block_key = `${col}-${row}`;
   const newSet = new Set<string>();

@@ -7,7 +7,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const Cookie = require("js-cookie");
 
 export const Auth = async (
-  token: string | undefined
+  token: string | undefined,
 ): Promise<userinfo_fetch_return_type> => {
   try {
     if (!token) throw new Error("尚未登入或是登入狀況有錯誤！");
@@ -61,7 +61,7 @@ export const DeleteAccount = async (): Promise<general_fetch_return_type> => {
 };
 
 export const EditName = async (
-  nickname: string
+  nickname: string,
 ): Promise<general_fetch_return_type> => {
   try {
     const token = Cookie.get("token");
@@ -86,4 +86,3 @@ export const EditName = async (
     throw new Promise((reject) => reject(error.message));
   }
 };
-

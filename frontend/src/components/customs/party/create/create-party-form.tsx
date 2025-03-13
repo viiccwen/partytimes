@@ -41,7 +41,7 @@ export const CreatePartyForm = ({ className }: CreatePartyFormProps) => {
     const tw_start_time = ConvertTo24Hours(
       start_time,
       formdata.start_ampm,
-      true
+      true,
     );
     const tw_end_time = ConvertTo24Hours(end_time, formdata.end_ampm, false);
 
@@ -132,7 +132,10 @@ export const CreatePartyForm = ({ className }: CreatePartyFormProps) => {
           </div>
         </div>
 
-        <Button className="mb-3 bg-blue-500 hover:bg-blue-600 text-white" disabled={isLoading}>
+        <Button
+          className="mb-3 bg-blue-500 hover:bg-blue-600 text-white"
+          disabled={isLoading}
+        >
           {isLoading ? "創建中..." : "創建"}
         </Button>
       </div>

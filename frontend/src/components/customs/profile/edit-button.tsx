@@ -26,7 +26,6 @@ import { party_table_store } from "./party-table";
 import { Delay } from "@/lib/utils";
 import { DeletePartyButton } from "../party/delete-party-button";
 
-
 interface EditButtonProps {
   partyid: string;
   partyTitle: string;
@@ -58,7 +57,8 @@ export const EditButton = ({
       success: () => {
         Delay(1, true).then(() => {
           setOpen(false);
-          router.refresh()});
+          router.refresh();
+        });
         return "更新成功";
       },
       error: (res) => res.error,
@@ -109,7 +109,11 @@ export const EditButton = ({
           </div>
 
           <div className="w-full flex flex-row-reverse gap-4 mt-5">
-            <EditPartyButton classname="w-full text-white bg-blue-500 hover:bg-blue-600" label="確認" isConfirming={isConfirming} />
+            <EditPartyButton
+              classname="w-full text-white bg-blue-500 hover:bg-blue-600"
+              label="確認"
+              isConfirming={isConfirming}
+            />
             <DeletePartyButton
               partyid={partyid}
               className="w-full bg-inherit text-red-500 border border-red-500 hover:bg-red-500 hover:text-white"

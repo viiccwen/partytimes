@@ -25,8 +25,8 @@ export default async function PrivacyPage() {
               <p>
                 This Privacy Policy governs the manner in which PartyTimes
                 collects, uses, maintains, and discloses information collected
-                from users (each, a &quot;User&quot;) of the https://partytimes.org
-                website (&quot;Site&quot;).
+                from users (each, a &quot;User&quot;) of the
+                https://partytimes.org website (&quot;Site&quot;).
               </p>
               <h3 className="font-semibold">
                 Personal identification information
@@ -39,8 +39,8 @@ export default async function PrivacyPage() {
                 resources we make available on our Site. Users may be asked for,
                 as appropriate, name, email address. Users may also connect
                 their personal electronic calendar to our Site, but we do not
-                record or store the User&apos;s calendar events on our servers. Users
-                may, however, visit our Site anonymously. We will collect
+                record or store the User&apos;s calendar events on our servers.
+                Users may, however, visit our Site anonymously. We will collect
                 personal identification information from Users only if they
                 voluntarily submit such information to us. Users can always
                 refuse to supply personal identification information, except
@@ -54,15 +54,15 @@ export default async function PrivacyPage() {
                 We may collect non-personal identification information about
                 Users whenever they interact with our Site. Non-personal
                 identification information may include the browser name, the
-                type of computer, and technical information about Users&apos; means
-                of connection to our Site, such as the operating system and the
-                Internet service providers utilized and other similar
+                type of computer, and technical information about Users&apos;
+                means of connection to our Site, such as the operating system
+                and the Internet service providers utilized and other similar
                 information.
               </p>
               <h3 className="font-semibold">Web browser cookies</h3>
               <p>
-                Our Site may use &quot;cookies&quot; to enhance User experience. User&apos;s
-                web browser places cookies on their hard drive for
+                Our Site may use &quot;cookies&quot; to enhance User experience.
+                User&apos;s web browser places cookies on their hard drive for
                 record-keeping purposes and sometimes to track information about
                 them. User may choose to set their web browser to refuse cookies
                 or to alert them when cookies are being sent. If they do so,
@@ -82,8 +82,8 @@ export default async function PrivacyPage() {
                 How we use collected information
               </h3>
               <p>
-                PartyTimes may collect and use Users&apos; personal information for
-                the following purposes:
+                PartyTimes may collect and use Users&apos; personal information
+                for the following purposes:
                 <ul className="list-disc pl-5">
                   <li>
                     To run and operate our Site. We may need your information to
@@ -112,9 +112,9 @@ export default async function PrivacyPage() {
                 Sharing your personal information
               </h3>
               <p>
-                We do not sell, trade, or rent Users&apos; personal identification
-                information to others. We may share generic aggregated
-                demographic information not linked to any personal
+                We do not sell, trade, or rent Users&apos; personal
+                identification information to others. We may share generic
+                aggregated demographic information not linked to any personal
                 identification information regarding visitors and users with our
                 business partners, trusted affiliates, and advertisers for the
                 purposes outlined above.

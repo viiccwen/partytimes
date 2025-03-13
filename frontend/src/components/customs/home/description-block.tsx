@@ -37,7 +37,7 @@ export const DescriptionBlock = ({
             "flex flex-col mx-5 justify-between gap-5",
             "md:flex-row md:gap-[100px]",
             className,
-            reverse ? "md:flex-row-reverse" : "md:flex-row"
+            reverse ? "md:flex-row-reverse" : "md:flex-row",
           )}
         >
           <div className="flex flex-col items-center justify-center gap-3 mb-10">

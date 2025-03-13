@@ -7,10 +7,10 @@ import { PartyTable } from "@/components/customs/profile/party-table";
 import { party_return_schema_type } from "@/lib/type";
 
 interface PartyPanelProps {
-    party: party_return_schema_type[];
+  party: party_return_schema_type[];
 }
 
-export const PartyPanel = ({ party } : PartyPanelProps) => {
+export const PartyPanel = ({ party }: PartyPanelProps) => {
   return (
     <Tabs defaultValue="all" className="w-full">
       <div className="flex justify-between">
@@ -39,14 +39,14 @@ export const PartyPanel = ({ party } : PartyPanelProps) => {
       <TabsContent value="planned">
         <PartyTable
           party={party.filter(
-            (content: party_return_schema_type) => content.status === true
+            (content: party_return_schema_type) => content.status === true,
           )}
         />
       </TabsContent>
       <TabsContent value="unplanned">
         <PartyTable
           party={party.filter(
-            (content: party_return_schema_type) => content.status === false
+            (content: party_return_schema_type) => content.status === false,
           )}
         />
       </TabsContent>

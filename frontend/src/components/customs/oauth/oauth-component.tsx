@@ -33,9 +33,11 @@ export const OAuthComponent = () => {
               <p>waiting for redirecting...</p>
             </div>
           )}
-          {error && <div className="text-red-500 text-center">some mistakes...</div>}
+          {error && (
+            <div className="text-red-500 text-center">some mistakes...</div>
+          )}
         </CardContent>
       </Card>
     </div>
   );
-}
+};

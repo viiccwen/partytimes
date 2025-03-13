@@ -4,7 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useCreatePartyStore } from "@/stores/create-party-store";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { toast } from "sonner";
 
 const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -41,7 +48,7 @@ interface DayPickerProps {
   className?: string;
 }
 
-export const DayPicker = (props : DayPickerProps) => {
+export const DayPicker = (props: DayPickerProps) => {
   const { selectedDate, setSelectedDate } = useCreatePartyStore();
   const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -64,27 +71,26 @@ export const DayPicker = (props : DayPickerProps) => {
 
   const HandleClick = useCallback(
     (value: string) => {
-      
       if (selectedDate?.length === 7 && !selectedDate.includes(value)) {
         toast.error("最多選擇 7 天!");
         return;
       }
-      
+
       let updatedSelectedDate: string[];
-      
+
       if (selectedDate.includes(value))
         updatedSelectedDate = selectedDate.filter((date) => date !== value);
       else updatedSelectedDate = [...selectedDate, value];
-      
+
       setSelectedDate(updatedSelectedDate);
     },
-    [selectedDate, currentDate]
+    [selectedDate, currentDate],
   );
 
   const handleMonthChange = (offset: number) => {
     setCurrentDate(
       (prevDate) =>
-        new Date(prevDate.getFullYear(), prevDate.getMonth() + offset, 1)
+        new Date(prevDate.getFullYear(), prevDate.getMonth() + offset, 1),
     );
   };
 
@@ -139,8 +145,8 @@ export const DayPicker = (props : DayPickerProps) => {
                     formatDate(
                       currentDate.getFullYear(),
                       currentDate.getMonth() + 1,
-                      day
-                    )
+                      day,
+                    ),
                   )
                     ? "bg-blue-500 text-white hover:bg-blue-400 hover:text-white"
                     : "hover:bg-blue-300 hover:text-white dark:text-white"
@@ -152,7 +158,7 @@ export const DayPicker = (props : DayPickerProps) => {
                 value={formatDate(
                   currentDate.getFullYear(),
                   currentDate.getMonth() + 1,
-                  day
+                  day,
                 )}
                 onClick={(e) => HandleClick(e.currentTarget.value)}
               >
@@ -164,7 +170,7 @@ export const DayPicker = (props : DayPickerProps) => {
               key={`days-hidden-${index}`}
               className="w-[40px] h-[40px]"
             ></div>
-          )
+          ),
         )}
       </div>
     </div>

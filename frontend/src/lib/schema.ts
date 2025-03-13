@@ -25,7 +25,7 @@ export const login_schema = z.object({
     .string()
     .min(6, "使用者密碼至少6位數")
     .max(20, "使用者密碼最多20位數"),
-})
+});
 
 export const guest_schema = z.object({
   nickname: z.string().min(1, "不可為空"),
@@ -36,7 +36,7 @@ export const user_info_schema = z.object({
   id: z.string(),
   nickname: z.string(),
   email: z.string(),
-})
+});
 
 export const ampm = ["AM", "PM"] as const;
 
@@ -77,19 +77,22 @@ export const party_edit_schema = z.object({
   description: z.string().max(50, "派對簡介最多50字"),
 });
 
+export const timeslots_create_schema = z.array(
+  z.object({
+    date: z.string(),
+    start_time: z.number(),
+    start_ampm: z.enum(ampm),
+    end_time: z.number(),
+    end_ampm: z.enum(ampm),
+  }),
+);
 
-export const timeslots_create_schema = z.array(z.object({
-  date: z.string(),
-  start_time: z.number(),
-  start_ampm: z.enum(ampm),
-  end_time: z.number(),
-  end_ampm: z.enum(ampm),
-}));
-
-export const timeslots_return_schema = timeslots_create_schema.element.merge(z.object({
-  id: z.number(),
-  votetimeId: z.number(),
-}));
+export const timeslots_return_schema = timeslots_create_schema.element.merge(
+  z.object({
+    id: z.number(),
+    votetimeId: z.number(),
+  }),
+);
 
 export const votes_schema = z.object({
   id: z.number(),

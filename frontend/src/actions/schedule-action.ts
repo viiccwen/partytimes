@@ -4,7 +4,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const CreateSchedule = async (
   partyid: string,
-  timeslot: decision_schema_type
+  timeslot: decision_schema_type,
 ): Promise<general_fetch_return_type> => {
   try {
     const response = await fetch(`${API_URL}/schedule/create`, {
@@ -27,7 +27,7 @@ export const CreateSchedule = async (
 };
 
 export const DeleteSchedule = async (
-  partyid: string
+  partyid: string,
 ): Promise<general_fetch_return_type> => {
   try {
     const response = await fetch(`${API_URL}/schedule/delete/${partyid}`, {
